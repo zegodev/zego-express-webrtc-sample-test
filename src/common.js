@@ -2,7 +2,7 @@
 import VConsole from 'vconsole';
 import './assets/bootstrap.min';
 import './assets/bootstrap.min.css';
-import { ZegoExpressEngine } from './assets/jZego-rtc.js';
+import { ZegoExpressEngine } from 'zego-express-engine-webrtc-rebuild';
 import { getCgi } from './content';
 import { getBrowser } from './assets/utils';
 
@@ -245,7 +245,7 @@ function initSDK() {
                 }).catch(err => {
                     console.error('err', err);
                 });
-                
+
             }
         } else if (updateType == 'DELETE') {
             for (let k = 0; k < useLocalStreamList.length; k++) {
@@ -271,7 +271,7 @@ function initSDK() {
 
     zg.on('playQualityUpdate', async (streamID, streamQuality) => {
         console.log(
-            `play#${streamID} videoFPS: ${streamQuality.video.videoFPS} videoBitrate: ${streamQuality.video.videoBitrate} audioBitrate: ${streamQuality.audio.audioBitrate} audioFPS: ${streamQuality.audio.audioFPS}`, 
+            `play#${streamID} videoFPS: ${streamQuality.video.videoFPS} videoBitrate: ${streamQuality.video.videoBitrate} audioBitrate: ${streamQuality.audio.audioBitrate} audioFPS: ${streamQuality.audio.audioFPS}`,
         );
         console.log(`play#${streamID}`, streamQuality);
     });
