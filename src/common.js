@@ -2,7 +2,7 @@
 import VConsole from 'vconsole';
 import './assets/bootstrap.min';
 import './assets/bootstrap.min.css';
-import { ZegoExpressEngine } from 'zego-express-engine-webrtc';
+import { ZegoExpressEngine } from './assets/jZego-rtc.js';
 import { getCgi } from './content';
 import { getBrowser } from './assets/utils';
 
