@@ -233,8 +233,11 @@ function initSDK() {
             for (let i = 0; i < streamList.length; i++) {
                 console.info(streamList[i].streamID + ' was added');
                 let remoteStream;
+                let playOption;
 
-                zg.startPlayingStream(streamList[i].streamID).then(stream => {
+                if($("#videoCodec").val()) playOption.videoCodec = $("#videoCodec").val();
+
+                zg.startPlayingStream(streamList[i].streamID,playOption).then(stream => {
                     remoteStream = stream;
                     useLocalStreamList.push(streamList[i]);
                     $('.remoteVideo').append($(`<video id=${streamList[i].streamID} autoplay muted playsinline controls></video>`));
@@ -413,6 +416,7 @@ async function push(constraints, publishOption, isNew) {
         isPreviewed = true;
         $('.sound').hasClass('d-none') && $('.sound').removeClass('d-none');
         isNew && (publishStreamId = 'webrtc' + new Date().getTime());
+        if($("#videoCodec").val()) publishOption.videoCodec = $("#videoCodec").val();
         const result = zg.startPublishingStream(publishStreamId, localStream, publishOption);
         console.log('publish stream' + publishStreamId, result);
     } catch (err) {
