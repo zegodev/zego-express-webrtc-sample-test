@@ -7,9 +7,9 @@ import { getCgi } from './content';
 import { getBrowser } from './assets/utils';
 
 new VConsole();
-const userID = 'sample' + new Date().getTime();
 const userName = 'sampleUser' + new Date().getTime();
 const tokenUrl = 'https://wsliveroom-demo.zego.im:8282/token';
+let userID = 'sample' + new Date().getTime();
 let publishStreamId = 'webrtc' + new Date().getTime();
 let zg;
 let appID = 1739272706; // 请从官网控制台获取对应的appID
@@ -29,7 +29,9 @@ let publishType;
 // 测试用代码，开发者请忽略
 // Test code, developers please ignore
 
-({ appID, server, cgiToken } = getCgi(appID, server, cgiToken));
+({ appID, server, cgiToken, userID } = getCgi(appID, server, cgiToken));
+if (userID == "") userID = 'sample' + new Date().getTime();
+
 if (cgiToken && tokenUrl == 'https://wsliveroom-demo.zego.im:8282/token') {
     $.get(cgiToken, rsp => {
         cgiToken = rsp.data;
