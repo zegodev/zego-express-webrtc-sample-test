@@ -169,8 +169,8 @@ $(async () => {
         }
     })
     zg.off('roomStreamUpdate');
-    zg.on('roomStreamUpdate', async (roomID, updateType, streamList) => {
-        console.log('roomStreamUpdate 2 roomID ', roomID, streamList);
+    zg.on('roomStreamUpdate', async (roomID, updateType, streamList, extendedData) => {
+        console.log('roomStreamUpdate 2 roomID ', roomID, streamList, extendedData);
         if (updateType == 'ADD') {
             for (let i = 0; i < streamList.length; i++) {
                 console.info(streamList[i].streamID + ' was added');
