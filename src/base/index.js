@@ -92,19 +92,6 @@ $(async () => {
     });
     $('#openRoom').unbind('click');
     $('#openRoom').click(async () => {
-        playOption = {};
-        const _selectMode = $('#playMode option:selected').val();
-        console.warn('playMode', _selectMode, playOption);
-        if (_selectMode) {
-            if (_selectMode == 'all') {
-                playOption.video = true;
-                playOption.audio = true;
-            } else if (_selectMode == 'video') {
-                playOption.audio = false;
-            } else if (_selectMode == 'audio') {
-                playOption.video = false;
-            }
-        }
         await enterRoom();
     });
     $('#extraInfo').click(() => {
@@ -205,6 +192,21 @@ $(async () => {
                     video.srcObject = remoteStream;
                     video.muted = false;
                 };
+
+                    playOption = {};
+                    const _selectMode = $('#playMode option:selected').val();
+                    console.warn('playMode', _selectMode, playOption);
+                    if (_selectMode) {
+                        if (_selectMode == 'all') {
+                            playOption.video = true;
+                            playOption.audio = true;
+                        } else if (_selectMode == 'video') {
+                            playOption.audio = false;
+                        } else if (_selectMode == 'audio') {
+                            playOption.video = false;
+                        }
+                    }
+
                     if($("#videoCodec").val()) playOption.videoCodec = $("#videoCodec").val();
 
                     zg.startPlayingStream(streamList[i].streamID, playOption).then(stream => {
