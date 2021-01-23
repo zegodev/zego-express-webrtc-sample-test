@@ -9,8 +9,8 @@ let published = false;
 const publishStreamID = 'web-' + new Date().getTime();
 // ---test end
 
-$(() => {
-    checkAnRun();
+$(async () => {
+    await checkAnRun();
 
     // --- test begin
     $('#enterRoom').click(async () => {
