@@ -13,7 +13,7 @@ let userID = 'sample' + new Date().getTime();
 let publishStreamId = 'webrtc' + new Date().getTime();
 let zg;
 let appID = 1739272706; // 请从官网控制台获取对应的appID
-let server = 'wss://wssliveroom-test.zego.im/ws'; // 请从官网控制台获取对应的server地址，否则可能登录失败
+let server = 'wss://webliveroom-test.zego.im/ws'; // 请从官网控制台获取对应的server地址，否则可能登录失败
 
 let cgiToken = '';
 //const appSign = '';
@@ -41,6 +41,27 @@ if (cgiToken && tokenUrl == 'https://wsliveroom-demo.zego.im:8282/token') {
 
 // 测试用代码 end
 // Test code end
+
+let browser = {
+    versions:function(){
+        var u = navigator.userAgent, app = navigator.appVersion;
+        return {
+            trident: u.indexOf('Trident') > -1, //IE内核
+            presto: u.indexOf('Presto') > -1, //opera内核
+            webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+            gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1,//火狐内核
+            mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+            ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+            android: u.indexOf('Android') > -1 || u.indexOf('Adr') > -1, //android终端
+            iPhone: u.indexOf('iPhone') > -1 , //是否为iPhone或者QQHD浏览器
+            iPad: u.indexOf('iPad') > -1, //是否iPad
+            webApp: u.indexOf('Safari') == -1, //是否web应该程序，没有头部与底部
+            weixin: u.indexOf('MicroMessenger') > -1, //是否微信 （2015-01-22新增）
+            qq: u.match(/\sQQ/i) == " qq" //是否QQ
+        };
+    }(),
+    language:(navigator.browserLanguage || navigator.language).toLowerCase()
+}
 
 // eslint-disable-next-line prefer-const
 zg = new ZegoExpressEngine(appID, server);
@@ -231,6 +252,7 @@ function initSDK() {
     });
     zg.on('roomStreamUpdate', async (roomID, updateType, streamList, extendedData) => {
         console.log('roomStreamUpdate 1 roomID ', roomID, streamList, extendedData);
+        let queue = []
         if (updateType == 'ADD') {
             for (let i = 0; i < streamList.length; i++) {
                 console.info(streamList[i].streamID + ' was added');
@@ -242,15 +264,36 @@ function initSDK() {
                 zg.startPlayingStream(streamList[i].streamID,playOption).then(stream => {
                     remoteStream = stream;
                     useLocalStreamList.push(streamList[i]);
-                    $('.remoteVideo').append($(`<video id=${streamList[i].streamID} autoplay muted playsinline controls></video>`));
+                    const videoTemp = $(`<video id=${streamList[i].streamID} autoplay muted playsinline controls></video>`)
+                    queue.push(videoTemp)
+                    $('.remoteVideo').append(videoTemp);
                     const video = $('.remoteVideo video:last')[0];
                     console.warn('video', video, remoteStream);
                     video.srcObject = remoteStream;
                     video.muted = false;
+                    videoTemp = null;
                 }).catch(err => {
                     console.error('err', err);
                 });
 
+            }
+            const inIphone = browser.versions.mobile && browser.versions.ios
+            const inSafari = browser.versions.webApp
+            const inWx = browser.versions.weixin
+            if(streamList.length > 1 && (inIphone || inSafari || inWx)) {
+                const ac = zc.zegoWebRTC.ac;
+                ac.resume();
+                const gain = ac.createGain();
+                
+                while(queue.length) {
+                    let temp = queue.shift()
+                    if(temp.srcObject) {
+                        queue.push(ac.createMediaStreamSource(temp.srcObject))
+                    } else {
+                        temp.connect(gain)
+                    }
+                }
+                gain.connect(ac.destination);
             }
         } else if (updateType == 'DELETE') {
             for (let k = 0; k < useLocalStreamList.length; k++) {
@@ -335,6 +378,10 @@ async function login(roomId) {
             app_id: appID,
             id_name: userID,
         });
+        token = await $.get('https://wsliveroom-alpha.zego.im:8282/token', {
+            app_id: appID,
+            id_name: userID,
+        }); 
     }
     return await zg.loginRoom(roomId, token, { userID, userName }, { userUpdate: true });
 }
@@ -362,6 +409,9 @@ async function enterRoom() {
 
 async function logout() {
     console.info('leave room  and close stream');
+    if(previewVideo.srcObject){
+        previewVideo.srcObject = null;
+    }
 
     // 停止推流
     // stop publishing
@@ -421,6 +471,18 @@ async function publish(constraints, isNew) {
 async function push(constraints, publishOption, isNew) {
     try {
         localStream = await zg.createStream(constraints);
+        // var AudioContext = window.AudioContext || window.webkitAudioContext; // 兼容性
+        // let localTrack= localStream.getAudioTracks()[0];
+        // let audioContext = new AudioContext();// 创建Audio上下文
+        // let mediaStreamSource = audioContext.createMediaStreamSource(localStream);
+        // let destination = audioContext.createMediaStreamDestination();
+        // let gainNode = audioContext.createGain();
+        // mediaStreamSource.connect(gainNode); 
+        // gainNode.connect(destination); 
+        // gainNode.gain.value=3;
+        // let audioTrack = destination.stream.getAudioTracks()[0];
+        // localStream.removeTrack(localTrack);
+        // localStream.addTrack(audioTrack);
         previewVideo.srcObject = localStream;
         isPreviewed = true;
         $('.sound').hasClass('d-none') && $('.sound').removeClass('d-none');
