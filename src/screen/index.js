@@ -69,14 +69,22 @@ $(async () => {
         $(`#${screenStream.streamId}`).remove();
         screenStreamList = screenStreamList.filter(item => item !== screenStream);
         console.log(`screenStreamList `, screenStreamList);
+
+        if(rangePreviewStream) {
+            console.log('ngchikin');
+            zg.stopPublishingStream(publishStreamID);
+            stopRangeScreen();
+            zg.destroyStream(rangePreviewStream);
+            previewStream = null
+        }
     };
 
     const stopRangeScreen = () => {
         shareVideoStream = null
-        const video = $('#rangeShareVideo')[0]
-        video && video.remove() && (video = null)
-        globalCanvas.width = 0;
+        let video = $('#rangeShareVideo')[0]
+        video && video.remove()
         globalCanvas.remove();
+        video = null
         globalCanvas = null
         canvasMedia = null
         changeRangeGlobal = null
@@ -186,13 +194,21 @@ $(async () => {
     }
 
     const getRangeShare = (sx, sy, sWidth, sHeight) => {
-        const video = $('.previewScreenVideo video:last')[0];
+        let video = $('.previewScreenVideo video:last')[0];
         const canvas = document.createElement('canvas');
         globalCanvas = canvas
         const { canvasMedidaStream, changeRange } = rangeShareFunction(canvas, shareVideoStream, useImageCapture ? null : video)
         canvasMedia = canvasMedidaStream
         changeRangeGlobal = changeRange
-        $('#rangeShareVideo')[0].srcObject = canvasMedia
+        let shareVideo = $('#rangeShareVideo')[0]
+            
+        if(!shareVideo) {
+            shareVideo = $(`<video id="rangeShareVideo" autoplay muted playsinline></video>`)
+
+            $("#customVideo").before(shareVideo)
+            shareVideo = shareVideo[0]
+        }
+        shareVideo.srcObject = canvasMedia
         changeRangeGlobal(sx, sy, sWidth, sHeight)
     }
 
