@@ -83,7 +83,7 @@ $(async () => {
         shareVideoStream = null
         let video = $('#rangeShareVideo')[0]
         video && video.remove()
-        globalCanvas.remove();
+        globalCanvas && globalCanvas.remove();
         video = null
         globalCanvas = null
         canvasMedia = null
