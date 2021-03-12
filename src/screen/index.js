@@ -75,7 +75,7 @@ $(async () => {
             zg.stopPublishingStream(publishStreamID);
             stopRangeScreen();
             zg.destroyStream(rangePreviewStream);
-            previewStream = null
+            rangePreviewStream = null
         }
     };
 
