@@ -26,10 +26,12 @@ let loginRoom = false;
 let localStream;
 let publishType;
 
+let l3;
+
 // 测试用代码，开发者请忽略
 // Test code, developers please ignore
 
-({ appID, server, cgiToken, userID } = getCgi(appID, server, cgiToken));
+({ appID, server, cgiToken, userID, l3, isPeer } = getCgi(appID, server, cgiToken));
 if (userID == "") userID = 'sample' + new Date().getTime();
 
 if (cgiToken && tokenUrl == 'https://wsliveroom-demo.zego.im:8282/token') {
@@ -66,6 +68,7 @@ let browser = {
 // eslint-disable-next-line prefer-const
 zg = new ZegoExpressEngine(appID, server);
 
+zg.zegoWebRTC.rtcModules.streamCenter.isPeer = isPeer == true? true: false;
 window.zg = zg;
 window.useLocalStreamList = useLocalStreamList;
 
@@ -260,6 +263,8 @@ function initSDK() {
                 let playOption;
 
                 if($("#videoCodec").val()) playOption.videoCodec = $("#videoCodec").val();
+                if(l3 == true) playOption.resourceMode = 2;
+                console.log('111111111111', pla)
 
                 zg.startPlayingStream(streamList[i].streamID,playOption).then(stream => {
                     remoteStream = stream;
@@ -284,7 +289,7 @@ function initSDK() {
                 const ac = zc.zegoWebRTC.ac;
                 ac.resume();
                 const gain = ac.createGain();
-                
+
                 while(queue.length) {
                     let temp = queue.shift()
                     if(temp.srcObject) {
@@ -381,7 +386,7 @@ async function login(roomId) {
         token = await $.get('https://wsliveroom-alpha.zego.im:8282/token', {
             app_id: appID,
             id_name: userID,
-        }); 
+        });
     }
     return await zg.loginRoom(roomId, token, { userID, userName }, { userUpdate: true });
 }
@@ -477,8 +482,8 @@ async function push(constraints, publishOption, isNew) {
         // let mediaStreamSource = audioContext.createMediaStreamSource(localStream);
         // let destination = audioContext.createMediaStreamDestination();
         // let gainNode = audioContext.createGain();
-        // mediaStreamSource.connect(gainNode); 
-        // gainNode.connect(destination); 
+        // mediaStreamSource.connect(gainNode);
+        // gainNode.connect(destination);
         // gainNode.gain.value=3;
         // let audioTrack = destination.stream.getAudioTracks()[0];
         // localStream.removeTrack(localTrack);
@@ -525,6 +530,7 @@ export {
     isPreviewed,
     loginRoom,
     publishType,
+    l3
 };
 
 // $(window).on('unload', function() {
