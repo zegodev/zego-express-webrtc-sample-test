@@ -209,7 +209,6 @@ $(async () => {
 
                     if($("#videoCodec").val()) playOption.videoCodec = $("#videoCodec").val();
                     if(l3 == true) playOption.resourceMode = 2;
-                    console.log('111111111111', playOption)
 
                     zg.startPlayingStream(streamList[i].streamID, playOption).then(stream => {
                         remoteStream = stream;
