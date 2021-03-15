@@ -269,7 +269,7 @@ function initSDK() {
                 zg.startPlayingStream(streamList[i].streamID,playOption).then(stream => {
                     remoteStream = stream;
                     useLocalStreamList.push(streamList[i]);
-                    const videoTemp = $(`<video id=${streamList[i].streamID} autoplay muted playsinline controls></video>`)
+                    let videoTemp = $(`<video id=${streamList[i].streamID} autoplay muted playsinline controls></video>`)
                     queue.push(videoTemp)
                     $('.remoteVideo').append(videoTemp);
                     const video = $('.remoteVideo video:last')[0];
