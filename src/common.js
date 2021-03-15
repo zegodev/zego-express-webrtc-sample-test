@@ -27,6 +27,7 @@ let localStream;
 let publishType;
 
 let l3;
+let isPeer;
 
 // 测试用代码，开发者请忽略
 // Test code, developers please ignore
