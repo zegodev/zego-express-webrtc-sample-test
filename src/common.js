@@ -256,7 +256,7 @@ function initSDK() {
     });
     zg.on('roomStreamUpdate', async (roomID, updateType, streamList, extendedData) => {
         console.log('roomStreamUpdate 1 roomID ', roomID, streamList, extendedData);
-        let queue = []
+        // let queue = []
         if (updateType == 'ADD') {
             for (let i = 0; i < streamList.length; i++) {
                 console.info(streamList[i].streamID + ' was added');
@@ -269,37 +269,37 @@ function initSDK() {
                 zg.startPlayingStream(streamList[i].streamID,playOption).then(stream => {
                     remoteStream = stream;
                     useLocalStreamList.push(streamList[i]);
-                    let videoTemp = $(`<video id=${streamList[i].streamID} autoplay muted playsinline controls></video>`)
+                    // let videoTemp = $(`<video id=${streamList[i].streamID} autoplay muted playsinline controls></video>`)
                     queue.push(videoTemp)
                     $('.remoteVideo').append(videoTemp);
                     const video = $('.remoteVideo video:last')[0];
                     console.warn('video', video, remoteStream);
                     video.srcObject = remoteStream;
                     video.muted = false;
-                    videoTemp = null;
+                    // videoTemp = null;
                 }).catch(err => {
                     console.error('err', err);
                 });
 
             }
-            const inIphone = browser.versions.mobile && browser.versions.ios
-            const inSafari = browser.versions.webApp
-            const inWx = browser.versions.weixin
-            if(streamList.length > 1 && (inIphone || inSafari || inWx)) {
-                const ac = zc.zegoWebRTC.ac;
-                ac.resume();
-                const gain = ac.createGain();
+            // const inIphone = browser.versions.mobile && browser.versions.ios
+            // const inSafari = browser.versions.webApp
+            // const inWx = browser.versions.weixin
+            // if(streamList.length > 1 && (inIphone || inSafari || inWx)) {
+            //     const ac = zc.zegoWebRTC.ac;
+            //     ac.resume();
+            //     const gain = ac.createGain();
 
-                while(queue.length) {
-                    let temp = queue.shift()
-                    if(temp.srcObject) {
-                        queue.push(ac.createMediaStreamSource(temp.srcObject))
-                    } else {
-                        temp.connect(gain)
-                    }
-                }
-                gain.connect(ac.destination);
-            }
+            //     while(queue.length) {
+            //         let temp = queue.shift()
+            //         if(temp.srcObject) {
+            //             queue.push(ac.createMediaStreamSource(temp.srcObject))
+            //         } else {
+            //             temp.connect(gain)
+            //         }
+            //     }
+            //     gain.connect(ac.destination);
+            // }
         } else if (updateType == 'DELETE') {
             for (let k = 0; k < useLocalStreamList.length; k++) {
                 for (let j = 0; j < streamList.length; j++) {
