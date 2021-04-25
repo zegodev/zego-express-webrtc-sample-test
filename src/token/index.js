@@ -235,7 +235,7 @@ function initSDK() {
 
                     if ($("#videoCodec").val())
                         playOption.videoCodec = $("#videoCodec").val();
-                    if (l3 == true) playOption.resourceMode = 2;
+                    
 
                     zg.startPlayingStream(streamList[i].streamID, playOption)
                         .then((stream) => {
