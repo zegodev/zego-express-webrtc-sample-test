@@ -6,11 +6,15 @@ import { ZegoExpressEngine } from "zego-express-engine-webrtc";
 import { getCgi } from "../content";
 import { getBrowser } from "../assets/utils";
 
+
+
 new VConsole();
 let publishStreamId = "webrtc" + new Date().getTime();
 let zg;
-let appID = 383110717;//2195363310; //2845718148; //1739272706; // 请从官网控制台获取对应的appID
+let appID =  383110717;//383110717;//2195363310; //2845718148; //1739272706; // 请从官网控制台获取对应的appID
+({ appID } = getCgi(appID));
 let server = "wss://webliveroom"+appID+"-api.zego.im/ws"; //'wss://wsliveroom-alpha.zego.im:8282/ws';//'ws://192.168.100.149:8181/ws';// 'wss://webliveroom-test.zego.im/ws'; // 请从官网控制台获取对应的server地址，否则可能登录失败
+
 
 //const appSign = '';
 let previewVideo;
