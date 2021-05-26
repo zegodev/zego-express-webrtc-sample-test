@@ -473,7 +473,7 @@ async function publish(constraints, isNew) {
     // console.error('playType', playType);
     push(_constraints, { extraInfo: JSON.stringify({ playType }) }, isNew);
 }
-async function push(constraints, publishOption, isNew) {
+async function push(constraints, publishOption = {}, isNew) {
     try {
         localStream = await zg.createStream(constraints);
         // var AudioContext = window.AudioContext || window.webkitAudioContext; // 兼容性
