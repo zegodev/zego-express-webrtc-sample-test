@@ -4,7 +4,6 @@ import { getBrowser } from '../assets/utils';
 let playOption = {};
 // --test begin
 let previewStream;
-let previewed = false;
 let published = false;
 const publishStreamID = 'web-' + new Date().getTime();
 // ---test end
@@ -13,29 +12,9 @@ $(async () => {
     await checkAnRun();
 
     // --- test begin
-    $('#enterRoom').click(async () => {
-        let loginSuc = false;
-        try {
-            loginSuc = await enterRoom();
-            if (loginSuc) {
-                previewStream = await zg.createStream({
-                    camera: {
-                        audioInput: $('#audioList').val() ,
-                        videoInput: $('#videoList').val() ,
-                        video: $('#videoList').val() === '0' ? false : true,
-                        audio: $('#audioList').val() === '0' ? false : true,
-                    },
-                });
-                previewVideo.srcObject = previewStream;
-                previewed = true;
-                $('#videoList').val() === '0' && (previewVideo.controls = true);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    });
     $('#publish').click(() => {
-        const result = zg.startPublishingStream(publishStreamID, previewStream? previewStream: previewVideo.srcObject);
+        const publishStreamID = new Date().getTime() + '';
+        const result = zg.startPublishingStream(publishStreamID, previewStream? previewStream: previewVideo.srcObject, {roomID: $('#roomId').val()});
         published = true;
         console.log('publish stream' + publishStreamID, result);
     });
@@ -75,20 +54,6 @@ $(async () => {
         } catch (error) {
             console.error(error);
         }
-    });
-    $('#leaveRoom').unbind('click');
-    $('#leaveRoom').click(() => {
-        if (previewed) {
-            zg.destroyStream(previewStream);
-            previewed = false;
-            previewVideo.srcObject = null;
-        }
-        if (published) {
-            zg.stopPublishingStream(publishStreamID);
-            published = false;
-        }
-
-        logout();
     });
     $('#openRoom').unbind('click');
     $('#openRoom').click(async () => {
