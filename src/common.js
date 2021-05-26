@@ -475,6 +475,9 @@ async function publish(constraints, isNew) {
 }
 async function push(constraints, publishOption = {}, isNew) {
     try {
+        if(localStream) {
+            zg.destroyStream(localStream)
+        }
         localStream = await zg.createStream(constraints);
         // var AudioContext = window.AudioContext || window.webkitAudioContext; // 兼容性
         // let localTrack= localStream.getAudioTracks()[0];
@@ -520,7 +523,10 @@ $('#enterRoom').click(async () => {
   try {
       loginSuc = await enterRoom();
       if (loginSuc) {
-          const previewStream = await zg.createStream({
+          if(localStream) {
+              zg.destroyStream(localStream)
+          }
+          localStream = await zg.createStream({
               camera: {
                   audioInput: $('#audioList').val() ,
                   videoInput: $('#videoList').val() ,
@@ -528,7 +534,7 @@ $('#enterRoom').click(async () => {
                   audio: $('#audioList').val() === '0' ? false : true,
               },
           });
-          previewVideo.srcObject = previewStream;
+          previewVideo.srcObject = localStream;
           isPreviewed = true;
           $('#videoList').val() === '0' && (previewVideo.controls = true);
       }
