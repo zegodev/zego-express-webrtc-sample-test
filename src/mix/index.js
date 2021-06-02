@@ -29,6 +29,15 @@ $(async () => {
                         right: 320,
                     },
                 },
+                {
+                    streamID: publishStreamId,
+                    layout: {
+                        top: 0,
+                        left: 0,
+                        bottom: 240,
+                        right: 320,
+                    },
+                },
             ];
             if (useLocalStreamList.length !== 0) {
                 streamList.push({
@@ -59,6 +68,7 @@ $(async () => {
                     outputHeight: 480,
                 },
             });
+            console.log('res',res);
             if (res.errorCode == 0) {
                 $('#stopMixStream').removeAttr('disabled');
                 const result = JSON.parse(res.extendedData).mixerOutputList;
