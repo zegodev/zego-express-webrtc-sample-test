@@ -387,7 +387,7 @@ async function enterRoom() {
 async function login(roomId) {
     userID = document.querySelector("#userID").value;
     token = document.querySelector("#tokenRole").value;
-    await zg.loginRoom(roomId, token, { userID }, { userUpdate: true });
+    await zg.loginRoom(roomId, token, { userID, userName: 'test' + userID}, { userUpdate: true });
     roomList.push(roomId);
 }
 
