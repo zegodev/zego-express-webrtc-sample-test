@@ -357,7 +357,8 @@ function initSDK() {
 
     $("#renewToken").click(() => {
         token = document.querySelector("#tokenRole").value;
-        zg.renewToken(token);
+        const roomID = document.querySelector("#roomId").value;
+        zg.renewToken(token, roomID);
     });
 }
 
