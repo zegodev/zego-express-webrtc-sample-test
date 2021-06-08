@@ -10,25 +10,16 @@ $(async () => {
     const mixStreamID = 'mixwebrtc-' + new Date().getTime();
     const mixVideo = $('#mixVideo')[0];
     let hlsUrl;
-    let flvPlayer= null;
+    let flvPlayer = null;
 
     let taskID2;
     let mixStreamID2;
     const mixVideo2 = $('#mixVideo2')[0];
     let hlsUrl2;
-    let flvPlayer2= null;
+    let flvPlayer2 = null;
     $('#mixStream').click(async () => {
         try {
             const streamList = [
-                {
-                    streamID: publishStreamId,
-                    layout: {
-                        top: 0,
-                        left: 0,
-                        bottom: 240,
-                        right: 320,
-                    },
-                },
                 {
                     streamID: publishStreamId,
                     layout: {
@@ -68,7 +59,6 @@ $(async () => {
                     outputHeight: 480,
                 },
             });
-            console.log('res',res);
             if (res.errorCode == 0) {
                 $('#stopMixStream').removeAttr('disabled');
                 const result = JSON.parse(res.extendedData).mixerOutputList;
@@ -206,7 +196,7 @@ $(async () => {
     });
 
     $('#leaveRoom').unbind('click');
-    $('#leaveRoom').click(function() {
+    $('#leaveRoom').click(function () {
         if (flvPlayer) {
             flvPlayer.destroy();
             flvPlayer = null;
