@@ -1,5 +1,5 @@
 
-import { checkAnRun, enterRoom, push,previewVideo,isPreviewed} from '../common';
+import { checkAnRun, enterRoom, push, previewVideo, isPreviewed } from '../common';
 
 $(async () => {
     await checkAnRun();
@@ -36,7 +36,7 @@ $(async () => {
                         channelCount: channelCount,
                     },
                     ...constraints
-                }, new Date().getTime()+"");
+                }, new Date().getTime() + "");
 
             }
         } catch (error) {
@@ -48,8 +48,8 @@ $(async () => {
         const channelCount = parseInt($('#channelCount').val());
 
         const constraints = {
-          source: $('#externerAudio')[0],
-          channelCount: channelCount,
+            source: $('#externerAudio')[0],
+            channelCount: channelCount,
         }
 
         $('#audioBitrate').val() && (constraints.audioBitrate = parseInt($('#audioBitrate').val()));
@@ -74,7 +74,7 @@ $(async () => {
     function doPreviewPublish(config, streamID) {
         zg.createStream(config).then(stream => {
             zg.startPublishingStream(streamID ? streamID : idName, stream, { videoCodec: $('#videoCodeType').val(), extraInfo: JSON.stringify({ role: 2 }) })
-   
+
             previewVideo.srcObject = stream;
         }).catch(err => {
             console.error(err)

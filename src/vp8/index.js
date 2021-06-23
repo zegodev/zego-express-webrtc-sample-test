@@ -342,11 +342,6 @@ async function push(publishOption) {
             audio: $('#audioList').val() === '0' ? false : true,
             audioInput: $('#audioList').val(),
             videoInput: $('#videoList').val(),
-            videoQuality: 4,
-            width: 180,
-            height: 160,
-            bitrate: 100,
-            frameRate: 15
         },
     });
     previewVideo.srcObject = localStream;
