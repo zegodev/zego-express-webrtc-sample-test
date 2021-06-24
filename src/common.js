@@ -505,7 +505,7 @@ async function push(constraints, publishOption = {}, isNew) {
 }
 
 $('#toggleCamera').click(function () {
-    zg.mutePublishStreamVideo(previewVideo.srcObject, !$(this).hasClass('disabled'));
+    zg.mutePublishStreamVideo(previewVideo.srcObject, !$(this).hasClass('disabled'), $('#retainPreview').val() == 1? true : false);
     $(this).toggleClass('disabled');
 });
 
