@@ -241,7 +241,7 @@ $(async () => {
     });
 
     $('#publish').click(() => {
-        const result = zg.startPublishingStream(publishStreamID, previewStream);
+        const result = zg.startPublishingStream(publishStreamID, previewStream, {videoCodec: "VP8"});
         console.log('publish stream' + publishStreamID, result);
     });
     $('#replaceScreenShot').click(async function() {
@@ -261,7 +261,8 @@ $(async () => {
                 width: $('#screenWidth').val() * 1,
                 height:  $('#screenHeight').val() * 1,
                 bitrate: $('#screenBitRate').val() * 1,
-                frameRate: $('#screenFrameRate').val() * 1
+                frameRate: $('#screenFrameRate').val() * 1,
+                startBitrate: "target"
             });
             screenStreamVideoTrack = screendStream.getVideoTracks()[0];
             console.log('cameraStreamVideoTrack', cameraStreamVideoTrack);
@@ -379,7 +380,8 @@ $(async () => {
                     bitrate: $('#screenBitRate').val() * 1,
                     frameRate: $('#screenFrameRate').val() * 1,
                     width: $('#screenWidth').val() * 1 || screen.width,
-                    height:  $('#screenHeight').val() * 1 || screen.height
+                    height:  $('#screenHeight').val() * 1 || screen.height,
+                    startBitrate: "target"
                 },
             });
             const screenStreamId = publishStreamId + 'screen' + screenCount++;
@@ -392,7 +394,8 @@ $(async () => {
             shareVideoStream = screenStream;
             video.srcObject = screenStream;
 
-            const publisRes= zg.startPublishingStream(screenStreamId, screenStream);
+            let videoCodec= $('#videoCodec').val();
+            const publisRes= zg.startPublishingStream(screenStreamId, screenStream, {videoCodec: videoCodec == 'VP8'? 'VP8': 'H264'});
             publisRes &&
                 screenStreamList.push({
                     streamId: screenStreamId,
