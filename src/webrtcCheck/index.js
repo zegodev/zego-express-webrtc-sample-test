@@ -237,7 +237,6 @@ new Vue({
     },
 
     isAndroidWexin() {
-      return true;
       let ua = navigator.userAgent.toLowerCase();
       return (
         ua.match(/MicroMessenger/i) == 'micromessenger' && ua.match(/android/i)
