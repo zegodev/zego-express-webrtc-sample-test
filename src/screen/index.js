@@ -241,7 +241,7 @@ $(async () => {
     });
 
     $('#publish').click(() => {
-        const result = zg.startPublishingStream(publishStreamID, previewStream, {videoCodec: "VP8"});
+        const result = zg.startPublishingStream(publishStreamID, previewVideo.srcObject, {videoCodec: "VP8"});
         console.log('publish stream' + publishStreamID, result);
     });
     $('#replaceScreenShot').click(async function() {
