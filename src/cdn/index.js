@@ -104,11 +104,11 @@ function playStream(streamID, cdnUrl) {
     const streamInfo = useLocalStreamList[index];
 
     if (streamInfo && streamInfo.extraInfo && streamInfo.extraInfo.length !== 0) {
-          try {
-              playType = JSON.parse(streamInfo.extraInfo).playType;
-          } catch (err) {
-              alert(err);
-          }
+        try {
+            playType = JSON.parse(streamInfo.extraInfo).playType;
+        } catch (err) {
+            alert(err);
+        }
     }
 
     playType === 'Video' ? (hasAudio = false) : (hasAudio = true);
@@ -121,26 +121,26 @@ function playStream(streamID, cdnUrl) {
     } else if (cdnUrl.length !== 0) {
         const flvUrl = cdnUrl[0];
         // const flvUrl = 'https://hdl-wsdemo.zego.im/livestream/test259.flv';
-          if (flvjs.isSupported()) {
-              //若支持flv.js
-              flvPlayer = flvjs.createPlayer({
-                  type: 'flv',
-                  isLive: true,
-                  url: flvUrl,
-                  hasAudio: hasAudio,
-                  hasVideo: hasVideo,
-              });
-              flvPlayer.on(flvjs.Events.LOADING_COMPLETE, function () {
-                  console.error('LOADING_COMPLETE');
-                  flvPlayer.play();
-              });
-              flvPlayer.attachMediaElement(videoElement);
-              flvPlayer.load();
-              videoElement.muted = false;
-              videoElement.controls = true;
+        if (flvjs.isSupported()) {
+            //若支持flv.js
+            flvPlayer = flvjs.createPlayer({
+                type: 'flv',
+                isLive: true,
+                url: flvUrl,
+                hasAudio: hasAudio,
+                hasVideo: hasVideo,
+            });
+            flvPlayer.on(flvjs.Events.LOADING_COMPLETE, function () {
+                console.error('LOADING_COMPLETE');
+                flvPlayer.play();
+            });
+            flvPlayer.attachMediaElement(videoElement);
+            flvPlayer.load();
+            videoElement.muted = false;
+            videoElement.controls = true;
 
-              useLocalStreamList[index].player = flvPlayer;
-          }
+            useLocalStreamList[index].player = flvPlayer;
+        }
     }
 }
 
@@ -171,11 +171,11 @@ $(async () => {
             )
             videoElement = document.getElementById('test');
             streamList.forEach(streamInfo => {
-              const streamID = streamInfo.streamID;
-              const cdnUrl = filterStreamList(streamInfo);
+                const streamID = streamInfo.streamID;
+                const cdnUrl = filterStreamList(streamInfo);
 
-              useLocalStreamList.push(streamInfo);
-              playStream(streamID, cdnUrl);
+                useLocalStreamList.push(streamInfo);
+                playStream(streamID, cdnUrl);
             })
         } else if (updateType == 'DELETE') {
             for (let k = 0; k < useLocalStreamList.length; k++) {
@@ -184,12 +184,12 @@ $(async () => {
                         console.info(useLocalStreamList[k].streamID + 'was devared');
                         const player = useLocalStreamList[k].player
                         if (player) {
-                                player.pause();
-                                player.unload();
-                                player.detachMediaElement();
-                                player.destroy();
-                                useLocalStreamList[k].player = null;
-                                if (flvPlayer == player) flvPlayer = null;
+                            player.pause();
+                            player.unload();
+                            player.detachMediaElement();
+                            player.destroy();
+                            useLocalStreamList[k].player = null;
+                            if (flvPlayer == player) flvPlayer = null;
                         }
                         $('#video-container').html('');
                         useLocalStreamList.splice(k--, 1);
@@ -237,7 +237,7 @@ $(async () => {
             ($('#cdnDelPush')[0]).disabled = false;
             ($('#cdnPlay')[0]).disabled = false;
         } else {
-            console.warn('add push target fail ' + result.errorCode);
+            console.warn('add push target fail ' + result.errorCode + ' ' + result.extendedData);
         }
     });
 
@@ -253,7 +253,7 @@ $(async () => {
             ($('#cdnDelPush')[0]).disabled = true;
             ($('#cdnPlay')[0]).disabled = true;
         } else {
-            console.warn('del push target fail ' + result.errorCode);
+            console.warn('del push target fail ' + result.errorCode + ' ' + result.extendedData);
         }
     });
 
@@ -283,11 +283,11 @@ $(async () => {
         if (flvjs.isSupported()) {
             //若支持flv.js
             if (cdnFlvPlayer != null) {
-              cdnFlvPlayer.pause();
-              cdnFlvPlayer.unload();
-              cdnFlvPlayer.detachMediaElement();
-              cdnFlvPlayer.destroy();
-              cdnFlvPlayer = null;
+                cdnFlvPlayer.pause();
+                cdnFlvPlayer.unload();
+                cdnFlvPlayer.detachMediaElement();
+                cdnFlvPlayer.destroy();
+                cdnFlvPlayer = null;
             }
             cdnFlvPlayer = flvjs.createPlayer({
                 type: 'flv',

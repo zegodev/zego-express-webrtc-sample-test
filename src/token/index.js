@@ -11,9 +11,9 @@ import { getBrowser } from "../assets/utils";
 new VConsole();
 let publishStreamId = "webrtc" + new Date().getTime();
 let zg;
-let appID =  383110717;//383110717;//2195363310; //2845718148; //1739272706; // 请从官网控制台获取对应的appID
+let appID = 383110717;//383110717;//2195363310; //2845718148; //1739272706; // 请从官网控制台获取对应的appID
 ({ appID } = getCgi(appID));
-let server = "wss://webliveroom"+appID+"-api.zego.im/ws"; //'wss://wsliveroom-alpha.zego.im:8282/ws';//'ws://192.168.100.149:8181/ws';// 'wss://webliveroom-test.zego.im/ws'; // 请从官网控制台获取对应的server地址，否则可能登录失败
+let server = "wss://webliveroom" + appID + "-api.zego.im/ws"; //'wss://wsliveroom-alpha.zego.im:8282/ws';//'ws://192.168.100.149:8181/ws';// 'wss://webliveroom-test.zego.im/ws'; // 请从官网控制台获取对应的server地址，否则可能登录失败
 
 
 //const appSign = '';
@@ -155,9 +155,9 @@ function initSDK() {
             console.info(" publish  retry");
         } else {
             if (result.errorCode == 0) {
-                console.warn("publish stop " + result.errorCode);
+                console.warn("publish stop " + result.errorCode + ' ' + result.extendedData);
             } else {
-                console.error("publish error " + result.errorCode);
+                console.error("publish error " + result.errorCode + ' ' + result.extendedData);
                 // 停止推流
                 // stop publishing
                 if (isPreviewed) {
@@ -197,9 +197,9 @@ function initSDK() {
             console.info(" play  retry");
         } else {
             if (result.errorCode == 0) {
-                console.warn("play stop " + result.errorCode);
+                console.warn("play stop " + result.errorCode + ' ' + result.extendedData);
             } else {
-                console.error("play error " + result.errorCode);
+                console.error("play error " + result.errorCode + ' ' + result.extendedData);
             }
 
             // const _msg = stateInfo.error.msg;
@@ -387,7 +387,7 @@ async function enterRoom() {
 async function login(roomId) {
     userID = document.querySelector("#userID").value;
     token = document.querySelector("#tokenRole").value;
-    await zg.loginRoom(roomId, token, { userID, userName: 'test' + userID}, { userUpdate: true });
+    await zg.loginRoom(roomId, token, { userID, userName: 'test' + userID }, { userUpdate: true });
     roomList.push(roomId);
 }
 
@@ -455,38 +455,38 @@ async function push(constraints, publishOption, isNew) {
     }
 }
 async function logout() {
-  console.info('leave room  and close stream');
-  const roomId = $('#roomId').val();
-  // 停止拉流
-  // stop playing
-  for (let i = 0; i < useLocalStreamList.length; i++) {
-      useLocalStreamList[i].streamID && zg.stopPlayingStream(useLocalStreamList[i].streamID);
-  }
+    console.info('leave room  and close stream');
+    const roomId = $('#roomId').val();
+    // 停止拉流
+    // stop playing
+    for (let i = 0; i < useLocalStreamList.length; i++) {
+        useLocalStreamList[i].streamID && zg.stopPlayingStream(useLocalStreamList[i].streamID);
+    }
 
-  // 清空页面
-  // Clear page
-  useLocalStreamList = [];
-  // window.useLocalStreamList = [];
+    // 清空页面
+    // Clear page
+    useLocalStreamList = [];
+    // window.useLocalStreamList = [];
 
-  roomList.splice(roomList.findIndex(room => room == roomId), 1);
+    roomList.splice(roomList.findIndex(room => room == roomId), 1);
 
-  if (previewVideo.srcObject && isPreviewed && (!roomId || roomList.length == 0) ) {
-    previewVideo.srcObject = null;
-    zg.stopPublishingStream(publishStreamId);
-    zg.destroyStream(localStream);
-    isPreviewed = false;
-    !$('.sound').hasClass('d-none') && $('.sound').addClass('d-none');
-  }
+    if (previewVideo.srcObject && isPreviewed && (!roomId || roomList.length == 0)) {
+        previewVideo.srcObject = null;
+        zg.stopPublishingStream(publishStreamId);
+        zg.destroyStream(localStream);
+        isPreviewed = false;
+        !$('.sound').hasClass('d-none') && $('.sound').addClass('d-none');
+    }
 
-  if (!roomId || roomList.length == 0) {
-    $('.remoteVideo').html('');
-    $('#memberList').html('');
-  }
+    if (!roomId || roomList.length == 0) {
+        $('.remoteVideo').html('');
+        $('#memberList').html('');
+    }
 
-  //退出登录
-  //logout
-  zg.logoutRoom(roomId);
-  loginRoom = false;
+    //退出登录
+    //logout
+    zg.logoutRoom(roomId);
+    loginRoom = false;
 }
 
 $(async () => {

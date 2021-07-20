@@ -46,7 +46,7 @@ if (cgiToken && tokenUrl == 'https://wsliveroom-alpha.zego.im:8282/token') {
 // Test code end
 
 let browser = {
-    versions:function(){
+    versions: function () {
         var u = navigator.userAgent, app = navigator.appVersion;
         return {
             trident: u.indexOf('Trident') > -1, //IE内核
@@ -56,14 +56,14 @@ let browser = {
             mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
             ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
             android: u.indexOf('Android') > -1 || u.indexOf('Adr') > -1, //android终端
-            iPhone: u.indexOf('iPhone') > -1 , //是否为iPhone或者QQHD浏览器
+            iPhone: u.indexOf('iPhone') > -1, //是否为iPhone或者QQHD浏览器
             iPad: u.indexOf('iPad') > -1, //是否iPad
             webApp: u.indexOf('Safari') == -1, //是否web应用程序，没有头部与底部
             weixin: u.indexOf('MicroMessenger') > -1, //是否微信 （2015-01-22新增）
             qq: u.match(/\sQQ/i) == " qq" //是否QQ
         };
     }(),
-    language:(navigator.browserLanguage || navigator.language).toLowerCase()
+    language: (navigator.browserLanguage || navigator.language).toLowerCase()
 }
 
 // eslint-disable-next-line prefer-const
@@ -197,9 +197,9 @@ function initSDK() {
             console.info(' publish  retry');
         } else {
             if (result.errorCode == 0) {
-                console.warn('publish stop ' + result.errorCode);
+                console.warn('publish stop ' + result.errorCode + ' ' + result.extendedData);
             } else {
-                console.error('publish error ' + result.errorCode);
+                console.error('publish error ' + result.errorCode + ' ' + result.extendedData);
             }
             // const _msg = stateInfo.error.msg;
             // if (stateInfo.error.msg.indexOf ('server session closed, reason: ') > -1) {
@@ -231,9 +231,9 @@ function initSDK() {
             console.info(' play  retry');
         } else {
             if (result.errorCode == 0) {
-                console.warn('play stop ' + result.errorCode);
+                console.warn('play stop ' + result.errorCode + ' ' + result.extendedData);
             } else {
-                console.error('play error ' + result.errorCode);
+                console.error('play error ' + result.errorCode + ' ' + result.extendedData);
             }
 
             // const _msg = stateInfo.error.msg;
@@ -262,10 +262,10 @@ function initSDK() {
                 let remoteStream;
                 let playOption;
 
-                if($("#videoCodec").val()) playOption.videoCodec = $("#videoCodec").val();
-                if(l3 == true) playOption.resourceMode = 2;
+                if ($("#videoCodec").val()) playOption.videoCodec = $("#videoCodec").val();
+                if (l3 == true) playOption.resourceMode = 2;
 
-                zg.startPlayingStream(streamList[i].streamID,playOption).then(stream => {
+                zg.startPlayingStream(streamList[i].streamID, playOption).then(stream => {
                     remoteStream = stream;
                     useLocalStreamList.push(streamList[i]);
                     let videoTemp = $(`<video id=${streamList[i].streamID} autoplay muted playsinline controls></video>`)
@@ -425,17 +425,17 @@ async function logout() {
 
     roomList.splice(roomList.findIndex(room => room == roomId), 1);
 
-    if (previewVideo.srcObject && isPreviewed && (!roomId || roomList.length == 0) ) {
-      previewVideo.srcObject = null;
-      zg.stopPublishingStream(publishStreamId);
-      zg.destroyStream(localStream);
-      isPreviewed = false;
-      !$('.sound').hasClass('d-none') && $('.sound').addClass('d-none');
+    if (previewVideo.srcObject && isPreviewed && (!roomId || roomList.length == 0)) {
+        previewVideo.srcObject = null;
+        zg.stopPublishingStream(publishStreamId);
+        zg.destroyStream(localStream);
+        isPreviewed = false;
+        !$('.sound').hasClass('d-none') && $('.sound').addClass('d-none');
     }
 
     if (!roomId || roomList.length == 0) {
-      $('.remoteVideo').html('');
-      $('#memberList').html('');
+        $('.remoteVideo').html('');
+        $('#memberList').html('');
     }
 
     //退出登录
@@ -471,7 +471,7 @@ async function publish(constraints, isNew) {
 }
 async function push(constraints, publishOption = {}, isNew) {
     try {
-        if(localStream) {
+        if (localStream) {
             zg.destroyStream(localStream)
         }
         localStream = await zg.createStream(constraints);
@@ -491,7 +491,7 @@ async function push(constraints, publishOption = {}, isNew) {
         isPreviewed = true;
         $('.sound').hasClass('d-none') && $('.sound').removeClass('d-none');
         isNew && (publishStreamId = 'webrtc' + new Date().getTime());
-        if($("#videoCodec").val()) publishOption.videoCodec = $("#videoCodec").val();
+        if ($("#videoCodec").val()) publishOption.videoCodec = $("#videoCodec").val();
         if ($('#roomId').val()) publishOption.roomID = $('#roomId').val();
         const result = zg.startPublishingStream(publishStreamId, localStream, publishOption);
         console.log('publish stream' + publishStreamId, result);
@@ -505,7 +505,7 @@ async function push(constraints, publishOption = {}, isNew) {
 }
 
 $('#toggleCamera').click(function () {
-    zg.mutePublishStreamVideo(previewVideo.srcObject, !$(this).hasClass('disabled'), $('#retainPreview').val() == 1? true : false);
+    zg.mutePublishStreamVideo(previewVideo.srcObject, !$(this).hasClass('disabled'), $('#retainPreview').val() == 1 ? true : false);
     $(this).toggleClass('disabled');
 });
 
@@ -515,28 +515,28 @@ $('#toggleSpeaker').click(function () {
 });
 
 $('#enterRoom').click(async () => {
-  let loginSuc = false;
-  try {
-      loginSuc = await enterRoom();
-      if (loginSuc) {
-          if(localStream) {
-              zg.destroyStream(localStream)
-          }
-          localStream = await zg.createStream({
-              camera: {
-                  audioInput: $('#audioList').val() ,
-                  videoInput: $('#videoList').val() ,
-                  video: $('#videoList').val() === '0' ? false : true,
-                  audio: $('#audioList').val() === '0' ? false : true,
-              },
-          });
-          previewVideo.srcObject = localStream;
-          isPreviewed = true;
-          $('#videoList').val() === '0' && (previewVideo.controls = true);
-      }
-  } catch (error) {
-      console.error(error);
-  }
+    let loginSuc = false;
+    try {
+        loginSuc = await enterRoom();
+        if (loginSuc) {
+            if (localStream) {
+                zg.destroyStream(localStream)
+            }
+            localStream = await zg.createStream({
+                camera: {
+                    audioInput: $('#audioList').val(),
+                    videoInput: $('#videoList').val(),
+                    video: $('#videoList').val() === '0' ? false : true,
+                    audio: $('#audioList').val() === '0' ? false : true,
+                },
+            });
+            previewVideo.srcObject = localStream;
+            isPreviewed = true;
+            $('#videoList').val() === '0' && (previewVideo.controls = true);
+        }
+    } catch (error) {
+        console.error(error);
+    }
 });
 
 export {

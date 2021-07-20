@@ -101,7 +101,7 @@ function initSDK() {
         } else if (result.state == 'PUBLISH_REQUESTING') {
             console.info(' publish  retry');
         } else {
-            console.error('publish error code ' + result.errorCode);
+            console.error('publish error code ' + result.errorCode + ' ' + result.extendedData);
             // const _msg = stateInfo.error.msg;
             // if (stateInfo.error.msg.indexOf ('server session closed, reason: ') > -1) {
             //         const code = stateInfo.error.msg.replace ('server session closed, reason: ', '');
@@ -122,7 +122,7 @@ function initSDK() {
         } else if (result.state == 'PLAY_REQUESTING') {
             console.info(' play  retry');
         } else {
-            console.error('publish error code ' + result.errorCode);
+            console.error('publish error code ' + result.errorCode + ' ' + result.extendedData);
             // const _msg = stateInfo.error.msg;
             // if (stateInfo.error.msg.indexOf ('server session closed, reason: ') > -1) {
             //         const code = stateInfo.error.msg.replace ('server session closed, reason: ', '');
