@@ -292,7 +292,7 @@ $(async () => {
             cdnFlvPlayer = flvjs.createPlayer({
                 type: 'flv',
                 isLive: true,
-                url: `https://hdl-wsdemo.zego.im/livestream/zegotest-${appID}-${publishStreamId}.flv`,
+                url: 'https://hdl-wsdemo.zego.im/livestream/' + publishStreamId + '.flv',
                 hasAudio: hasAudio,
                 hasVideo: hasVideo,
             });
