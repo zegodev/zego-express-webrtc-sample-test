@@ -28,9 +28,9 @@ $(async () => {
     });
     // --- test end
 
-    navigator.mediaDevices.ondevicechange = function(){
+    $('#reAcquireDevice').click( () => {
         enumDevices()
-    }
+    })
     $('#createRoom').unbind('click');
     $('#createRoom').click(async () => {
         let loginSuc = false;
