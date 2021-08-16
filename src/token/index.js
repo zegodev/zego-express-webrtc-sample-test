@@ -338,8 +338,15 @@ function initSDK() {
             );
         });
     });
-    zg.on("deviceError", (errorCode, deviceName) => {
-        console.warn(`deviceError`, errorCode, deviceName);
+    zg.on("deviceError", async(errorCode, deviceName) => {
+        console.log("deviceError", errorCode, deviceName);
+        const deviceInfo = await zg.enumDevices();
+        const cameras = deviceInfo.cameras;
+        const micList = deviceInfo.microphones;
+        if(localStream) {
+          zg.useVideoDevice(localStream, cameras[0].deviceID);
+          zg.useAudioDevice(localStream, micList[0].deviceID);
+        }
     });
     zg.on("videoDeviceStateChanged", (updateType, device) => {
         console.warn(`videoDeviceStateChanged`, device, updateType);
