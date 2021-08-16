@@ -1,4 +1,4 @@
-import { checkAnRun, zg, useLocalStreamList, enterRoom, previewVideo, logout, publish, publishStreamId, l3 } from '../common';
+import { checkAnRun, zg, useLocalStreamList, enterRoom, previewVideo, logout, publish, publishStreamId, l3, enumDevices } from '../common';
 import { getBrowser } from '../assets/utils';
 
 let playOption = {};
@@ -28,6 +28,9 @@ $(async () => {
     });
     // --- test end
 
+    navigator.mediaDevices.ondevicechange = function(){
+        enumDevices()
+    }
     $('#createRoom').unbind('click');
     $('#createRoom').click(async () => {
         let loginSuc = false;

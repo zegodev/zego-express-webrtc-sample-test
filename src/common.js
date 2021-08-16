@@ -563,6 +563,7 @@ export {
     loginRoom,
     publishType,
     l3,
+    enumDevices
 };
 
 // $(window).on('unload', function() {
