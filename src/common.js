@@ -349,14 +349,14 @@ function initSDK() {
             console.warn(`${stream.type} ${stream.streamID}, soundLevel: ${stream.soundLevel}`);
         });
     });
-    zg.on("deviceError", async(errorCode, deviceName) => {
+    zg.on("deviceError", async (errorCode, deviceName) => {
         console.log("deviceError", errorCode, deviceName);
         const deviceInfo = await zg.enumDevices();
         const cameras = deviceInfo.cameras;
         const micList = deviceInfo.microphones;
-        if(localStream) {
-          zg.useVideoDevice(localStream, cameras[0].deviceID);
-          zg.useAudioDevice(localStream, micList[0].deviceID);
+        if (localStream) {
+            zg.useVideoDevice(localStream, cameras[0].deviceID);
+            zg.useAudioDevice(localStream, micList[0].deviceID);
         }
     });
     zg.on('videoDeviceStateChanged', (updateType, device) => {
@@ -371,12 +371,15 @@ function initSDK() {
 }
 
 async function login(roomId) {
+    userID = $("#custom-userID").val() || userID;
     // 获取token需要客户自己实现，token是对登录房间的唯一验证
     // Obtaining a token needs to be implemented by the customer. The token is the only verification for the login room.
-    let token = '';
+    let token = $("#custom-token").val() || "";
     //测试用，开发者请忽略
     //Test code, developers please ignore
-    if (cgiToken) {
+    if (token) {
+
+    } else if (cgiToken) {
         token = await $.get(tokenUrl, {
             app_id: appID,
             id_name: userID,
@@ -390,6 +393,7 @@ async function login(roomId) {
             id_name: userID,
         });
     }
+    debugger
     await zg.loginRoom(roomId, token, { userID, userName }, { userUpdate: true });
     roomList.push(roomId);
 

@@ -265,6 +265,24 @@
       </div>
       <div class="row">
         <div class="col-sm">
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="roomId"><strong class="text-gray-dark ">userID</strong></label>
+            </div>
+
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="roomId"><strong class="text-gray-dark ">token</strong></label>
+            </div>
+            <input type="text" class="form-control d-inline" id="custom-userID" placeholder="userID">
+            <input type="text" class="form-control d-inline" id="custom-token" style="width: 75%;"
+              placeholder="custom token">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm">
           <button type="button" id="createRoom" class="btn btn-primary btn-sm enterRoomPush">进入房间（推流）</button>
           <button type="button" id="enterRoom" class="btn btn-primary btn-sm">进房预览</button>
           <button type="button" id="publish" class="btn btn-primary btn-sm">推流</button>
