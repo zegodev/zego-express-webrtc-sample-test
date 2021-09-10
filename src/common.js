@@ -216,7 +216,7 @@ function initSDK() {
         }
     });
     zg.on('playerStateUpdate', result => {
-        console.log('playerStateUpdate', result.streamID, result.state);
+        console.warn('playerStateUpdate', result.streamID, result.state);
         if (result.state == 'PLAYING') {
             console.info(' play  success ' + result.streamID);
             const browser = getBrowser();
@@ -367,6 +367,9 @@ function initSDK() {
     });
     zg.on('roomOnlineUserCountUpdate', (roomID, count) => {
         console.warn(`roomOnlineUserCountUpdate ${roomID} ${count}`);
+    });
+    rtm.on('tokenWillExpire', (roomID) => {
+        console.warn('tokenWillExpire', roomID);
     });
 }
 
