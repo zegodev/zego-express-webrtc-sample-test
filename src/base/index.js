@@ -14,7 +14,7 @@ $(async () => {
     // --- test begin
     $('#publish').click(() => {
         const publishStreamID = new Date().getTime() + '';
-        const result = zg.startPublishingStream(publishStreamID, previewStream? previewStream: previewVideo.srcObject, {roomID: $('#roomId').val()});
+        const result = zg.startPublishingStream(publishStreamID, previewStream ? previewStream : previewVideo.srcObject, { roomID: $('#roomId').val() });
         published = true;
         console.log('publish stream' + publishStreamID, result);
     });
@@ -28,21 +28,21 @@ $(async () => {
     });
     // --- test end
 
-    $('#reAcquireDevice').click( () => {
+    $('#reAcquireDevice').click(() => {
         enumDevices()
     })
     $('#createRoom').unbind('click');
     $('#createRoom').click(async () => {
         let loginSuc = false;
         const constraints = {};
-        const channelCount = parseInt($('#channelCount').val() );
+        const channelCount = parseInt($('#channelCount').val());
         constraints.channelCount = channelCount;
         const videoQuality = $('#videoQuality').val();
         if (videoQuality == 4) {
             $('#width').val() && (constraints.width = parseInt($('#width').val())),
-            $('#height').val() && (constraints.height = parseInt($('#height').val())),
-            $('#frameRate').val() && (constraints.frameRate = parseInt($('#frameRate').val())),
-            $('#bitrate').val() && (constraints.bitrate = parseInt($('#bitrate').val()))
+                $('#height').val() && (constraints.height = parseInt($('#height').val())),
+                $('#frameRate').val() && (constraints.frameRate = parseInt($('#frameRate').val())),
+                $('#bitrate').val() && (constraints.bitrate = parseInt($('#bitrate').val()))
         }
         $('#noiseSuppression').val() === '1' ? (constraints.ANS = true) : (constraints.ANS = false);
         $('#autoGainControl').val() === '1' ? (constraints.AGC = true) : (constraints.AGC = false);
@@ -75,7 +75,7 @@ $(async () => {
         w && Object.assign(constraints, { width: w });
         h && Object.assign(constraints, { height: h });
         f && Object.assign(constraints, { frameRate: f });
-        b && Object.assign(constraints, { maxBitrate: b});
+        b && Object.assign(constraints, { maxBitrate: b });
 
         zg.setVideoConfig(previewVideo.srcObject, constraints).then(
             () => {
@@ -93,7 +93,7 @@ $(async () => {
         $('#noiseSuppression').val() === '1' ? (ANS = true) : (ANS = false);
         $('#autoGainControl').val() === '1' ? (AGC = true) : (AGC = false);
         $('#echoCancellation').val() === '1' ? (AEC = true) : (AEC = false);
-        Object.assign(constraints, { ANS, AGC, AEC})
+        Object.assign(constraints, { ANS, AGC, AEC })
         zg.setAudioConfig(previewVideo.srcObject, constraints).then((res) => {
             console.warn('change constraints success', res);
         }, err => {
@@ -122,20 +122,28 @@ $(async () => {
     //     })
     //     $(this).toggleClass('disabled');
     // })
+
+    $("#custom-resetToken").click(() => {
+        const token = $("#custom-token").val()
+        const roomID = $('#roomId').val()
+        const res = zg.renewToken(token, roomID)
+        console.warn("renewToken", token, roomID, res)
+    })
+
     $('#tcpOnly').change((e) => {
         // console.error(e.target.value);
         const tcpOnly = e.target.value;
         console.warn('tcporudp: ', e.target.value === '0' ? 'auto' : e.target.value === '1' ? 'tcp' : 'udp');
         if (tcpOnly === '1') {
             zg.zegoWebRTC.setTurnOverTcpOnly(true);
-        } else if(tcpOnly === '2') {
+        } else if (tcpOnly === '2') {
             zg.zegoWebRTC.setTurnOverTcpOnly(false);
         }
     })
     $('#playVideo').click(() => {
         const videos = $('.remoteVideo video');
         // console.error('videos', videos);
-        for(let i = 0; i < videos.length; i++) {
+        for (let i = 0; i < videos.length; i++) {
             if (videos[i].paused) {
                 videos[i].play().then(res => {
                     console.warn('id ', videos[i].id, res)
@@ -158,7 +166,7 @@ $(async () => {
                     const bro = getBrowser();
                     if (bro == 'Safari' && playOption.video === false) {
                         $('.remoteVideo').append($(`<audio id=${streamItem.streamID} autoplay muted playsinline controls></audio>`));
-                        video = $('.remoteVideo audio:last')[0] ;
+                        video = $('.remoteVideo audio:last')[0];
                         console.warn('audio', video, remoteStream);
                     } else {
                         $('.remoteVideo').append($(`<video id=${streamItem.streamID} autoplay muted playsinline controls></video>`));
@@ -170,31 +178,31 @@ $(async () => {
                     video.muted = false;
                 };
 
-                    playOption = {};
-                    const _selectMode = $('#playMode option:selected').val();
-                    console.warn('playMode', _selectMode, playOption);
-                    if (_selectMode) {
-                        if (_selectMode == 'all') {
-                            playOption.video = true;
-                            playOption.audio = true;
-                        } else if (_selectMode == 'video') {
-                            playOption.audio = false;
-                        } else if (_selectMode == 'audio') {
-                            playOption.video = false;
-                        }
+                playOption = {};
+                const _selectMode = $('#playMode option:selected').val();
+                console.warn('playMode', _selectMode, playOption);
+                if (_selectMode) {
+                    if (_selectMode == 'all') {
+                        playOption.video = true;
+                        playOption.audio = true;
+                    } else if (_selectMode == 'video') {
+                        playOption.audio = false;
+                    } else if (_selectMode == 'audio') {
+                        playOption.video = false;
                     }
+                }
 
-                    if($("#videoCodec").val()) playOption.videoCodec = $("#videoCodec").val();
-                    if(l3 == true) playOption.resourceMode = 2;
+                if ($("#videoCodec").val()) playOption.videoCodec = $("#videoCodec").val();
+                if (l3 == true) playOption.resourceMode = 2;
 
-                    zg.startPlayingStream(streamList[i].streamID, playOption).then(stream => {
-                        remoteStream = stream;
-                        useLocalStreamList.push(streamList[i]);
-                        handlePlaySuccess(streamList[i]);
-                    }).catch (error => {
-                        console.error(error);
+                zg.startPlayingStream(streamList[i].streamID, playOption).then(stream => {
+                    remoteStream = stream;
+                    useLocalStreamList.push(streamList[i]);
+                    handlePlaySuccess(streamList[i]);
+                }).catch(error => {
+                    console.error(error);
 
-                    })
+                })
             }
         } else if (updateType == 'DELETE') {
             for (let k = 0; k < useLocalStreamList.length; k++) {

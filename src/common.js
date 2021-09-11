@@ -10,6 +10,7 @@ new VConsole();
 const userName = 'sampleUser' + new Date().getTime();
 const tokenUrl = 'https://wsliveroom-alpha.zego.im:8282/token';
 let userID = 'sample' + new Date().getTime();
+$("#custom-userid").val(userID)
 let publishStreamId = 'webrtc' + new Date().getTime();
 let zg;
 let appID = 1739272706; // 请从官网控制台获取对应的appID
@@ -377,7 +378,7 @@ async function login(roomId) {
     // 获取token需要客户自己实现，token是对登录房间的唯一验证
     // Obtaining a token needs to be implemented by the customer. The token is the only verification for the login room.
     let token = "";
-    const expireTime = parseInt($("#custom-token").val())
+    const expireTime = parseInt($("#custom-expiretime").val())
     //测试用，开发者请忽略
     //Test code, developers please ignore
     if (expireTime) {
