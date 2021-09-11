@@ -190,7 +190,7 @@ function initSDK() {
         );
     });
     zg.on('publisherStateUpdate', result => {
-        console.warn('publisherStateUpdate: ', result.streamID, result.state);
+        console.warn('publisherStateUpdate: ', result.streamID, result.state, result);
         if (result.state == 'PUBLISHING') {
             console.info(' publish  success ' + result.streamID);
         } else if (result.state == 'PUBLISH_REQUESTING') {
