@@ -190,7 +190,7 @@ function initSDK() {
         );
     });
     zg.on('publisherStateUpdate', result => {
-        console.log('publisherStateUpdate: ', result.streamID, result.state);
+        console.warn('publisherStateUpdate: ', result.streamID, result.state);
         if (result.state == 'PUBLISHING') {
             console.info(' publish  success ' + result.streamID);
         } else if (result.state == 'PUBLISH_REQUESTING') {
@@ -368,7 +368,7 @@ function initSDK() {
     zg.on('roomOnlineUserCountUpdate', (roomID, count) => {
         console.warn(`roomOnlineUserCountUpdate ${roomID} ${count}`);
     });
-    rtm.on('tokenWillExpire', (roomID) => {
+    zg.on('tokenWillExpire', (roomID) => {
         console.warn('tokenWillExpire', roomID);
     });
 }
