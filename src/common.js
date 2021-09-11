@@ -374,13 +374,13 @@ function initSDK() {
 }
 
 async function login(roomId) {
-    userID = $("#custom-userID").val() || userID;
     // 获取token需要客户自己实现，token是对登录房间的唯一验证
     // Obtaining a token needs to be implemented by the customer. The token is the only verification for the login room.
     let token = "";
+    const expireTime = parseInt($("#custom-token").val())
     //测试用，开发者请忽略
     //Test code, developers please ignore
-    if ($("#custom-token").val()) {
+    if (expireTime) {
         const res = await $.ajax({
             url: 'https://dev-rangeaudio.zego.cloud/thirdToken/get',
             type: "POST",
@@ -393,7 +393,7 @@ async function login(roomId) {
                     "1": 1,
                     "2": 1
                 },
-                "expire_time": parseInt($("#custom-token").val())
+                "expire_time": expireTime
             }),
             dataType: "json",
             contentType: "application/json; charset=utf-8"
