@@ -396,7 +396,6 @@ async function login(roomId) {
             id_name: userID,
         });
     }
-    debugger
     await zg.loginRoom(roomId, token, { userID, userName }, { userUpdate: true });
     roomList.push(roomId);
 
