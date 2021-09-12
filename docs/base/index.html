@@ -267,11 +267,22 @@
         <div class="col-sm">
           <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
-              <label class="input-group-text" for="roomId"><strong class="text-gray-dark ">token</strong></label>
+              <label class="input-group-text" for="roomId"><strong class="text-gray-dark ">token有效期</strong></label>
             </div>
-            <!-- <input type="text" class="form-control d-inline" id="custom-userID" placeholder="userID"> -->
-            <input type="text" class="form-control d-inline" id="custom-token" style="width: 75%;"
+            <input type="text" class="form-control d-inline" id="custom-expiretime" style="width: 75%;"
               placeholder="过期时间 s ">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm">
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="roomId"><strong class="text-gray-dark ">更新 token</strong></label>
+            </div>
+            <input type="text" class="form-control d-inline" id="custom-userid" style="width: 180px"
+              placeholder="userid">
+            <input type="text" class="form-control d-inline" id="custom-token" style="width: 75%;" placeholder="token">
           </div>
         </div>
       </div>
@@ -295,6 +306,7 @@
           <!-- <button type="button" id="playVideo" class="btn btn-primary btn-sm">播放视频</button> -->
           <button type="button" id="reAcquireDevice" class="btn btn-primary btn-sm">重新获取设备</button>
           <button type="button" id="leaveRoom" class="btn btn-secondary btn-sm leaveRoom">退出</button>
+          <button type="button" id="custom-resetToken" ˝ class="btn btn-primary btn-sm"> 更新token </button>
         </div>
       </div>
 
