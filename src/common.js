@@ -377,15 +377,14 @@ function initSDK() {
 async function login(roomId) {
     // 获取token需要客户自己实现，token是对登录房间的唯一验证
     // Obtaining a token needs to be implemented by the customer. The token is the only verification for the login room.
-   
+
     let token = $("#custom-token").val() || "";
-    debugger
     const expireTime = parseInt($("#custom-expiretime").val())
     //测试用，开发者请忽略
     //Test code, developers please ignore
-    if(token) {
-        
-    }else if (expireTime) {
+    if (token) {
+
+    } else if (expireTime) {
         const res = await $.ajax({
             url: 'https://dev-rangeaudio.zego.cloud/thirdToken/get',
             type: "POST",
@@ -528,8 +527,12 @@ async function push(constraints, publishOption = {}, isNew) {
         isNew && (publishStreamId = 'webrtc' + new Date().getTime());
         if ($("#videoCodec").val()) publishOption.videoCodec = $("#videoCodec").val();
         if ($('#roomId').val()) publishOption.roomID = $('#roomId').val();
-        const result = zg.startPublishingStream(publishStreamId, localStream, publishOption);
-        console.log('publish stream' + publishStreamId, result);
+        let completeStreamID = publishStreamId
+        if (zg.zegoWebRTM.stateCenter.isMultiRoom) {
+            completeStreamID = publishOption.roomID + "-" + publishStreamId
+        }
+        const result = zg.startPublishingStream(completeStreamID, localStream, publishOption);
+        console.log('publish stream' + completeStreamID, result);
     } catch (err) {
         if (err.name) {
             console.error('createStream', err.name, err.message);
