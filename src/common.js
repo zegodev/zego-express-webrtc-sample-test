@@ -24,7 +24,6 @@ let isPreviewed = false;
 let supportScreenSharing = false;
 let loginRoom = false;
 
-let localStream;
 let localStreamMap = {}
 let publishType;
 
@@ -508,11 +507,11 @@ async function push(constraints, publishOption = {}, isNew) {
     try {
 
         const currentRoomID = $('#roomId').val() || undefined;
-        if (localStream && localStream[currentRoomID]) {
-            zg.destroyStream(localStream)
+        if (localStreamMap[currentRoomID]) {
+            zg.destroyStream(localStreamMap[currentRoomID])
         }
-        localStream = await zg.createStream(constraints);
-        localStream[currentRoomID] = localStream
+        localStreamMap[currentRoomID] = await zg.createStream(constraints);
+         
         // var AudioContext = window.AudioContext || window.webkitAudioContext; // 兼容性
         // let localTrack= localStream.getAudioTracks()[0];
         // let audioContext = new AudioContext();// 创建Audio上下文
@@ -525,7 +524,7 @@ async function push(constraints, publishOption = {}, isNew) {
         // let audioTrack = destination.stream.getAudioTracks()[0];
         // localStream.removeTrack(localTrack);
         // localStream.addTrack(audioTrack);
-        previewVideo.srcObject = localStream;
+        previewVideo.srcObject =  localStreamMap[currentRoomID];
         isPreviewed = true;
         $('.sound').hasClass('d-none') && $('.sound').removeClass('d-none');
         isNew && (publishStreamId = 'webrtc' + new Date().getTime());
@@ -535,7 +534,7 @@ async function push(constraints, publishOption = {}, isNew) {
         if (zg.zegoWebRTM.stateCenter.isMultiRoom) {
             completeStreamID = publishOption.roomID + "-" + publishStreamId
         }
-        const result = zg.startPublishingStream(completeStreamID, localStream, publishOption);
+        const result = zg.startPublishingStream(completeStreamID,  localStreamMap[currentRoomID], publishOption);
         console.log('publish stream' + completeStreamID, result);
     } catch (err) {
         if (err.name) {
@@ -560,11 +559,12 @@ $('#enterRoom').click(async () => {
     let loginSuc = false;
     try {
         loginSuc = await enterRoom();
+        const currentRoomID = $('#roomId').val()
         if (loginSuc) {
-            if (localStream) {
-                zg.destroyStream(localStream)
+            if (localStreamMap[currentRoomID]) {
+                zg.destroyStream(localStreamMap[currentRoomID])
             }
-            localStream = await zg.createStream({
+            localStreamMap[currentRoomID] = await zg.createStream({
                 camera: {
                     audioInput: $('#audioList').val(),
                     videoInput: $('#videoList').val(),
@@ -572,7 +572,7 @@ $('#enterRoom').click(async () => {
                     audio: $('#audioList').val() === '0' ? false : true,
                 },
             });
-            previewVideo.srcObject = localStream;
+            previewVideo.srcObject = localStreamMap[currentRoomID];
             isPreviewed = true;
             $('#videoList').val() === '0' && (previewVideo.controls = true);
         }
