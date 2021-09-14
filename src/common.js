@@ -25,6 +25,7 @@ let supportScreenSharing = false;
 let loginRoom = false;
 
 let localStream;
+let localStreamMap = {}
 let publishType;
 
 let l3;
@@ -462,7 +463,7 @@ async function logout() {
     if (previewVideo.srcObject && isPreviewed && (!roomId || roomList.length == 0)) {
         previewVideo.srcObject = null;
         zg.stopPublishingStream(publishStreamId);
-        zg.destroyStream(localStream);
+        zg.destroyStream(localStreamMap[roomId]);
         isPreviewed = false;
         !$('.sound').hasClass('d-none') && $('.sound').addClass('d-none');
     }
@@ -505,10 +506,13 @@ async function publish(constraints, isNew) {
 }
 async function push(constraints, publishOption = {}, isNew) {
     try {
-        if (localStream) {
+
+        const currentRoomID = $('#roomId').val() || undefined;
+        if (localStream && localStream[currentRoomID]) {
             zg.destroyStream(localStream)
         }
         localStream = await zg.createStream(constraints);
+        localStream[currentRoomID] = localStream
         // var AudioContext = window.AudioContext || window.webkitAudioContext; // 兼容性
         // let localTrack= localStream.getAudioTracks()[0];
         // let audioContext = new AudioContext();// 创建Audio上下文
@@ -526,7 +530,7 @@ async function push(constraints, publishOption = {}, isNew) {
         $('.sound').hasClass('d-none') && $('.sound').removeClass('d-none');
         isNew && (publishStreamId = 'webrtc' + new Date().getTime());
         if ($("#videoCodec").val()) publishOption.videoCodec = $("#videoCodec").val();
-        if ($('#roomId').val()) publishOption.roomID = $('#roomId').val();
+        publishOption.roomID = currentRoomID;
         let completeStreamID = publishStreamId
         if (zg.zegoWebRTM.stateCenter.isMultiRoom) {
             completeStreamID = publishOption.roomID + "-" + publishStreamId
