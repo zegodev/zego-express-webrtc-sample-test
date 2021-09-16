@@ -34,7 +34,10 @@ let roomList = [];
 // Test code, developers please ignore
 
 ({ appID, server, cgiToken, userID, l3 } = getCgi(appID, server, cgiToken));
-if (userID == "") userID = 'sample' + new Date().getTime();
+if (userID == "") {
+    userID = 'sample' + new Date().getTime();
+    $("#custom-userid").text(userID)
+}
 
 if (cgiToken && tokenUrl == 'https://wsliveroom-alpha.zego.im:8282/token') {
     $.get(cgiToken, rsp => {
@@ -511,7 +514,7 @@ async function push(constraints, publishOption = {}, isNew) {
             zg.destroyStream(localStreamMap[currentRoomID])
         }
         localStreamMap[currentRoomID] = await zg.createStream(constraints);
-         
+
         // var AudioContext = window.AudioContext || window.webkitAudioContext; // 兼容性
         // let localTrack= localStream.getAudioTracks()[0];
         // let audioContext = new AudioContext();// 创建Audio上下文
@@ -524,7 +527,7 @@ async function push(constraints, publishOption = {}, isNew) {
         // let audioTrack = destination.stream.getAudioTracks()[0];
         // localStream.removeTrack(localTrack);
         // localStream.addTrack(audioTrack);
-        previewVideo.srcObject =  localStreamMap[currentRoomID];
+        previewVideo.srcObject = localStreamMap[currentRoomID];
         isPreviewed = true;
         $('.sound').hasClass('d-none') && $('.sound').removeClass('d-none');
         isNew && (publishStreamId = 'webrtc' + new Date().getTime());
@@ -534,7 +537,7 @@ async function push(constraints, publishOption = {}, isNew) {
         if (zg.zegoWebRTM.stateCenter.isMultiRoom) {
             completeStreamID = publishOption.roomID + "-" + publishStreamId
         }
-        const result = zg.startPublishingStream(completeStreamID,  localStreamMap[currentRoomID], publishOption);
+        const result = zg.startPublishingStream(completeStreamID, localStreamMap[currentRoomID], publishOption);
         console.log('publish stream' + completeStreamID, result);
     } catch (err) {
         if (err.name) {
