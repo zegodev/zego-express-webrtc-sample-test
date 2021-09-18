@@ -212,4 +212,59 @@ $(async () => {
 
         logout();
     });
+    $("#customMixerConfig").val(
+        `
+{
+    "taskID": "custom-task",
+    "inputList": [
+        {
+            "streamID": "${publishStreamId}",
+            "layout": { 
+                "top": 0, 
+                "left": 0, 
+                "bottom": 100, 
+                "right": 100 
+            }
+        }
+    ],
+    "outputList": [
+        "custom-mix-output"
+    ],
+    "outputConfig": {
+        "outputBitrate": 300,
+        "outputFPS": 15,
+        "outputWidth": 320,
+        "outputHeight": 480
+    }
+}
+        `
+    )
+    $("#startCustomMixerTask").click(async () => {
+        const str = $("#customMixerConfig").val()
+        let config = {}
+        try {
+            config = JSON.parse(str)
+        } catch (error) {
+            alert("json format error")
+            throw error
+        }
+        const res = await zg.startMixerTask(config)
+        debugger
+        if (res.errorCode == 0) {
+            const result = JSON.parse((res.extendedData).toString())
+                .mixerOutputList;
+            let flvUrl = result[0].flvURL;
+            flvUrl = flvUrl.replace("http", "https");
+            console.warn("mixStreamUrl:" + flvUrl);
+            if (flvjs.isSupported()) {
+                flvPlayer = flvjs.createPlayer({
+                    type: 'flv',
+                    url: flvUrl,
+                });
+                flvPlayer.attachMediaElement(mixVideo);
+                flvPlayer.load();
+                $('#mixVideo').css('display', '');
+            }
+        }
+    })
 });
