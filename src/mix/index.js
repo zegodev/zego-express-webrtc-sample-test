@@ -256,12 +256,21 @@ $(async () => {
             flvUrl = flvUrl.replace("http", "https");
             console.warn("mixStreamUrl:" + flvUrl);
             if (flvjs.isSupported()) {
-                flvPlayer = flvjs.createPlayer({
-                    type: 'flv',
-                    url: flvUrl,
-                });
-                flvPlayer.attachMediaElement(mixVideo);
-                flvPlayer.load();
+                try {
+                    flvPlayer = flvjs.createPlayer({
+                        type: 'flv',
+                        url: flvUrl,
+                    }, {
+                        ENABLE_ERROR: false,
+                        ENABLE_INFO: false,
+                        ENABLE_WARN: false,
+                        ENABLE_DEBUG: false
+                    });
+                    flvPlayer.attachMediaElement(mixVideo);
+                    flvPlayer.load();
+                } catch (error) {
+                    
+                }
                 $('#mixVideo').css('display', '');
             }
         }
