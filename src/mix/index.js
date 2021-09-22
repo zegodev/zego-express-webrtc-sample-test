@@ -222,8 +222,8 @@ $(async () => {
             "layout": { 
                 "top": 0, 
                 "left": 0, 
-                "bottom": 100, 
-                "right": 100 
+                "bottom": 200, 
+                "right": 200 
             }
         }
     ],
@@ -233,8 +233,8 @@ $(async () => {
     "outputConfig": {
         "outputBitrate": 300,
         "outputFPS": 15,
-        "outputWidth": 320,
-        "outputHeight": 480
+        "outputWidth": 400,
+        "outputHeight": 400
     }
 }
         `
@@ -249,7 +249,6 @@ $(async () => {
             throw error
         }
         const res = await zg.startMixerTask(config)
-        debugger
         if (res.errorCode == 0) {
             const result = JSON.parse((res.extendedData).toString())
                 .mixerOutputList;
