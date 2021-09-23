@@ -20,7 +20,7 @@ $(async () => {
             custom: {
                 source: media,
                 channelCount: channelCount,
-
+                videoOptimizationMode: $('#videoOptimizationMode').val()? $('#videoOptimizationMode').val() : "default"
             }
         }
         $('#audioBitrate').val() && (constraints.audioBitrate = parseInt($('#audioBitrate').val()));
@@ -30,13 +30,7 @@ $(async () => {
             loginSuc = await enterRoom();
 
             if (loginSuc) {
-                doPreviewPublish({
-                    custom: {
-                        source: media,
-                        channelCount: channelCount,
-                    },
-                    ...constraints
-                }, new Date().getTime() + "");
+                doPreviewPublish(constraints, new Date().getTime() + "");
 
             }
         } catch (error) {
@@ -103,7 +97,8 @@ $(async () => {
         }
         return zg.createStream({
             custom: {
-                source: source
+                source: source,
+                videoOptimizationMode: $('#videoOptimizationMode').val()? $('#videoOptimizationMode').val() : "default"
             }
         }).then(stream => {
             let video = document.createElement("video");

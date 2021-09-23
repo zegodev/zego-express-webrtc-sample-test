@@ -495,6 +495,7 @@ async function publish(constraints, isNew) {
             videoInput: $('#videoList').val(),
             video: video !== undefined ? video : $('#videoList').val() === '0' ? false : true,
             audio: $('#audioList').val() === '0' ? false : true,
+            videoOptimizationMode: $('#videoOptimizationMode').val()? $('#videoOptimizationMode').val() : "default"
             // channelCount: constraints && constraints.camera && constraints.camera.channelCount,
         },
     };
@@ -573,6 +574,7 @@ $('#enterRoom').click(async () => {
                     videoInput: $('#videoList').val(),
                     video: $('#videoList').val() === '0' ? false : true,
                     audio: $('#audioList').val() === '0' ? false : true,
+                    videoOptimizationMode: $('#videoOptimizationMode').val()? $('#videoOptimizationMode').val() : "default"
                 },
             });
             previewVideo.srcObject = localStreamMap[currentRoomID];

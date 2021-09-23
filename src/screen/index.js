@@ -200,7 +200,11 @@ $(async () => {
     const changePreview = async () => {
         if(!rangePreviewStream) {
             try {
-                rangePreviewStream = await zg.createStream({custom: {source: canvasMedia}})
+                rangePreviewStream = await zg.createStream({custom: {
+                  source: canvasMedia,
+                  videoOptimizationMode: $('#videoOptimizationMode').val()? $('#videoOptimizationMode').val() : "default"
+                }
+              })
             } catch(err) {
                 console.log(err);
             }
@@ -262,7 +266,8 @@ $(async () => {
                 height:  $('#screenHeight').val() * 1,
                 bitrate: $('#screenBitRate').val() * 1,
                 frameRate: $('#screenFrameRate').val() * 1,
-                startBitrate: "target"
+                startBitrate: "target",
+                videoOptimizationMode: $('#videoOptimizationMode').val()? $('#videoOptimizationMode').val() : "default"
             });
             screenStreamVideoTrack = screendStream.getVideoTracks()[0];
             console.log('cameraStreamVideoTrack', cameraStreamVideoTrack);
@@ -306,6 +311,7 @@ $(async () => {
             externalStream = await zg.createStream({
                 custom: {
                     source: $('#customVideo')[0],
+                    videoOptimizationMode: $('#videoOptimizationMode').val()? $('#videoOptimizationMode').val() : "default"
                 }
             });
         }
@@ -353,6 +359,7 @@ $(async () => {
             externalStream = await zg.createStream({
                 custom: {
                     source: $('#customVideo')[0],
+                    videoOptimizationMode: $('#videoOptimizationMode').val()? $('#videoOptimizationMode').val() : "default"
                 }
             });
         }
@@ -381,7 +388,8 @@ $(async () => {
                     frameRate: $('#screenFrameRate').val() * 1,
                     width: $('#screenWidth').val() * 1 || screen.width,
                     height:  $('#screenHeight').val() * 1 || screen.height,
-                    startBitrate: "target"
+                    startBitrate: "target",
+                    videoOptimizationMode: $('#videoOptimizationMode').val()? $('#videoOptimizationMode').val() : "default"
                 },
             });
             const screenStreamId = publishStreamId + 'screen' + screenCount++;
