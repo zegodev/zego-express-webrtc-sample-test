@@ -29,6 +29,8 @@ let publishType;
 
 let l3;
 let roomList = [];
+let playQualityList = {};
+
 
 // 测试用代码，开发者请忽略
 // Test code, developers please ignore
@@ -329,6 +331,34 @@ function initSDK() {
         console.log(
             `play#${streamID} videoFPS: ${streamQuality.video.videoFPS} videoBitrate: ${streamQuality.video.videoBitrate} audioBitrate: ${streamQuality.audio.audioBitrate} audioFPS: ${streamQuality.audio.audioFPS}`,
         );
+        if (playQualityList[streamID]) {
+          playQualityList[streamID].qualityCount++;
+          const totalVideoBitrate = playQualityList[streamID].totalVideoBitrate + streamQuality.video.videoBitrate;
+          const averVideoBitrate = totalVideoBitrate/playQualityList[streamID].qualityCount;
+          const totalVideoFPS = playQualityList[streamID].totalVideoFPS + streamQuality.video.videoFPS;
+          const averVideoFPS = totalVideoFPS / playQualityList[streamID].qualityCount;
+
+          playQualityList[streamID].totalVideoBitrate = totalVideoBitrate;
+          playQualityList[streamID].averVideoBitrate = averVideoBitrate;
+          playQualityList[streamID].totalVideoFPS = totalVideoFPS;
+          playQualityList[streamID].averVideoFPS = averVideoFPS;
+        } else {
+          playQualityList[streamID] = {
+            qualityCount: 1,
+            totalVideoBitrate: 0,
+            averVideoBitrate: 0,
+            totalVideoFPS: 0,
+            averVideoFPS: 0,
+          }
+
+          playQualityList[streamID].totalVideoBitrate = streamQuality.video.videoBitrate;
+          playQualityList[streamID].averVideoBitrate = streamQuality.video.videoBitrate;
+          playQualityList[streamID].totalVideoFPS = streamQuality.video.videoFPS;
+          playQualityList[streamID].averVideoFPS = streamQuality.video.videoFPS;
+        }
+
+        console.warn("当前视频码率平均值：" + playQualityList[streamID].averVideoBitrate);
+        console.warn("当前视频帧率平均值：" + playQualityList[streamID].averVideoFPS);
         console.log(`play#${streamID}`, streamQuality);
     });
 
@@ -455,6 +485,8 @@ async function logout() {
         useLocalStreamList[i].streamID && zg.stopPlayingStream(useLocalStreamList[i].streamID);
     }
 
+    playQualityList = {};
+
     // 清空页面
     // Clear page
     useLocalStreamList = [];
@@ -507,6 +539,7 @@ async function publish(constraints, isNew) {
     // console.error('playType', playType);
     push(_constraints, { extraInfo: JSON.stringify({ playType }) }, isNew);
 }
+
 async function push(constraints, publishOption = {}, isNew) {
     try {
 
