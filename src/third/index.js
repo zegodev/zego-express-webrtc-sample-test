@@ -1,5 +1,5 @@
 
-import { checkAnRun, enterRoom, push, previewVideo, isPreviewed } from '../common';
+import { checkAnRun, enterRoom, push, previewVideo, isPreviewed, zg } from '../common';
 
 $(async () => {
     await checkAnRun();
@@ -65,11 +65,11 @@ $(async () => {
         const url = URL.createObjectURL(video);
         $('#externerVideo')[0].src = url;
     })
-    function doPreviewPublish(config, streamID) {
+    async function doPreviewPublish(config, streamID) {
         zg.createStream(config).then(stream => {
-            zg.startPublishingStream(streamID ? streamID : idName, stream, { videoCodec: $('#videoCodeType').val(), extraInfo: JSON.stringify({ role: 2 }) })
+          previewVideo.srcObject = stream;
+          zg.startPublishingStream(streamID ? streamID : idName, stream, { videoCodec: $('#videoCodeType').val(), extraInfo: JSON.stringify({ role: 2 }) })
 
-            previewVideo.srcObject = stream;
         }).catch(err => {
             console.error(err)
         })

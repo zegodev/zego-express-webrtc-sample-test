@@ -495,7 +495,7 @@ async function logout() {
 
     roomList.splice(roomList.findIndex(room => room == roomId), 1);
 
-    if (previewVideo.srcObject && isPreviewed && (!roomId || roomList.length == 0)) {
+    if (previewVideo.srcObject  && (!roomId || roomList.length == 0)) {
         previewVideo.srcObject = null;
         zg.stopPublishingStream(publishStreamId);
         zg.destroyStream(localStreamMap[roomId]);
