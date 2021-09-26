@@ -388,9 +388,10 @@ function initSDK() {
         const deviceInfo = await zg.enumDevices();
         const cameras = deviceInfo.cameras;
         const micList = deviceInfo.microphones;
-        if (localStream) {
-            zg.useVideoDevice(localStream, cameras[0].deviceID);
-            zg.useAudioDevice(localStream, micList[0].deviceID);
+        const currentRoomID = $('#roomId').val() || undefined;
+        if (localStreamMap[currentRoomID]) {
+            zg.useVideoDevice(localStreamMap[currentRoomID], cameras[0].deviceID);
+            zg.useAudioDevice(localStreamMap[currentRoomID], micList[0].deviceID);
         }
     });
     zg.on('videoDeviceStateChanged', (updateType, device) => {
