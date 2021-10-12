@@ -512,6 +512,7 @@ async function logout() {
     //logout
     zg.logoutRoom(roomId);
     loginRoom = false;
+    publishType = undefined;
 }
 
 async function publish(constraints, isNew) {
