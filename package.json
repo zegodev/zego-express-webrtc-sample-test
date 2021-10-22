@@ -26,6 +26,7 @@
     "jquery": "^3.4.1",
     "jquery-i18next": "^1.2.1",
     "md5": "^2.2.1",
+    "protobufjs": "^6.11.2",
     "vconsole": "^3.3.4"
   },
   "devDependencies": {

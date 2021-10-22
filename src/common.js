@@ -452,6 +452,7 @@ async function login(roomId) {
         });
     }
     await zg.loginRoom(roomId, token, { userID, userName }, { userUpdate: true });
+    
     roomList.push(roomId);
 
     return true;
