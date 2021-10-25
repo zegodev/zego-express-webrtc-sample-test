@@ -248,7 +248,7 @@ $(async () => {
     $('#sendMessage').click(async () => {
       const roomID  = $('#roomId').val();
       const dataChannel = datachannelList[roomID];
-      const pubChannelID = preDataChannelID +$('#pubChannelID').val();
+      const pubChannelID = $('#pubChannelID').val();
 
       const arr = new ArrayBuffer(1200);
       const uint8 = new Uint8Array(arr);
