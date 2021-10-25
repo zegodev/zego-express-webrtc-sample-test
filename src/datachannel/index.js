@@ -11,7 +11,7 @@ const preDataChannelID = "datachannel"
 $(async () => {
     await checkAnRun();
 
-    zg.enableMultiRoom(true);
+    //zg.enableMultiRoom(true);
 
     zg.off('roomUserUpdate');
     zg.on('roomUserUpdate', (roomID, updateType, userList) => {
