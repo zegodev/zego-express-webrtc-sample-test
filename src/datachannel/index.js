@@ -11,6 +11,7 @@ const preDataChannelID = "datachannel"
 $(async () => {
     await checkAnRun();
 
+    zg.enableMultiRoom(true);
 
     zg.off('roomUserUpdate');
     zg.on('roomUserUpdate', (roomID, updateType, userList) => {
@@ -40,7 +41,7 @@ $(async () => {
           for (let i = 0; i < streamList.length; i++) {
               console.info(streamList[i].streamID + ' was added');
 
-              if (streamList[i].streamID.startsWith('datachannel')) continue;
+              if (!streamList[i].streamID.includes('webrtc')) continue;
 
               let remoteStream;
               let playOption = {};
@@ -124,6 +125,8 @@ $(async () => {
         localUserList = [];
         $('#toast')[0].className = "toast fade hide"
         logout();
+
+        $('#preAndPub')[0].disabled = true;
     });
 
     $('#createRoom').unbind('click')
@@ -146,16 +149,29 @@ $(async () => {
         await enterRoom();
         datachannelList[roomID] = {manager: undefined, pubList: [], subList: []}
         datachannelList[roomID].manager = zg.createRealTimeSequentialDataManager(roomID);
+
+        $('#preAndPub')[0].disabled = false;
     });
 
     $('#startBroadcasting').click(async () => {
         const roomID  = $('#roomId').val();
         const dataChannel = datachannelList[roomID];
-        const pubChannelID = preDataChannelID + $('#pubChannelID').val();
+
+        if ($('#pubChannelID').val().length == 0) {
+          alert("广播ID 不能为空");
+          return;
+        }
+
+        const pubChannelID =  $('#pubChannelID').val();
 
         if (dataChannel) {
           const result = await dataChannel.manager.startBroadcasting(pubChannelID);
-          if (result) dataChannel.pubList.push(pubChannelID);
+          if (result) {
+            console.warn("广播成功 " + pubChannelID);
+            dataChannel.pubList.push(pubChannelID);
+          } else {
+            console.error("广播失败 " + pubChannelID)
+          }
         } else {
           alert('datachannel no found');
         }
@@ -164,11 +180,18 @@ $(async () => {
     $('#startSubscribing').click(async () => {
       const roomID  = $('#roomId').val();
       const dataChannel = datachannelList[roomID];
-      const pubChannelID = preDataChannelID +$('#subChannelID').val();
+
+      if ($('#subChannelID').val().length == 0) {
+        alert("订阅ID 不能为空");
+        return;
+      }
+
+      const subChannelID = $('#subChannelID').val();
 
       if (dataChannel) {
-        const result = await dataChannel.manager.startSubscribing(pubChannelID);
+        const result = await dataChannel.manager.startSubscribing(subChannelID);
         if (result) {
+          console.warn("订阅成功 " + subChannelID);
           dataChannel.manager.off("recvRealtimeSequentialData");
           dataChannel.manager.on(
             "recvRealtimeSequentialData",
@@ -176,6 +199,8 @@ $(async () => {
               console.error(byte, dataLength, streamID);
             }
           );
+        } else {
+          console.error("订阅失败 " + subChannelID)
         }
       } else {
         alert('datachannel no found');
@@ -183,10 +208,15 @@ $(async () => {
     })
 
     $('#stopBroadcasting').click(async () => {
-      debugger;
       const roomID  = $('#roomId').val();
       const dataChannel = datachannelList[roomID];
-      const pubChannelID = preDataChannelID +$('#pubChannelID').val();
+
+      if ($('#pubChannelID').val().length == 0) {
+        alert("广播ID 不能为空");
+        return;
+      }
+
+      const pubChannelID = $('#pubChannelID').val();
 
       if (dataChannel) {
         dataChannel.manager.stopBroadcasting(pubChannelID);
@@ -199,7 +229,13 @@ $(async () => {
     $('#stopSubscribing').click(async () => {
       const roomID  = $('#roomId').val();
       const dataChannel = datachannelList[roomID];
-      const subChannelID = preDataChannelID +$('#subChannelID').val();
+
+      if ($('#subChannelID').val().length == 0) {
+        alert("订阅ID 不能为空");
+        return;
+      }
+
+      const subChannelID = $('#subChannelID').val();
 
       if (dataChannel) {
         dataChannel.manager.stopSubscribing(subChannelID);
@@ -226,5 +262,9 @@ $(async () => {
       } else {
         alert('datachannel no found');
       }
+    })
+
+    $('#preAndPub').click(async () => {
+      await publish();
     })
 });
