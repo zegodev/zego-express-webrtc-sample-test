@@ -167,10 +167,10 @@ $(async () => {
         if (dataChannel) {
           const result = await dataChannel.manager.startBroadcasting(pubChannelID);
           if (result) {
-            console.warn("广播成功 " + pubChannelID);
+            console.warn("广播成功 " + pubChannelID + " " + roomID);
             dataChannel.pubList.push(pubChannelID);
           } else {
-            console.error("广播失败 " + pubChannelID)
+            console.error("广播失败 " + pubChannelID + " " + roomID)
           }
         } else {
           alert('datachannel no found');
@@ -191,16 +191,16 @@ $(async () => {
       if (dataChannel) {
         const result = await dataChannel.manager.startSubscribing(subChannelID);
         if (result) {
-          console.warn("订阅成功 " + subChannelID);
-          dataChannel.manager.off("recvRealtimeSequentialData");
+          console.warn("订阅成功 " + subChannelID + " " + roomID);
+          //dataChannel.manager.off("recvRealtimeSequentialData");
           dataChannel.manager.on(
             "recvRealtimeSequentialData",
             (byte, dataLength, streamID) => {
-              console.error(byte, dataLength, streamID);
+              console.error(byte, dataLength, streamID, roomID);
             }
           );
         } else {
-          console.error("订阅失败 " + subChannelID)
+          console.error("订阅失败 " + subChannelID + " " + roomID)
         }
       } else {
         alert('datachannel no found');
