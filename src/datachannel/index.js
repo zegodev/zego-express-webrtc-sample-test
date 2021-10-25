@@ -40,7 +40,7 @@ $(async () => {
           for (let i = 0; i < streamList.length; i++) {
               console.info(streamList[i].streamID + ' was added');
 
-              if (streamList[i].streamID.startsWith('datachannel')) return;
+              if (streamList[i].streamID.startsWith('datachannel')) continue;
 
               let remoteStream;
               let playOption = {};
