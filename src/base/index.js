@@ -6,6 +6,7 @@ let playOption = {};
 let previewStream;
 let published = false;
 const publishStreamID = 'web-' + new Date().getTime();
+let remoteStreamID = ""
 // ---test end
 
 $(async () => {
@@ -153,6 +154,25 @@ $(async () => {
             }
         }
     })
+
+    // 操作拉流音视频
+    $("#togglePlayAudio").click(async () => {
+        $("#togglePlayAudio").toggleClass("disabled");
+        const result = await zg.mutePlayStreamAudio(
+            remoteStreamID,
+            $("#togglePlayAudio").hasClass("disabled")
+        );
+        console.log("togglePlayAudio", result);
+    });
+    $("#togglePlayVideo").click(async () => {
+        $("#togglePlayVideo").toggleClass("disabled");
+        const result = await zg.mutePlayStreamVideo(
+            remoteStreamID,
+            $("#togglePlayVideo").hasClass("disabled")
+        );
+        console.log("togglePlayAudio", result);
+    });
+
     zg.off('roomStreamUpdate');
     zg.on('roomStreamUpdate', async (roomID, updateType, streamList, extendedData) => {
         console.log('roomStreamUpdate 2 roomID ', roomID, streamList, extendedData);
@@ -160,7 +180,7 @@ $(async () => {
             for (let i = 0; i < streamList.length; i++) {
                 console.info(streamList[i].streamID + ' was added');
                 let remoteStream;
-
+                remoteStreamID = streamList[i].streamID
                 const handlePlaySuccess = (streamItem) => {
                     let video;
                     const bro = getBrowser();
