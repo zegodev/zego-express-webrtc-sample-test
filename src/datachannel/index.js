@@ -1,7 +1,6 @@
 import '../common';
 import 'popper.js';
 import { checkAnRun, zg, userID, logout, enterRoom, publish, l3 } from '../common';
-import {protobuf} from "protobufjs"
 
 
 let msgCount = 0;
