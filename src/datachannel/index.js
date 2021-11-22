@@ -126,7 +126,9 @@ $(async () => {
         logout();
 
         $('#preAndPub')[0].disabled = true;
-        datachannelList.forEach(dc => dc.manager && dc.manager.off("receiveRealTimeSequentialData"));
+        for (let roomID in datachannelList) {
+          datachannelList[roomID].manager && datachannelList[roomID].manager.off("receiveRealTimeSequentialData");
+        }
     });
 
     $('#createRoom').unbind('click')
