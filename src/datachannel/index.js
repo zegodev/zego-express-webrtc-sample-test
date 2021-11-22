@@ -126,7 +126,7 @@ $(async () => {
         logout();
 
         $('#preAndPub')[0].disabled = true;
-        datachannelList.forEach(dc => dc.manager && dc.manager.off("recvRealtimeSequentialData"));
+        datachannelList.forEach(dc => dc.manager && dc.manager.off("receiveRealTimeSequentialData"));
     });
 
     $('#createRoom').unbind('click')
@@ -192,9 +192,9 @@ $(async () => {
         const result = await dataChannel.manager.startSubscribing(subChannelID);
         if (result) {
           console.warn("订阅成功 " + subChannelID + " " + roomID);
-          //dataChannel.manager.off("recvRealtimeSequentialData");
+          //dataChannel.manager.off("receiveRealTimeSequentialData");
           dataChannel.manager.on(
-            "recvRealtimeSequentialData",
+            "receiveRealTimeSequentialData",
             (byte, dataLength, streamID) => {
               console.error(byte, dataLength, streamID, roomID);
             }
