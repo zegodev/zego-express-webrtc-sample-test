@@ -47,7 +47,7 @@
     }
   </style>
   <title class="screenSharing">屏幕共享</title>
-<link href="../index.950f9bf0.css" rel="stylesheet"></head>
+</head>
 
 <body class="bg-f2">
 
@@ -214,18 +214,15 @@
 
       <div class="row">
         <div class="col-sm">
-          <button type="button" id="createRoom" class="btn btn-primary btn-sm enterRoomPush">进入房间（推流）</button>
           <button type="button" id="openRoom" class=" btn btn-primary btn-sm enterRoomPlay">进入房间</button>
-          <button type="button" id="screenShot" class="btn btn-primary btn-sm screenSharingContent">捕捉屏幕</button>
-          <button type="button" id="rangeScreenShare" class="btn btn-primary btn-sm">区域屏幕共享</button>
+          <button type="button" id="createStream" class=" btn btn-primary btn-sm">开启音视频预览</button>
+          <button type="button" id="screenShot" class="btn btn-primary btn-sm screenSharingContent">屏幕共享</button>
           <button type="button" id="stopScreenShot" class="btn btn-primary btn-sm stopScreenSharing">停止捕捉</button>
-          <button type="button" id="enterRoom" class="btn btn-primary btn-sm">进房预览</button>
-          <button type="button" id="publish" class="btn btn-primary btn-sm">推流</button>
-          <button type="button" id="replaceScreenShot" class="btn btn-primary btn-sm">切换为屏幕共享</button>
-          <button type="button" id="replaceCamera" class="btn btn-primary btn-sm">切换为摄像头</button>
-          <button type="button" id="replaceExternalVideo" class="btn btn-primary btn-sm">切换外部视频轨</button>
-          <button type="button" id="replaceMicro" class="btn btn-primary btn-sm">切换为麦克风</button>
-          <button type="button" id="replaceExternalAudio" class="btn btn-primary btn-sm">切换外部音频轨</button>
+          <button type="button" id="startRecord" disabled class=" btn btn-primary btn-sm">开始录制</button>
+          <button type="button" id="stopRecord" disabled class=" btn btn-primary btn-sm">结束录制</button>
+          <button type="button" id="pauseRecord" disabled class=" btn btn-primary btn-sm">暂停录制</button>
+          <button type="button" id="resumeRecord" disabled class=" btn btn-primary btn-sm">恢复录制</button>
+          <button type="button" id="saveRecord" disabled class=" btn btn-primary btn-sm">保存录制</button>
           <button type="button" id="leaveRoom" class="btn btn-secondary btn-sm leaveRoom">退出</button>
         </div>
       </div>
@@ -234,69 +231,15 @@
         <div class="col-sm">
           <label id="previewLabel" class="text-white"></label>
           <video id="previewVideo" autoplay muted playsinline></video>
-          <!-- <video id="previewScreenVideo"autoplay muted playsinline></video> -->
-          <div class="previewScreenVideo">
-
-          </div>
-          <video id="rangeShareVideo" autoplay muted playsinline></video>
-          <video id="customVideo" crossOrigin="anonymous" muted playsinline autoplay controls
-            src="https://zego-public.oss-cn-shanghai.aliyuncs.com/sdk-doc/assets/big_buck_bunny.mp4" loop></video>
-          <video id="testVideo" autoplay muted playsinline></video>
         </div>
 
         <div class="col-sm remoteVideo">
           <!--<video  autoplay muted playsinline></video>-->
         </div>
       </div>
-
-      <!-- Modal -->
-      <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="staticBackdropLabel">自定义共享区域</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <div>可通过按住shfit + 鼠标拖拽选择区域(以页面上显示的屏幕共享的那个视频为基准) </div>
-              <div style="margin-bottom: 8px;">选择后双击选中区域确认选择</div>
-              <form>
-                <div class="form-group">
-                  <label for="videoXRange">起始点横坐标：</label>
-                  <input type="number" id="videoXInput" class="rangeInput" value="0">
-                  <input type="range" class="form-control-range" id="videoXRange" value="0">
-                </div>
-                <div class="form-group">
-                  <label for="videoYRange">起始点纵坐标: </label>
-                  <input type="number" id="videoYInput" class="rangeInput" value="0">
-                  <input type="range" class="form-control-range" id="videoYRange" value="0">
-                </div>
-                <div class="form-group">
-                  <label for="videoWidthRange">共享区域的宽度：</label>
-                  <input type="number" id="videoWidthInput" class="rangeInput">
-                  <input type="range" class="form-control-range" id="videoWidthRange" value="20">
-                </div>
-                <div class="form-group">
-                  <label for="videoHeightRange">共享区域的高度：</label>
-                  <input type="number" id="videoHeightInput" class="rangeInput">
-                  <input type="range" class="form-control-range" id="videoHeightRange" value="20">
-                </div>
-                <div class="form-group form-check">
-                  <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                  <label class="form-check-label" for="exampleCheck1">是否使用ImageCapture</label>
-                </div>
-                <button type="button" id="modalSubmit" class="btn btn-primary">确认</button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 
-<script type="text/javascript" src="../screen/screen.bundle.js"></script></body>
+</body>
 
 </html>
