@@ -331,6 +331,17 @@
           <button type="button" id="togglePlayVideo" class="btn btn-primary btn-sm" title="muteMic">开闭拉流画面</button>
           <button type="button" id="togglePlayAudio" class="btn btn-primary btn-sm" title="muteMic">开闭拉流声音</button>
         </div>
+        
+        <fieldset>
+          <legend>beauty config</legend>
+          <button type="button" id="openVideoEffect" class="btn btn-primary btn-sm" title="setBeauty">开启美颜</button>
+          <button type="button" id="closeVideoEffect" class="btn btn-primary btn-sm" title="setBeauty">关闭美颜</button><br>
+          磨皮: <input type="range" min="0" max="100" value="100" id="range-blur"><br>
+          美白: <input type="range" min="0" max="100" value="100" id="range-light"><br>
+          红润: <input type="range" min="0" max="100" value="100" id="range-red"><br>
+          锐化: <input type="range" min="0" max="100" value="100" id="range-sharp"><br>
+
+        </fieldset> 
       </div>
 
       <div class="row videoRow">

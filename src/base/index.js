@@ -173,6 +173,28 @@ $(async () => {
         console.log("togglePlayAudio", result);
     });
 
+    async function setBeautyEffect(enable) {
+        const res = await zg.setBeautyEffect(
+          $("#previewVideo")[0].srcObject,
+          enable,
+          {
+            sharpnessLevel: parseInt($("#range-sharp").val()) / 100,
+            lightLevel: parseInt($("#range-light").val()) / 100,
+            rednessLevel: parseInt($("#range-red").val()) / 100,
+            blurLevel: parseInt($("#range-blur").val()) / 100
+          }
+        );
+        console.warn("setBeautyEffect", res);
+      }
+    $("#openVideoEffect").on("click", () => {
+        setBeautyEffect(true);
+        console.warn("openVideoEffect");
+    });
+    $("#closeVideoEffect").on("click", () => {
+        setBeautyEffect(false);
+        console.warn("closeVideoEffect");
+    });
+
     zg.off('roomStreamUpdate');
     zg.on('roomStreamUpdate', async (roomID, updateType, streamList, extendedData) => {
         console.log('roomStreamUpdate 2 roomID ', roomID, streamList, extendedData);
