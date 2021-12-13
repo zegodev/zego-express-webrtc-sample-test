@@ -330,6 +330,8 @@
           <button type="button" id="custom-resetToken" ˝ class="btn btn-primary btn-sm"> 更新token </button>
           <button type="button" id="togglePlayVideo" class="btn btn-primary btn-sm" title="muteMic">开闭拉流画面</button>
           <button type="button" id="togglePlayAudio" class="btn btn-primary btn-sm" title="muteMic">开闭拉流声音</button>
+          <button type="button" id="replaceCamera" class="btn btn-primary btn-sm">切换为摄像头</button>
+          <button type="button" id="replaceExternalVideo" class="btn btn-primary btn-sm">切换外部视频轨</button>
         </div>
         
         <fieldset>
@@ -349,10 +351,14 @@
           <h5 class="sound d-none"><span class="soundText">当前音量：</span> <span id="soundLevel">0</span></h5>
           <label id="previewLabel" class="text-white"></label>
           <video id="previewVideo" autoplay muted playsinline></video>
+          <video id="customVideo" crossOrigin="anonymous" muted playsinline autoplay controls
+          src="https://zego-public.oss-cn-shanghai.aliyuncs.com/sdk-doc/assets/big_buck_bunny.mp4" loop></video>
+        <video id="testVideo" autoplay muted playsinline></video>
         </div>
         <div class="col-sm remoteVideo">
           <!-- <video  autoplay muted playsinline></video> -->
         </div>
+
       </div>
     </div>
 

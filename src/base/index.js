@@ -8,6 +8,10 @@ let published = false;
 const publishStreamID = 'web-' + new Date().getTime();
 let remoteStreamID = ""
 // ---test end
+let cameraStreamVideoTrack;
+let externalStreamVideoTrack;
+let externalStream
+let videoType
 
 $(async () => {
     await checkAnRun();
@@ -195,6 +199,46 @@ $(async () => {
         console.warn("closeVideoEffect");
     });
 
+    // 切换视轨
+    $('#replaceCamera').click(async function() {
+        if (!previewVideo.srcObject || !cameraStreamVideoTrack) {
+            alert('先创建流及屏幕共享');
+            return;
+        }
+        cameraStreamVideoTrack && zg.replaceTrack(previewVideo.srcObject, cameraStreamVideoTrack)
+            .then(res => {
+                console.warn('replaceTrack success');
+                videoType = 'camera';
+            })
+            .catch(err => console.error(err));
+    });
+    $('#replaceExternalVideo').click(async function() {
+        if (!previewVideo.srcObject) {
+            alert('流不存在');
+            return;
+        }
+        if (!externalStream) {
+            externalStream = await zg.createStream({
+                custom: {
+                    source: $('#customVideo')[0],
+                    videoOptimizationMode: $('#videoOptimizationMode').val()? $('#videoOptimizationMode').val() : "default"
+                }
+            });
+        }
+        if (!externalStreamVideoTrack) {
+            externalStreamVideoTrack = externalStream.getVideoTracks()[0];
+            console.log('externalStreamVideoTrack', cameraStreamVideoTrack);
+            !cameraStreamVideoTrack && (cameraStreamVideoTrack = previewVideo.srcObject.getVideoTracks()[0] && previewVideo.srcObject.getVideoTracks()[0].clone());
+        }
+
+        zg.replaceTrack(previewVideo.srcObject, externalStreamVideoTrack)
+            .then(res => {
+                console.warn('replaceTrack success');
+                videoType = 'external';
+            })
+            .catch(err => console.error(err));
+    });
+
     zg.off('roomStreamUpdate');
     zg.on('roomStreamUpdate', async (roomID, updateType, streamList, extendedData) => {
         console.log('roomStreamUpdate 2 roomID ', roomID, streamList, extendedData);
@@ -267,4 +311,12 @@ $(async () => {
             }
         }
     });
+    zg.on("roomStateUpdate", (roomID, state)=>{
+        if(state==="DISCONNECTED") {
+            if(cameraStreamVideoTrack) {
+                cameraStreamVideoTrack.stop();
+                cameraStreamVideoTrack = null;
+            }
+        }
+    })  
 });
