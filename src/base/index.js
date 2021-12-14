@@ -363,9 +363,9 @@ $(async () => {
                 cameraStreamVideoTrack.stop();
                 cameraStreamVideoTrack = null;
             }
-            if (screenStreamVideoTrack) {
-                screenStreamVideoTrack.stop();
-                screenStreamVideoTrack = null;
+            if (screenStream) {
+                zg.destroyStream(screenStream)
+                screenStream = null
             }
         }
     })
