@@ -176,8 +176,13 @@ $(async () => {
         );
         console.log("togglePlayAudio", result);
     });
-
+    let isBeauty = false
     async function setBeautyEffect(enable) {
+        if(enable === undefined) {
+            enable = isBeauty
+        } else {
+            isBeauty = enable
+        }
         const res = await zg.setBeautyEffect(
             $("#previewVideo")[0].srcObject,
             enable,
@@ -190,6 +195,10 @@ $(async () => {
         );
         console.warn("setBeautyEffect", res);
     }
+    $("#range-sharp").on("change", ()=>{setBeautyEffect(isBeauty)})
+    $("#range-light").on("change", ()=>{setBeautyEffect(isBeauty)})
+    $("#range-red").on("change", ()=>{setBeautyEffect(isBeauty)})
+    $("#range-blur").on("change", ()=>{setBeautyEffect(isBeauty)})
     $("#openVideoEffect").on("click", () => {
         setBeautyEffect(true);
         console.warn("openVideoEffect");
