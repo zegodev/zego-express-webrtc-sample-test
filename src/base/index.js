@@ -270,11 +270,8 @@ $(async () => {
             screenStream = await zg.createStream({
                 screen: true
             });
-        }
-        if (!screenStreamVideoTrack) {
             screenStreamVideoTrack = screenStream.getVideoTracks()[0];
             console.log('screenStreamVideoTrack', screenStreamVideoTrack);
-
         }
 
         zg.replaceTrack(previewVideo.srcObject, screenStreamVideoTrack)
