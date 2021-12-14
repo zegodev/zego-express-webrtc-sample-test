@@ -179,17 +179,17 @@ $(async () => {
 
     async function setBeautyEffect(enable) {
         const res = await zg.setBeautyEffect(
-          $("#previewVideo")[0].srcObject,
-          enable,
-          {
-            sharpnessLevel: parseInt($("#range-sharp").val()) / 100,
-            lightLevel: parseInt($("#range-light").val()) / 100,
-            rednessLevel: parseInt($("#range-red").val()) / 100,
-            blurLevel: parseInt($("#range-blur").val()) / 100
-          }
+            $("#previewVideo")[0].srcObject,
+            enable,
+            {
+                sharpnessLevel: parseInt($("#range-sharp").val()) / 100,
+                lightLevel: parseInt($("#range-light").val()) / 100,
+                rednessLevel: parseInt($("#range-red").val()) / 100,
+                blurLevel: parseInt($("#range-blur").val()) / 100
+            }
         );
         console.warn("setBeautyEffect", res);
-      }
+    }
     $("#openVideoEffect").on("click", () => {
         setBeautyEffect(true);
         console.warn("openVideoEffect");
@@ -200,19 +200,23 @@ $(async () => {
     });
 
     // 切换视轨
-    $('#replaceCamera').click(async function() {
-        if (!previewVideo.srcObject || !cameraStreamVideoTrack) {
-            alert('先创建流及屏幕共享');
+    $('#replaceCamera').click(async function () {
+        if (!previewVideo.srcObject) {
+            alert('先创建流');
             return;
         }
-        cameraStreamVideoTrack && zg.replaceTrack(previewVideo.srcObject, cameraStreamVideoTrack)
+        if (!cameraStreamVideoTrack) {
+            alert('当前为摄像头');
+            return;
+        }
+        zg.replaceTrack(previewVideo.srcObject, cameraStreamVideoTrack)
             .then(res => {
                 console.warn('replaceTrack success');
                 videoType = 'camera';
             })
             .catch(err => console.error(err));
     });
-    $('#replaceExternalVideo').click(async function() {
+    $('#replaceExternalVideo').click(async function () {
         if (!previewVideo.srcObject) {
             alert('流不存在');
             return;
@@ -221,7 +225,7 @@ $(async () => {
             externalStream = await zg.createStream({
                 custom: {
                     source: $('#customVideo')[0],
-                    videoOptimizationMode: $('#videoOptimizationMode').val()? $('#videoOptimizationMode').val() : "default"
+                    videoOptimizationMode: $('#videoOptimizationMode').val() ? $('#videoOptimizationMode').val() : "default"
                 }
             });
         }
@@ -311,12 +315,12 @@ $(async () => {
             }
         }
     });
-    zg.on("roomStateUpdate", (roomID, state)=>{
-        if(state==="DISCONNECTED") {
-            if(cameraStreamVideoTrack) {
+    zg.on("roomStateUpdate", (roomID, state) => {
+        if (state === "DISCONNECTED") {
+            if (cameraStreamVideoTrack) {
                 cameraStreamVideoTrack.stop();
                 cameraStreamVideoTrack = null;
             }
         }
-    })  
+    })
 });
