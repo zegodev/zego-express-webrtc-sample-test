@@ -10,7 +10,9 @@ let remoteStreamID = ""
 // ---test end
 let cameraStreamVideoTrack;
 let externalStreamVideoTrack;
+let screenStreamVideoTrack;
 let externalStream
+let screenStream
 let videoType
 
 $(async () => {
@@ -19,6 +21,8 @@ $(async () => {
     // --- test begin
     $('#publish').click(() => {
         const publishStreamID = new Date().getTime() + '';
+
+        // !cameraStreamVideoTrack && previewVideo.srcObject && (cameraStreamVideoTrack = previewStream.getVideoTracks()[0] && previewStream.getVideoTracks()[0].clone());
         const result = zg.startPublishingStream(publishStreamID, previewStream ? previewStream : previewVideo.srcObject, { roomID: $('#roomId').val() });
         published = true;
         console.log('publish stream' + publishStreamID, result);
@@ -178,11 +182,14 @@ $(async () => {
     });
     let isBeauty = false
     async function setBeautyEffect(enable) {
-        if(enable === undefined) {
+        if (enable === undefined) {
             enable = isBeauty
         } else {
             isBeauty = enable
         }
+
+        // 设置美颜之前保存摄像头视轨
+        !cameraStreamVideoTrack && previewVideo.srcObject && (cameraStreamVideoTrack = previewVideo.srcObject.getVideoTracks()[0] && previewVideo.srcObject.getVideoTracks()[0].clone());
         const res = await zg.setBeautyEffect(
             $("#previewVideo")[0].srcObject,
             enable,
@@ -195,10 +202,10 @@ $(async () => {
         );
         console.warn("setBeautyEffect", res);
     }
-    $("#range-sharp").on("change", ()=>{setBeautyEffect(isBeauty)})
-    $("#range-light").on("change", ()=>{setBeautyEffect(isBeauty)})
-    $("#range-red").on("change", ()=>{setBeautyEffect(isBeauty)})
-    $("#range-blur").on("change", ()=>{setBeautyEffect(isBeauty)})
+    $("#range-sharp").on("change", () => { setBeautyEffect(isBeauty) })
+    $("#range-light").on("change", () => { setBeautyEffect(isBeauty) })
+    $("#range-red").on("change", () => { setBeautyEffect(isBeauty) })
+    $("#range-blur").on("change", () => { setBeautyEffect(isBeauty) })
     $("#openVideoEffect").on("click", () => {
         setBeautyEffect(true);
         console.warn("openVideoEffect");
@@ -214,10 +221,10 @@ $(async () => {
             alert('先创建流');
             return;
         }
-        if (!cameraStreamVideoTrack) {
-            alert('当前为摄像头');
-            return;
-        }
+    
+        // 设置美颜之前保存摄像头视轨
+        !cameraStreamVideoTrack && previewVideo.srcObject && (cameraStreamVideoTrack = previewVideo.srcObject.getVideoTracks()[0] && previewVideo.srcObject.getVideoTracks()[0].clone());
+
         zg.replaceTrack(previewVideo.srcObject, cameraStreamVideoTrack)
             .then(res => {
                 console.warn('replaceTrack success');
@@ -240,11 +247,37 @@ $(async () => {
         }
         if (!externalStreamVideoTrack) {
             externalStreamVideoTrack = externalStream.getVideoTracks()[0];
-            console.log('externalStreamVideoTrack', cameraStreamVideoTrack);
-            !cameraStreamVideoTrack && (cameraStreamVideoTrack = previewVideo.srcObject.getVideoTracks()[0] && previewVideo.srcObject.getVideoTracks()[0].clone());
+            console.log('externalStreamVideoTrack', externalStreamVideoTrack);
+            !cameraStreamVideoTrack && previewVideo.srcObject && (cameraStreamVideoTrack = previewVideo.srcObject.getVideoTracks()[0] && previewVideo.srcObject.getVideoTracks()[0].clone());
+
         }
 
         zg.replaceTrack(previewVideo.srcObject, externalStreamVideoTrack)
+            .then(res => {
+                console.warn('replace custom track success');
+                videoType = 'external';
+            })
+            .catch(err => console.error(err));
+    });
+    $('#replaceScreenVideo').click(async function () {
+        if (!previewVideo.srcObject) {
+            alert('流不存在');
+            return;
+        }
+        // 设置美颜之前保存摄像头视轨
+        !cameraStreamVideoTrack && previewVideo.srcObject && (cameraStreamVideoTrack = previewVideo.srcObject.getVideoTracks()[0] && previewVideo.srcObject.getVideoTracks()[0].clone());
+        if (!screenStream) {
+            screenStream = await zg.createStream({
+                screen: true
+            });
+        }
+        if (!screenStreamVideoTrack) {
+            screenStreamVideoTrack = screenStream.getVideoTracks()[0];
+            console.log('screenStreamVideoTrack', screenStreamVideoTrack);
+
+        }
+
+        zg.replaceTrack(previewVideo.srcObject, screenStreamVideoTrack)
             .then(res => {
                 console.warn('replaceTrack success');
                 videoType = 'external';
@@ -329,6 +362,10 @@ $(async () => {
             if (cameraStreamVideoTrack) {
                 cameraStreamVideoTrack.stop();
                 cameraStreamVideoTrack = null;
+            }
+            if (screenStreamVideoTrack) {
+                screenStreamVideoTrack.stop();
+                screenStreamVideoTrack = null;
             }
         }
     })
