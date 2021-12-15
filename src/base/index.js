@@ -190,17 +190,17 @@ $(async () => {
 
         // 设置美颜之前保存摄像头视轨
         !cameraStreamVideoTrack && previewVideo.srcObject && (cameraStreamVideoTrack = previewVideo.srcObject.getVideoTracks()[0] && previewVideo.srcObject.getVideoTracks()[0].clone());
+        const beautyConfig = {
+            sharpnessLevel: parseInt($("#range-sharp").val()) / 100,
+            lightingLevel: parseInt($("#range-light").val()) / 100,
+            rednessLevel: parseInt($("#range-red").val()) / 100,
+            blurLevel: parseInt($("#range-blur").val()) / 100
+        }
         const res = await zg.setBeautyEffect(
             $("#previewVideo")[0].srcObject,
-            enable,
-            {
-                sharpnessLevel: parseInt($("#range-sharp").val()) / 100,
-                lightingLevel: parseInt($("#range-light").val()) / 100,
-                rednessLevel: parseInt($("#range-red").val()) / 100,
-                blurLevel: parseInt($("#range-blur").val()) / 100
-            }
+            enable, beautyConfig
         );
-        console.warn("setBeautyEffect", res);
+        console.warn("setBeautyEffect", res, beautyConfig);
     }
     $("#range-sharp").on("change", () => { setBeautyEffect(isBeauty) })
     $("#range-light").on("change", () => { setBeautyEffect(isBeauty) })
@@ -221,7 +221,7 @@ $(async () => {
             alert('先创建流');
             return;
         }
-    
+
         // 设置美颜之前保存摄像头视轨
         !cameraStreamVideoTrack && previewVideo.srcObject && (cameraStreamVideoTrack = previewVideo.srcObject.getVideoTracks()[0] && previewVideo.srcObject.getVideoTracks()[0].clone());
 
@@ -237,6 +237,8 @@ $(async () => {
             alert('流不存在');
             return;
         }
+        // 优先保存摄像头视轨
+        !cameraStreamVideoTrack && previewVideo.srcObject && (cameraStreamVideoTrack = previewVideo.srcObject.getVideoTracks()[0] && previewVideo.srcObject.getVideoTracks()[0].clone());
         if (!externalStream) {
             externalStream = await zg.createStream({
                 custom: {
@@ -246,7 +248,6 @@ $(async () => {
             });
             externalStreamVideoTrack = externalStream.getVideoTracks()[0];
             console.log('externalStreamVideoTrack', externalStreamVideoTrack);
-            !cameraStreamVideoTrack && previewVideo.srcObject && (cameraStreamVideoTrack = previewVideo.srcObject.getVideoTracks()[0] && previewVideo.srcObject.getVideoTracks()[0].clone());
         }
 
         zg.replaceTrack(previewVideo.srcObject, externalStreamVideoTrack)
