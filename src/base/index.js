@@ -244,12 +244,9 @@ $(async () => {
                     videoOptimizationMode: $('#videoOptimizationMode').val() ? $('#videoOptimizationMode').val() : "default"
                 }
             });
-        }
-        if (!externalStreamVideoTrack) {
             externalStreamVideoTrack = externalStream.getVideoTracks()[0];
             console.log('externalStreamVideoTrack', externalStreamVideoTrack);
             !cameraStreamVideoTrack && previewVideo.srcObject && (cameraStreamVideoTrack = previewVideo.srcObject.getVideoTracks()[0] && previewVideo.srcObject.getVideoTracks()[0].clone());
-
         }
 
         zg.replaceTrack(previewVideo.srcObject, externalStreamVideoTrack)
@@ -363,6 +360,10 @@ $(async () => {
             if (screenStream) {
                 zg.destroyStream(screenStream)
                 screenStream = null
+            }
+            if (externalStream) {
+                zg.destroyStream(externalStream)
+                externalStream = null
             }
         }
     })
