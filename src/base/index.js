@@ -195,7 +195,7 @@ $(async () => {
             enable,
             {
                 sharpnessLevel: parseInt($("#range-sharp").val()) / 100,
-                lightLevel: parseInt($("#range-light").val()) / 100,
+                lightingLevel: parseInt($("#range-light").val()) / 100,
                 rednessLevel: parseInt($("#range-red").val()) / 100,
                 blurLevel: parseInt($("#range-blur").val()) / 100
             }
