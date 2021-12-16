@@ -189,7 +189,7 @@ $(async () => {
         }
 
         // 设置美颜之前保存摄像头视轨
-        !cameraStreamVideoTrack && previewVideo.srcObject && (cameraStreamVideoTrack = previewVideo.srcObject.getVideoTracks()[0] && previewVideo.srcObject.getVideoTracks()[0].clone());
+        !cameraStreamVideoTrack && previewVideo.srcObject && (cameraStreamVideoTrack = previewVideo.srcObject.getVideoTracks()[0] && previewVideo.srcObject.getVideoTracks()[0]);
         const beautyConfig = {
             sharpnessLevel: parseInt($("#range-sharp").val()) / 100,
             lightingLevel: parseInt($("#range-light").val()) / 100,
@@ -223,7 +223,7 @@ $(async () => {
         }
 
         // 设置美颜之前保存摄像头视轨
-        !cameraStreamVideoTrack && previewVideo.srcObject && (cameraStreamVideoTrack = previewVideo.srcObject.getVideoTracks()[0] && previewVideo.srcObject.getVideoTracks()[0].clone());
+        !cameraStreamVideoTrack && previewVideo.srcObject && (cameraStreamVideoTrack = previewVideo.srcObject.getVideoTracks()[0]);
 
         zg.replaceTrack(previewVideo.srcObject, cameraStreamVideoTrack)
             .then(res => {
@@ -238,7 +238,7 @@ $(async () => {
             return;
         }
         // 优先保存摄像头视轨
-        !cameraStreamVideoTrack && previewVideo.srcObject && (cameraStreamVideoTrack = previewVideo.srcObject.getVideoTracks()[0] && previewVideo.srcObject.getVideoTracks()[0].clone());
+        !cameraStreamVideoTrack && previewVideo.srcObject && (cameraStreamVideoTrack = previewVideo.srcObject.getVideoTracks()[0] && previewVideo.srcObject.getVideoTracks()[0]);
         if (!externalStream) {
             externalStream = await zg.createStream({
                 custom: {
@@ -263,7 +263,7 @@ $(async () => {
             return;
         }
         // 设置美颜之前保存摄像头视轨
-        !cameraStreamVideoTrack && previewVideo.srcObject && (cameraStreamVideoTrack = previewVideo.srcObject.getVideoTracks()[0] && previewVideo.srcObject.getVideoTracks()[0].clone());
+        !cameraStreamVideoTrack && previewVideo.srcObject && (cameraStreamVideoTrack = previewVideo.srcObject.getVideoTracks()[0] && previewVideo.srcObject.getVideoTracks()[0]);
         if (!screenStream) {
             screenStream = await zg.createStream({
                 screen: true
