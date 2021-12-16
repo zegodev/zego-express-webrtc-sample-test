@@ -280,6 +280,35 @@ $(async () => {
             .catch(err => console.error(err));
     });
 
+    (document.querySelector("#addTrack")).addEventListener(
+        "click",
+        async e => {
+            const stream = await zg.createStream();
+            if(cameraStreamVideoTrack) cameraStreamVideoTrack.stop()
+            cameraStreamVideoTrack = stream.getVideoTracks()[0]
+            //@ts-ignore
+            const result = await zg.zegoWebRTC.addTrack(
+                previewVideo.srcObject,
+                cameraStreamVideoTrack
+            );
+
+            console.error(result);
+        }
+    );
+
+    (document.querySelector(
+        "#removeTrack"
+    )).addEventListener("click", async e => {
+        //@ts-ignore
+        const result = await zg.zegoWebRTC.removeTrack(
+            //@ts-ignore
+            previewVideo.srcObject,
+            //@ts-ignore
+            previewVideo.srcObject.getVideoTracks()[0]
+        );
+        console.error(result);
+    });
+
     zg.off('roomStreamUpdate');
     zg.on('roomStreamUpdate', async (roomID, updateType, streamList, extendedData) => {
         console.log('roomStreamUpdate 2 roomID ', roomID, streamList, extendedData);
