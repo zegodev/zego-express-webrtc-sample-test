@@ -191,12 +191,12 @@ $(async () => {
         // 设置美颜之前保存摄像头视轨
         !cameraStreamVideoTrack && previewVideo.srcObject && (cameraStreamVideoTrack = previewVideo.srcObject.getVideoTracks()[0] && previewVideo.srcObject.getVideoTracks()[0]);
         const beautyConfig = {
-            sharpnessLevel: parseInt($("#range-sharp").val()) / 100,
-            lightingLevel: parseInt($("#range-light").val()) / 100,
-            rednessLevel: parseInt($("#range-red").val()) / 100,
-            blurLevel: parseInt($("#range-blur").val()) / 100
+            sharpenIntensity: parseInt($("#range-sharp").val()),
+            whitenIntensity: parseInt($("#range-light").val()),
+            rosyIntensity: parseInt($("#range-red").val()),
+            smoothIntensity: parseInt($("#range-blur").val())
         }
-        const res = await zg.setBeautyEffect(
+        const res = await zg.setEffectsBeauty(
             $("#previewVideo")[0].srcObject,
             enable, beautyConfig
         );
@@ -284,7 +284,7 @@ $(async () => {
         "click",
         async e => {
             const stream = await zg.createStream();
-            if(cameraStreamVideoTrack) cameraStreamVideoTrack.stop()
+            if (cameraStreamVideoTrack) cameraStreamVideoTrack.stop()
             cameraStreamVideoTrack = stream.getVideoTracks()[0]
             //@ts-ignore
             const result = await zg.zegoWebRTC.addTrack(
