@@ -332,29 +332,29 @@ function initSDK() {
             `play#${streamID} videoFPS: ${streamQuality.video.videoFPS} videoBitrate: ${streamQuality.video.videoBitrate} audioBitrate: ${streamQuality.audio.audioBitrate} audioFPS: ${streamQuality.audio.audioFPS}`,
         );
         if (playQualityList[streamID]) {
-          playQualityList[streamID].qualityCount++;
-          const totalVideoBitrate = playQualityList[streamID].totalVideoBitrate + streamQuality.video.videoBitrate;
-          const averVideoBitrate = totalVideoBitrate/playQualityList[streamID].qualityCount;
-          const totalVideoFPS = playQualityList[streamID].totalVideoFPS + streamQuality.video.videoFPS;
-          const averVideoFPS = totalVideoFPS / playQualityList[streamID].qualityCount;
+            playQualityList[streamID].qualityCount++;
+            const totalVideoBitrate = playQualityList[streamID].totalVideoBitrate + streamQuality.video.videoBitrate;
+            const averVideoBitrate = totalVideoBitrate / playQualityList[streamID].qualityCount;
+            const totalVideoFPS = playQualityList[streamID].totalVideoFPS + streamQuality.video.videoFPS;
+            const averVideoFPS = totalVideoFPS / playQualityList[streamID].qualityCount;
 
-          playQualityList[streamID].totalVideoBitrate = totalVideoBitrate;
-          playQualityList[streamID].averVideoBitrate = averVideoBitrate;
-          playQualityList[streamID].totalVideoFPS = totalVideoFPS;
-          playQualityList[streamID].averVideoFPS = averVideoFPS;
+            playQualityList[streamID].totalVideoBitrate = totalVideoBitrate;
+            playQualityList[streamID].averVideoBitrate = averVideoBitrate;
+            playQualityList[streamID].totalVideoFPS = totalVideoFPS;
+            playQualityList[streamID].averVideoFPS = averVideoFPS;
         } else {
-          playQualityList[streamID] = {
-            qualityCount: 1,
-            totalVideoBitrate: 0,
-            averVideoBitrate: 0,
-            totalVideoFPS: 0,
-            averVideoFPS: 0,
-          }
+            playQualityList[streamID] = {
+                qualityCount: 1,
+                totalVideoBitrate: 0,
+                averVideoBitrate: 0,
+                totalVideoFPS: 0,
+                averVideoFPS: 0,
+            }
 
-          playQualityList[streamID].totalVideoBitrate = streamQuality.video.videoBitrate;
-          playQualityList[streamID].averVideoBitrate = streamQuality.video.videoBitrate;
-          playQualityList[streamID].totalVideoFPS = streamQuality.video.videoFPS;
-          playQualityList[streamID].averVideoFPS = streamQuality.video.videoFPS;
+            playQualityList[streamID].totalVideoBitrate = streamQuality.video.videoBitrate;
+            playQualityList[streamID].averVideoBitrate = streamQuality.video.videoBitrate;
+            playQualityList[streamID].totalVideoFPS = streamQuality.video.videoFPS;
+            playQualityList[streamID].averVideoFPS = streamQuality.video.videoFPS;
         }
 
         console.warn("当前视频码率平均值：" + playQualityList[streamID].averVideoBitrate);
@@ -410,6 +410,8 @@ function initSDK() {
     });
 }
 
+
+
 async function login(roomId) {
     // 获取token需要客户自己实现，token是对登录房间的唯一验证
     // Obtaining a token needs to be implemented by the customer. The token is the only verification for the login room.
@@ -422,7 +424,7 @@ async function login(roomId) {
 
     } else if (expireTime) {
         const res = await $.ajax({
-            url: 'https://dev-rangeaudio.zego.cloud/thirdToken/get',
+            url: 'https://sig-liveroom-admin.zego.cloud/thirdToken/get',
             type: "POST",
             data: JSON.stringify({
                 "version": "03",
@@ -498,7 +500,7 @@ async function logout() {
 
     roomList.splice(roomList.findIndex(room => room == roomId), 1);
 
-    if (previewVideo.srcObject  && (!roomId || roomList.length == 0)) {
+    if (previewVideo.srcObject && (!roomId || roomList.length == 0)) {
         previewVideo.srcObject = null;
         zg.stopPublishingStream(publishStreamId);
         zg.destroyStream(localStreamMap[roomId]);
@@ -532,7 +534,7 @@ async function publish(constraints, isNew) {
             videoInput: $('#videoList').val(),
             video: video !== undefined ? video : $('#videoList').val() === '0' ? false : true,
             audio: $('#audioList').val() === '0' ? false : true,
-            videoOptimizationMode: $('#videoOptimizationMode').val()? $('#videoOptimizationMode').val() : "default"
+            videoOptimizationMode: $('#videoOptimizationMode').val() ? $('#videoOptimizationMode').val() : "default"
             // channelCount: constraints && constraints.camera && constraints.camera.channelCount,
         },
     };
@@ -612,7 +614,7 @@ $('#enterRoom').click(async () => {
                     videoInput: $('#videoList').val(),
                     video: $('#videoList').val() === '0' ? false : true,
                     audio: $('#audioList').val() === '0' ? false : true,
-                    videoOptimizationMode: $('#videoOptimizationMode').val()? $('#videoOptimizationMode').val() : "default"
+                    videoOptimizationMode: $('#videoOptimizationMode').val() ? $('#videoOptimizationMode').val() : "default"
                 },
             });
             previewVideo.srcObject = localStreamMap[currentRoomID];
