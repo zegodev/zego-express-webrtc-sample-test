@@ -28,6 +28,7 @@ let localStreamMap = {}
 let publishType;
 
 let l3;
+let auth;
 let roomList = [];
 let playQualityList = {};
 
@@ -35,7 +36,7 @@ let playQualityList = {};
 // 测试用代码，开发者请忽略
 // Test code, developers please ignore
 
-({ appID, server, cgiToken, userID, l3 } = getCgi(appID, server, cgiToken));
+({ appID, server, cgiToken, userID, l3, auth } = getCgi(appID, server, cgiToken));
 if (userID == "") {
     userID = 'sample' + new Date().getTime();
     $("#custom-userid").text(userID)
@@ -450,28 +451,31 @@ async function login(roomId) {
         //测试用结束
         //Test code end
     } else {
-        // token = await $.get('https://wsliveroom-alpha.zego.im:8282/token', {
-        //    app_id: appID,
-        //    id_name: userID,
-        // });
-        const res = await $.ajax({
-            url: 'https://sig-liveroom-admin.zego.cloud/thirdToken/get',
-            type: "POST",
-            data: JSON.stringify({
-                "version": "03",
-                "appId": appID,
-                "idName": userID,
-                "roomId": roomId,
-                "privilege": {
-                    "1": 1,
-                    "2": 1
-                },
-                "expire_time": expireTime
-            }),
-            dataType: "json",
-            contentType: "application/json; charset=utf-8"
-        })
-        token = res.data.token;
+        if (auth) {
+            const res = await $.ajax({
+                url: 'https://sig-liveroom-admin.zego.cloud/thirdToken/get',
+                type: "POST",
+                data: JSON.stringify({
+                    "version": "03",
+                    "appId": appID,
+                    "idName": userID,
+                    "roomId": roomId,
+                    "privilege": {
+                        "1": 1,
+                        "2": 1
+                    },
+                    "expire_time": expireTime
+                }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8"
+            })
+            token = res.data.token;
+        } else {
+            token = await $.get('https://wsliveroom-alpha.zego.im:8282/token', {
+                app_id: appID,
+                id_name: userID,
+            });
+        }
     }
     await zg.loginRoom(roomId, token, { userID, userName }, { userUpdate: true });
 
