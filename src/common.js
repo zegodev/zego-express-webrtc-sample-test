@@ -464,7 +464,7 @@ async function login(roomId) {
                         "1": 1,
                         "2": 1
                     },
-                    "expire_time": expireTime
+                    "expire_time": 3000
                 }),
                 dataType: "json",
                 contentType: "application/json; charset=utf-8"
