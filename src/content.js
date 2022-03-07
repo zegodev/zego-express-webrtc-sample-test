@@ -33,6 +33,7 @@ export function getCgi(appId, serverUrl, cgi) {
     let l3 = false;
     let isPeer = false;
     let auth = false;
+    let ver = '00';
     if (location.search) {
         const arrConfig = location.search.substr(1).split('&');
 
@@ -64,6 +65,10 @@ export function getCgi(appId, serverUrl, cgi) {
               userID = value;
             }
 
+            if (key == 'ver') {
+                ver = value;
+              }
+
             if (key == 'l3') {
               l3 = decodeURIComponent(value) == 'true' ? true : false;
             }
@@ -77,7 +82,7 @@ export function getCgi(appId, serverUrl, cgi) {
             }
         });
     }
-    return { appID, server, cgiToken, userID, l3, auth, isPeer };
+    return { appID, server, cgiToken, userID, l3, auth, isPeer, ver };
     // 测试用代码 end
     // Test code end
 }

@@ -21,9 +21,10 @@ $(async () => {
     // --- test begin
     $('#publish').click(() => {
         const publishStreamID = new Date().getTime() + '';
-
+        const stream = $('#publish-stream').val();
+        window.publishTime = new Date().getTime();
         // !cameraStreamVideoTrack && previewVideo.srcObject && (cameraStreamVideoTrack = previewStream.getVideoTracks()[0] && previewStream.getVideoTracks()[0].clone());
-        const result = zg.startPublishingStream(publishStreamID, previewStream ? previewStream : previewVideo.srcObject, { roomID: $('#roomId').val() });
+        const result = zg.startPublishingStream(stream || publishStreamID, previewStream ? previewStream : previewVideo.srcObject, { roomID: $('#roomId').val() });
         published = true;
         console.log('publish stream' + publishStreamID, result);
     });

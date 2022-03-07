@@ -31,12 +31,13 @@ let l3;
 let auth;
 let roomList = [];
 let playQualityList = {};
+let ver;
 
 
 // 测试用代码，开发者请忽略
 // Test code, developers please ignore
 
-({ appID, server, cgiToken, userID, l3, auth } = getCgi(appID, server, cgiToken));
+({ appID, server, cgiToken, userID, l3, auth, ver } = getCgi(appID, server, cgiToken));
 if (userID == "") {
     userID = 'sample' + new Date().getTime();
     $("#custom-userid").text(userID)
@@ -200,6 +201,13 @@ function initSDK() {
         console.warn('publisherStateUpdate: ', result.streamID, result.state, result);
         if (result.state == 'PUBLISHING') {
             console.info(' publish  success ' + result.streamID);
+            const now = new Date().getTime();
+            const pushConsumed = now - window.publishTime;
+            console.warn("推流耗时 " + pushConsumed);
+
+            const publishConsumed = now - window.loginTime;
+            console.warn('登录推流耗时 ' + publishConsumed);
+            
         } else if (result.state == 'PUBLISH_REQUESTING') {
             console.info(' publish  retry');
         } else {
@@ -261,7 +269,7 @@ function initSDK() {
         console.warn(`streamExtraInfoUpdate: room ${roomID},  `, JSON.stringify(streamList));
     });
     zg.on('roomStreamUpdate', async (roomID, updateType, streamList, extendedData) => {
-        console.warn('roomStreamUpdate 1 roomID ', roomID, streamList, extendedData);
+        console.warn('roomStreamUpdate 1 roomID ', roomID, updateType, streamList, extendedData);
         // let queue = []
         if (updateType == 'ADD') {
             for (let i = 0; i < streamList.length; i++) {
@@ -451,12 +459,17 @@ async function login(roomId) {
         //测试用结束
         //Test code end
     } else {
-        if (auth) {
+        if (ver == '00') {
+            token = await $.get('https://wsliveroom-alpha.zego.im:8282/token', {
+                app_id: appID,
+                id_name: userID,
+            });
+        } else {
             const res = await $.ajax({
                 url: 'https://sig-liveroom-admin.zego.cloud/thirdToken/get',
                 type: "POST",
                 data: JSON.stringify({
-                    "version": "03",
+                    "version": ver,
                     "appId": appID,
                     "idName": userID,
                     "roomId": roomId,
@@ -470,14 +483,13 @@ async function login(roomId) {
                 contentType: "application/json; charset=utf-8"
             })
             token = res.data.token;
-        } else {
-            token = await $.get('https://wsliveroom-alpha.zego.im:8282/token', {
-                app_id: appID,
-                id_name: userID,
-            });
-        }
+        } 
     }
+
+    window.loginTime = new Date().getTime();
     await zg.loginRoom(roomId, token, { userID, userName }, { userUpdate: true });
+    const loginConsumed = new Date().getTime() -  window.loginTime;
+    console.warn('登录房间耗时 ' + loginConsumed);
 
     roomList.push(roomId);
 
@@ -576,8 +588,11 @@ async function push(constraints, publishOption = {}, isNew) {
         if (localStreamMap[currentRoomID]) {
             zg.destroyStream(localStreamMap[currentRoomID])
         }
-        localStreamMap[currentRoomID] = await zg.createStream(constraints);
 
+        const previewTime = new Date().getTime();
+        localStreamMap[currentRoomID] = await zg.createStream(constraints);
+        const previewConsumed = new Date().getTime() - previewTime;
+        console.warn('预览耗时 ' + previewConsumed);
         // var AudioContext = window.AudioContext || window.webkitAudioContext; // 兼容性
         // let localTrack= localStream.getAudioTracks()[0];
         // let audioContext = new AudioContext();// 创建Audio上下文
@@ -600,6 +615,7 @@ async function push(constraints, publishOption = {}, isNew) {
         if (zg.zegoWebRTM.stateCenter.isMultiRoom) {
             completeStreamID = publishOption.roomID + "-" + publishStreamId
         }
+        window.publishTime = new Date().getTime();
         const result = zg.startPublishingStream(completeStreamID, localStreamMap[currentRoomID], publishOption);
         console.log('publish stream' + completeStreamID, result);
     } catch (err) {
@@ -630,6 +646,7 @@ $('#enterRoom').click(async () => {
             if (localStreamMap[currentRoomID]) {
                 zg.destroyStream(localStreamMap[currentRoomID])
             }
+            const previewTime = new Date().getTime();
             localStreamMap[currentRoomID] = await zg.createStream({
                 camera: {
                     audioInput: $('#audioList').val(),
@@ -639,6 +656,8 @@ $('#enterRoom').click(async () => {
                     videoOptimizationMode: $('#videoOptimizationMode').val() ? $('#videoOptimizationMode').val() : "default"
                 },
             });
+            const previewConsumed = new Date().getTime() - previewTime;
+            console.warn('预览耗时 ' + previewConsumed);
             previewVideo.srcObject = localStreamMap[currentRoomID];
             isPreviewed = true;
             $('#videoList').val() === '0' && (previewVideo.controls = true);
