@@ -33,6 +33,8 @@ let roomList = [];
 let playQualityList = {};
 let ver;
 
+let publishTimes = {};
+
 
 // 测试用代码，开发者请忽略
 // Test code, developers please ignore
@@ -207,10 +209,20 @@ function initSDK() {
 
             const publishConsumed = now - window.loginTime;
             console.warn('登录推流耗时 ' + publishConsumed);
+
+            if (publishTimes[result.streamID]) {
+                const publishRetryConsumed = now - publishTimes[result.streamID];
+                console.warn('推流节点耗时 ' + publishRetryConsumed)
+                delete publishTimes[result.streamID];;
+            }
             
         } else if (result.state == 'PUBLISH_REQUESTING') {
             console.info(' publish  retry');
+            if (result.errorCode !== 0 && !publishTimes[result.streamID]) {
+                publishTimes[result.streamID] = new Date().getTime();
+            }
         } else {
+            delete publishTimes[result.streamID];
             if (result.errorCode == 0) {
                 console.warn('publish stop ' + result.errorCode + ' ' + result.extendedData);
             } else {

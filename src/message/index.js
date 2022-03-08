@@ -104,10 +104,12 @@ $(async () => {
                 alert('roomId is empty');
                 return false;
             }
+            const sendTime = new Date().getTime();
             const result = await zg.sendBroadcastMessage(roomId, textContent);
             console.log('', result);
             if (result.errorCode === 0) {
-                console.warn('send Message success');
+                const consumed = new Date().getTime() - sendTime;
+                console.warn('send Message success ' + consumed);
             } else {
                 console.error('send Message fail ', result.errorCode);
             }
@@ -138,9 +140,11 @@ $(async () => {
             return;
         }
         const roomId= $('#roomId').val() ;
+        const sendTime = new Date().getTime();
         const result = await zg.sendCustomCommand(roomId, 'test', [$('#memberList').val() ]);
         if (result.errorCode === 0) {
-            console.warn('sendCustomCommand suc');
+            const consumed = new Date().getTime() - sendTime;
+            console.warn('sendCustomCommand suc ' + consumed);
         } else {
             console.error('sendCustomCommand err', result.errorCode);
         }
@@ -156,10 +160,12 @@ $(async () => {
             alert('roomId is empty');
             return false;
         }
+        const sendTime = new Date().getTime();
         const result = await zg.sendBarrageMessage(roomId, 'BarrageMessage test');
         console.log('', result);
         if (result.errorCode === 0) {
-            console.warn('send BarrageMessage success');
+            const consumed = new Date().getTime() - sendTime;
+            console.warn('send BarrageMessage success ' + consumed);
         } else {
             console.error('send BarrageMessage fail ', result.errorCode);
         }
