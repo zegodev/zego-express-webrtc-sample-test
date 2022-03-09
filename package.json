@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack",
-    "dev": "webpack-dev-server"
+    "dev": "webpack-dev-server",
+    "upload": "scp -r ./docs root@192.168.100.30:/opt/dev/express_webrtc/docs",
+    "deploy": "npm run build && npm run upload"
   },
   "author": "choui",
   "license": "ISC",
