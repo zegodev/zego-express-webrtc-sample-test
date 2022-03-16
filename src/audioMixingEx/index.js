@@ -90,14 +90,36 @@ $(async () => {
         
         $('#unloadEffect')[0].disabled = false;
     });
-
+    $('#playEffectWithPath').click(() => {
+        if(!effectId) {
+            alert("需要指定播放音效id")
+        }
+        const id = effectId
+        effectPlayer.start(
+            id,
+            {path:$("#musicPath").val()},
+            () => {
+                isMixingAudio = true;
+                
+                $('#pauseEffect')[0].disabled = false;
+                 
+                $('#resumeEffect')[0].disabled = false;
+                
+                $('#stopEffect')[0].disabled = false;
+                $("#unloadEffect")[0].disabled = false
+                console.warn('start play');
+            },
+            () => {
+                isMixingAudio = false;
+                alert("音效播放结束 "+ id)
+                console.warn('play end'+ id);
+            },
+        );
+    });
     $('#playEffect').click(() => {
         if(!effectId) {
             alert("需要指定播放音效id")
         }
-        // if(!effectPlayer) {
-        //     effectPlayer = zg.createAudioEffectPlayer(document.querySelector("#previewVideo").srcObject)
-        // }
         const id = effectId
         effectPlayer.start(
             id,

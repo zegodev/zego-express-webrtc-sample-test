@@ -99,10 +99,13 @@
             <button type="button" id="resumeEffect" class="btn btn-primary btn-sm" disabled>恢复音效</button>
             <button type="button" id="stopEffect" class="btn btn-primary btn-sm" disabled>停止音效</button>
             <button type="button" id="unloadEffect" class="btn btn-primary btn-sm" disabled>释放音效</button> 
-            <button type="button" id="mixingBuffer" class="btn btn-primary btn-sm realTimeMix">实时混音</button>
-            <button type="button" id="stopMixingBuffer" class="btn btn-primary btn-sm stopRealTimeMix">停止实时混音</button>
+            <button type="button" id="mixingBuffer" class="btn btn-primary btn-sm">mixingBuffer实时混音</button>
+            <button type="button" id="stopMixingBuffer" class="btn btn-primary btn-sm">stopMixingBuffer停止实时混音</button>
             <input type="range" id="progress" min="0" max="100" value="0">
-            <button type="button" id="seekTo" class="btn btn-primary btn-sm ">指定播放位置</button>
+            <button type="button" id="seekTo" class="btn btn-primary btn-sm ">设置进度</button>
+            音效文件： <input type="text" id="musicPath" value="https://storage.zego.im/demo/tonight.m4a">
+            <button type="button" id="playEffectWithPath" class="btn btn-primary btn-sm">加载并播放音效</button>
+         
         </div>
         <div class="row videoRow">
             <div class="col-sm">
