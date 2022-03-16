@@ -26,7 +26,7 @@
         }
     </style>
     <title class="mixAudio">混音</title>
-<link href="../index.8f573908.css" rel="stylesheet"></head>
+</head>
 <body class="bg-f2">
 <div class="container">
 
@@ -76,26 +76,33 @@
                 <button type="button" id="createRoom" class="btn btn-primary btn-sm enterRoomPush">创建房间</button>
                 <button type="button" id="openRoom" class="btn btn-primary btn-sm enterRoomPlay">进入房间</button>
                 <button type="button" id="leaveMixRoom" class="btn btn-secondary btn-sm leaveRoom">退出</button>
-
                 <button type="button" id="MixAudio" class="btn btn-primary btn-sm mixAudio">混音</button>
                 <button type="button" id="stopMixAudio" class="btn btn-primary btn-sm stopMixAudio">停止混音</button>
-                <button type="button" id="mixingBuffer" class="btn btn-primary btn-sm realTimeMix">实时混音</button>
-                <button type="button" id="stopMixingBuffer" class="btn btn-primary btn-sm stopRealTimeMix">停止实时混音</button>
-                <button type="button" id="preloadEffect" class="btn btn-primary btn-sm">预加载音效资源</button>
-                <button type="button" id="playEffect" class="btn btn-primary btn-sm" disabled>播放音效</button>
-                <button type="button" id="pauseEffect" class="btn btn-primary btn-sm" disabled>暂停音效</button>
                 <button type="button" id="toggleSpeaker" class="btn btn-primary btn-sm enableMicrophone">启用/关闭麦克风</button>
-                <button type="button" id="resumeEffect" class="btn btn-primary btn-sm" disabled>恢复音效</button>
-                <button type="button" id="stopEffect" class="btn btn-primary btn-sm" disabled>停止音效</button>
-                <button type="button" id="unloadEffect" class="btn btn-primary btn-sm" disabled>释放音效</button>
+               
             </div>
         </div>
+        <br>
 
         <div class="col-sm">
             <audio id="extenerVideo1" src="https://storage.zego.im/demo/tonight.m4a" muted playsinline controls loop crossOrigin="anonymous"></audio>
             音量 <input type="range" id="volume1" min="0" max="100" value="100">
             <audio id="extenerVideo2" src="https://storage.zego.im/demo/oldman.m4a" muted playsinline controls loop crossOrigin="anonymous"></audio>
             音量 <input type="range" id="volume2" min="0" max="100" value="100">
+        </div>
+        <div class="row">
+            音效id: <input type="text" id="effectId" value="1">
+           
+            <button type="button" id="preloadEffect" class="btn btn-primary btn-sm">预加载音效资源</button>
+            <button type="button" id="playEffect" class="btn btn-primary btn-sm" disabled>播放音效</button>
+            <button type="button" id="pauseEffect" class="btn btn-primary btn-sm" disabled>暂停音效</button>
+            <button type="button" id="resumeEffect" class="btn btn-primary btn-sm" disabled>恢复音效</button>
+            <button type="button" id="stopEffect" class="btn btn-primary btn-sm" disabled>停止音效</button>
+            <button type="button" id="unloadEffect" class="btn btn-primary btn-sm" disabled>释放音效</button> 
+            <button type="button" id="mixingBuffer" class="btn btn-primary btn-sm realTimeMix">实时混音</button>
+            <button type="button" id="stopMixingBuffer" class="btn btn-primary btn-sm stopRealTimeMix">停止实时混音</button>
+            <input type="range" id="progress" min="0" max="100" value="0">
+            <button type="button" id="seekTo" class="btn btn-primary btn-sm ">指定播放位置</button>
         </div>
         <div class="row videoRow">
             <div class="col-sm">
@@ -110,6 +117,6 @@
 </div>
 
 
-<script type="text/javascript" src="../audioMixing/audioMixing.bundle.js"></script></body>
+</body>
 
 </html>

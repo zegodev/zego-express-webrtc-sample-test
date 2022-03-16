@@ -20,6 +20,7 @@ let cgiToken = '';
 //const appSign = '';
 let previewVideo;
 let useLocalStreamList = [];
+let effectPlayer = null
 let isPreviewed = false;
 let supportScreenSharing = false;
 let loginRoom = false;
@@ -407,7 +408,7 @@ function initSDK() {
         });
     });
     zg.on("deviceError", async (errorCode, deviceName) => {
-        console.log("deviceError", errorCode, deviceName);
+        console.warn("deviceError", errorCode, deviceName);
         const deviceInfo = await zg.enumDevices();
         const cameras = deviceInfo.cameras;
         const micList = deviceInfo.microphones;
@@ -629,6 +630,9 @@ async function push(constraints, publishOption = {}, isNew) {
         }
         window.publishTime = new Date().getTime();
         const result = zg.startPublishingStream(completeStreamID, localStreamMap[currentRoomID], publishOption);
+        zg.createAudioEffectPlayer&& (effectPlayer = zg.createAudioEffectPlayer(
+            localStreamMap[currentRoomID]
+          ))
         console.log('publish stream' + completeStreamID, result);
     } catch (err) {
         if (err.name) {
@@ -696,6 +700,7 @@ export {
     loginRoom,
     publishType,
     l3,
+    effectPlayer,
     enumDevices
 };
 
