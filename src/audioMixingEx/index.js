@@ -182,6 +182,7 @@ $(async () => {
         audioEffectList.forEach(effect => {
             zg.zegoWebRTC.unloadEffect(effect.effectId) && num++;
         });
+        effectId && zg.zegoWebRTC.unloadEffect(effectId)
 
         if (num === audioEffectList.length) {
             console.warn('all unload success');
