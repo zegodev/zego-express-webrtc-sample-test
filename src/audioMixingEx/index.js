@@ -79,15 +79,16 @@ $(async () => {
         logout();
     });
 
-    $('#preloadEffect').click(()=> {
-        audioEffectList.forEach(async effect => {
-            await zg.preloadAudioEffect(effect.effectId, effect.path)
+    $('#preloadEffect').click(async ()=> {
+        await Promise.all(audioEffectList.map(async effect=>{
+            const res = await zg.preloadAudioEffect(effect.effectId, effect.path)
+            console.warn('preload success '  + res);   
+            return res
+        }))
 
-            console.warn('preload success '  + effect.effectId);   
-            $('#playEffect')[0].disabled = false;
-            
-            $('#unloadEffect')[0].disabled = false;
-        });
+        $('#playEffect')[0].disabled = false;
+        
+        $('#unloadEffect')[0].disabled = false;
     });
 
     $('#playEffect').click(() => {
