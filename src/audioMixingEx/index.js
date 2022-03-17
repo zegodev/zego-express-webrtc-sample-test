@@ -53,7 +53,7 @@ $(async () => {
         xhr.onload = () => {
             if (xhr.status == 200 || xhr.status == 304) {
                 const buffer = xhr.response;
-                zg.zegoWebRTC.mixingBuffer(publishStreamId, '1', buffer, (err) => {
+                zg.zegoWebRTC.mixingBuffer(publishStreamId,effectId, buffer, (err) => {
                     if (err) {
                         console.error(err);
                     } else {
@@ -68,7 +68,7 @@ $(async () => {
     });
 
     $('#stopMixingBuffer').click(function() {
-        zg.zegoWebRTC.stopMixingBuffer(publishStreamId, '1');
+        zg.zegoWebRTC.stopMixingBuffer(publishStreamId, effectId);
     });
 
     $('#leaveMixRoom').click(function() {
@@ -123,6 +123,7 @@ $(async () => {
         const id = effectId
         effectPlayer.start(
             id,
+            undefined,
             () => {
                 isMixingAudio = true;
                 
