@@ -94,6 +94,8 @@ $(async () => {
         if(!effectId) {
             alert("需要指定播放音效id")
         }
+     
+        if(!effectPlayer)  alert("推流前不支持调用")
         const id = effectId
         effectPlayer.start(
             id,
@@ -120,6 +122,7 @@ $(async () => {
         if(!effectId) {
             alert("需要指定播放音效id")
         }
+        if(!effectPlayer)  alert("推流前不支持调用")
         const id = effectId
         effectPlayer.start(
             id,
@@ -148,14 +151,17 @@ $(async () => {
     });
 
     $('#pauseEffect').click(() => {
+        if(!effectPlayer)  alert("推流前不支持调用")
         effectPlayer.pause(effectId);
     });
 
     $('#resumeEffect').click(() => {
+        if(!effectPlayer)  alert("推流前不支持调用")
         effectPlayer.resume(effectId);
     });
 
     $('#stopEffect').click(() => {
+        if(!effectPlayer)  alert("推流前不支持调用")
         effectPlayer.stop(effectId);
         if(!effectId) {
 
@@ -170,6 +176,7 @@ $(async () => {
         if(!effectId) {
             alert("no effectId")
         }
+        if(!effectPlayer)  alert("推流前不支持调用")
         const total = effectPlayer.getTotalDuration(effectId)
         const origin = effectPlayer.getCurrentProgress(effectId)
         const progress = (($("#progress").val()||0)/100) * total
