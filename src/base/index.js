@@ -1,5 +1,5 @@
-import { checkAnRun, zg, useLocalStreamList, enterRoom, previewVideo, logout, publish, publishStreamId, l3, enumDevices } from '../common';
-import { getBrowser } from '../assets/utils';
+import { checkAnRun, zg, useLocalStreamList, enterRoom, previewVideo, logout, publish, publishStreamId, l3, sei, enumDevices } from '../common';
+import { getBrowser, decodeString, encodeString } from '../assets/utils';
 
 let playOption = {};
 // --test begin
@@ -32,6 +32,7 @@ $(async () => {
     $('#useVideo').click(() => {
         zg.useVideoDevice(previewVideo.srcObject, $('#videoList').val());
     });
+    
 
     $('#useAudio').click(() => {
         zg.useAudioDevice(previewVideo.srcObject, $('#audioList').val());
@@ -351,6 +352,7 @@ $(async () => {
 
                 if ($("#videoCodec").val()) playOption.videoCodec = $("#videoCodec").val();
                 if (l3 == true) playOption.resourceMode = 2;
+                playOption.isSeiStart = sei;
 
                 zg.startPlayingStream(streamList[i].streamID, playOption).then(stream => {
                     remoteStream = stream;

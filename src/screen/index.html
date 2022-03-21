@@ -210,7 +210,18 @@
           </div>
         </div>
       </div>
-
+      <div class="row">
+        <div class="col-sm">
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="seiInfo"><strong class="text-gray-dark ">媒体次要信息</strong></label>
+            </div>
+            <!-- <input type="label" class="form-control d-inline" style="width: 180px"
+              placeholder="userid"> -->
+            <input type="text" class="form-control d-inline" id="seiInfo" style="width: 75%;" placeholder="seiInfo">
+          </div>
+        </div>
+      </div>
 
       <div class="row">
         <div class="col-sm">
@@ -218,6 +229,7 @@
           <button type="button" id="openRoom" class=" btn btn-primary btn-sm enterRoomPlay">进入房间</button>
           <button type="button" id="screenShot" class="btn btn-primary btn-sm screenSharingContent">捕捉屏幕</button>
           <button type="button" id="rangeScreenShare" class="btn btn-primary btn-sm">区域屏幕共享</button>
+          <button type="button" id="sendSEI" class="btn btn-primary btn-sm">发送SEI</button>
           <button type="button" id="stopScreenShot" class="btn btn-primary btn-sm stopScreenSharing">停止捕捉</button>
           <button type="button" id="enterRoom" class="btn btn-primary btn-sm">进房预览</button>
           <button type="button" id="publish" class="btn btn-primary btn-sm">推流</button>

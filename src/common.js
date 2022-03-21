@@ -4,7 +4,7 @@ import './assets/bootstrap.min';
 import './assets/bootstrap.min.css';
 import { ZegoExpressEngine } from 'zego-express-engine-webrtc';
 import { getCgi } from './content';
-import { getBrowser } from './assets/utils';
+import { getBrowser, decodeString, encodeString } from './assets/utils';
 
 new VConsole();
 const userName = 'sampleUser' + new Date().getTime();
@@ -33,14 +33,17 @@ let auth;
 let roomList = [];
 let playQualityList = {};
 let ver;
+let sei;
 
 let publishTimes = {};
+
+let completeStreamID;
 
 
 // 测试用代码，开发者请忽略
 // Test code, developers please ignore
 
-({ appID, server, cgiToken, userID, l3, auth, ver } = getCgi(appID, server, cgiToken));
+({ appID, server, cgiToken, userID, l3, auth, ver, sei } = getCgi(appID, server, cgiToken));
 if (userID == "") {
     userID = 'sample' + new Date().getTime();
     $("#custom-userid").text(userID)
@@ -153,6 +156,15 @@ async function start() {
     $('#resumePlaySound').click(() => {
         zg.setSoundLevelDelegate(false);
         zg.setSoundLevelDelegate(true);
+    });
+
+    $('#sendSEI').click(() => {
+        const seiInfo = $('#seiInfo').val();
+        if (!seiInfo) {
+            alert('未填写SEI');
+            return;
+        }
+        zg.sendSEI(publishStreamId, encodeString(seiInfo));
     });
 }
 
@@ -293,6 +305,8 @@ function initSDK() {
                 if ($("#videoCodec").val()) playOption.videoCodec = $("#videoCodec").val();
                 if (l3 == true) playOption.resourceMode = 2;
 
+                playOption.isSeiStart = sei;
+
                 zg.startPlayingStream(streamList[i].streamID, playOption).then(stream => {
                     remoteStream = stream;
                     useLocalStreamList.push(streamList[i]);
@@ -430,6 +444,14 @@ function initSDK() {
     zg.on('tokenWillExpire', (roomID) => {
         console.warn('tokenWillExpire', roomID);
     });
+    zg.on("playerRecvSEI", (streamID, uintArray) => {
+        // const str = decodeString(seiBuf);
+        console.warn(
+          "recv " + streamID + " sei ",
+          uintArray,
+        decodeString(uintArray.subarray(4))
+        );
+    })
 }
 
 
@@ -624,7 +646,8 @@ async function push(constraints, publishOption = {}, isNew) {
         isNew && (publishStreamId = 'webrtc' + new Date().getTime());
         if ($("#videoCodec").val()) publishOption.videoCodec = $("#videoCodec").val();
         publishOption.roomID = currentRoomID;
-        let completeStreamID = publishStreamId
+        publishOption.isSeiStart = sei;
+        completeStreamID = publishStreamId
         if (zg.zegoWebRTM.stateCenter.isMultiRoom) {
             completeStreamID = publishOption.roomID + "-" + publishStreamId
         }
@@ -700,6 +723,7 @@ export {
     loginRoom,
     publishType,
     l3,
+    sei,
     effectPlayer,
     enumDevices
 };

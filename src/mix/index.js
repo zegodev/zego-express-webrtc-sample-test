@@ -1,7 +1,9 @@
 import '../common';
 import { checkAnRun, logout, publishStreamId, useLocalStreamList, zg } from '../common';
 import { getBrowser } from '../assets/utils';
-import flvjs from 'flv.js';
+// import flvjs from 'flv.js';
+import flvjs from '../assets/flv.min.js';
+import { utf8ByteDecode } from '../assets/utils';
 
 $(async () => {
     await checkAnRun();
@@ -42,6 +44,9 @@ $(async () => {
                 });
             }
 
+            zg.setMixerTaskConfig({
+                userdata: "zegozegozegozego"
+            })
             const res = await zg.startMixerTask({
                 taskID,
                 inputList: streamList,
@@ -80,6 +85,9 @@ $(async () => {
                             type: 'flv',
                             url: flvUrl,
                         });
+                        flvjs.exportSEI((res) => {
+                            console.log('获得了SEI信息', res, utf8ByteDecode(res));
+                        })
                         flvPlayer.attachMediaElement(mixVideo);
                         flvPlayer.load();
                     }

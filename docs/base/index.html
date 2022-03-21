@@ -25,7 +25,7 @@
     }
   </style>
   <title class="base">推拉流基础功能</title>
-<link href="../index.8f573908.css" rel="stylesheet"></head>
+<link href="../index.733ddcec.css" rel="stylesheet"></head>
 
 <body class="bg-f2">
   <div class="container">
@@ -318,10 +318,23 @@
       </div>
       <div class="row">
         <div class="col-sm">
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="seiInfo"><strong class="text-gray-dark ">媒体次要信息</strong></label>
+            </div>
+            <!-- <input type="label" class="form-control d-inline" style="width: 180px"
+              placeholder="userid"> -->
+            <input type="text" class="form-control d-inline" id="seiInfo" style="width: 75%;" placeholder="seiInfo">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm">
           <button type="button" id="createRoom" class="btn btn-primary btn-sm enterRoomPush">进入房间（推流）</button>
           <button type="button" id="enterRoom" class="btn btn-primary btn-sm">进房预览</button>
           <button type="button" id="publish" class="btn btn-primary btn-sm">推流</button>
           <button type="button" id="openRoom" class="btn btn-primary btn-sm enterRoomPlay">进入房间（不推流）</button>
+          <button type="button" id="sendSEI" class="btn btn-primary btn-sm">发送SEI</button>
           <button type="button" id="useVideo" class="btn btn-secondary btn-sm">更改视频输入设备</button>
           <button type="button" id="useAudio" class="btn btn-secondary btn-sm">更改音频输入设备</button>
           <button type="button" id="toggleCamera" class="btn btn-primary btn-sm enableCamera">开关视频</button>
