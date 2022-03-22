@@ -164,7 +164,10 @@ async function start() {
             alert('未填写SEI');
             return;
         }
-        zg.sendSEI(publishStreamId, encodeString(seiInfo));
+        const seiArray = encodeString(seiInfo);
+        $('#seibytelen').text('' + seiArray.byteLength)
+        zg.sendSEI(publishStreamId, seiArray);
+        console.warn('发送 SEI ', seiInfo)
     });
 }
 
@@ -447,10 +450,19 @@ function initSDK() {
     zg.on("playerRecvSEI", (streamID, uintArray) => {
         // const str = decodeString(seiBuf);
         console.warn(
-          "recv " + streamID + " sei ",
-          uintArray,
-        decodeString(uintArray.subarray(4))
-        );
+            "recv " + streamID + " sei ",
+            uintArray,
+          );
+        let offset = 0;
+        let mediaSideInfoType = 0;
+        mediaSideInfoType = uintArray[offset++] << 24;
+        mediaSideInfoType |= uintArray[offset++] << 16;
+        mediaSideInfoType |= uintArray[offset++] << 8;
+        mediaSideInfoType |= uintArray[offset++];
+
+        const seiContent = decodeString(uintArray.subarray(4));
+        
+        console.warn('收到 SEI ', mediaSideInfoType, seiContent)
     })
 }
 

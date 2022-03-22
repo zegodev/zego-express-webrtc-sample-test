@@ -121,18 +121,18 @@ $(async () => {
         resultDiv.innerHTML = value + ": " + JSON.stringify(res);
     })
 
-    // $('#mutePlayStreamVideo').click(() => {
-    //     useLocalStreamList.forEach(item => {
-    //         zg.zegoWebRTC.mutePlayStreamVideo(item.streamID, !$(this).hasClass('disabled'));
-    //     })
-    //     $(this).toggleClass('disabled');
-    // })
-    // $('#mutePlayStreamAudio').click(() => {
-    //     useLocalStreamList.forEach(item => {
-    //         zg.zegoWebRTC.mutePlayStreamAudio(item.streamID, !$(this).hasClass('disabled'));
-    //     })
-    //     $(this).toggleClass('disabled');
-    // })
+    $('#mutePlayStreamVideo').click(() => {
+        useLocalStreamList.forEach(item => {
+            zg.zegoWebRTC.mutePlayStreamVideo(item.streamID, !$(this).hasClass('disabled'));
+        })
+        $(this).toggleClass('disabled');
+    })
+    $('#mutePlayStreamAudio').click(() => {
+        useLocalStreamList.forEach(item => {
+            zg.zegoWebRTC.mutePlayStreamAudio(item.streamID, !$(this).hasClass('disabled'));
+        })
+        $(this).toggleClass('disabled');
+    })
 
     $("#custom-resetToken").click(() => {
         const token = $("#custom-token").val()
