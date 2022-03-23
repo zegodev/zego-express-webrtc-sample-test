@@ -295,8 +295,7 @@
             <div class="input-group-prepend">
               <label class="input-group-text" for="publish-stream"><strong class="text-gray-dark ">推流ID</strong></label>
             </div>
-            <input type="text" class="form-control d-inline" id="publish-stream" style="width: 75%;"
-              placeholder="流ID ">
+            <input type="text" class="form-control d-inline" id="publish-stream" style="width: 75%;" placeholder="流ID ">
           </div>
         </div>
       </div>
@@ -326,6 +325,7 @@
           <button type="button" id="useAudio" class="btn btn-secondary btn-sm">更改音频输入设备</button>
           <button type="button" id="toggleCamera" class="btn btn-primary btn-sm enableCamera">开关视频</button>
           <button type="button" id="toggleSpeaker" class="btn btn-primary btn-sm enableMicrophone">开关音频</button>
+          <button type="button" id="toggleVideoCapturing" class="btn btn-primary btn-sm" title="toggleCapturing">开关摄像头</button>
           <!-- <button type="button" id="mutePlayStreamVideo" class="btn btn-primary btn-sm">停止/恢复拉视频流</button> -->
           <!-- <button type="button" id="mutePlayStreamAudio" class="btn btn-primary btn-sm">停止/恢复拉音频流</button> -->
           <button type="button" id="stopPlaySound" class="btn btn-primary btn-sm unenableSound">停止获取音浪</button>
@@ -344,6 +344,7 @@
           <button type="button" id="replaceScreenVideo" class="btn btn-primary btn-sm">切换屏幕视频轨</button>
           <button type="button" id="addTrack" class="btn btn-primary btn-sm">增加轨道</button>
           <button type="button" id="removeTrack" class="btn btn-primary btn-sm">删除轨道</button>
+          <button type="button" id="publishImg" class="btn btn-primary btn-sm" title="uploadQuality">关闭视频推图片</button>
         </div>
 
         <fieldset>

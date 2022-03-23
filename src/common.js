@@ -216,7 +216,7 @@ function initSDK() {
                 console.warn('推流节点耗时 ' + publishRetryConsumed)
                 delete publishTimes[result.streamID];;
             }
-            
+
         } else if (result.state == 'PUBLISH_REQUESTING') {
             console.info(' publish  retry');
             if (result.errorCode !== 0 && !publishTimes[result.streamID]) {
@@ -496,12 +496,12 @@ async function login(roomId) {
                 contentType: "application/json; charset=utf-8"
             })
             token = res.data.token;
-        } 
+        }
     }
 
     window.loginTime = new Date().getTime();
     await zg.loginRoom(roomId, token, { userID, userName }, { userUpdate: true });
-    const loginConsumed = new Date().getTime() -  window.loginTime;
+    const loginConsumed = new Date().getTime() - window.loginTime;
     console.warn('登录房间耗时 ' + loginConsumed);
 
     roomList.push(roomId);
@@ -630,9 +630,9 @@ async function push(constraints, publishOption = {}, isNew) {
         }
         window.publishTime = new Date().getTime();
         const result = zg.startPublishingStream(completeStreamID, localStreamMap[currentRoomID], publishOption);
-        zg.createAudioEffectPlayer&& (effectPlayer = zg.createAudioEffectPlayer(
+        zg.createAudioEffectPlayer && (effectPlayer = zg.createAudioEffectPlayer(
             localStreamMap[currentRoomID]
-          ))
+        ))
         console.log('publish stream' + completeStreamID, result);
     } catch (err) {
         if (err.name) {
@@ -646,6 +646,15 @@ async function push(constraints, publishOption = {}, isNew) {
 $('#toggleCamera').click(function () {
     zg.mutePublishStreamVideo(previewVideo.srcObject, !$(this).hasClass('disabled'), $('#retainPreview').val() == 1 ? true : false);
     $(this).toggleClass('disabled');
+});
+
+$("#toggleVideoCapturing").click(function () {
+    $("#toggleVideoCapturing").toggleClass("disabled");
+    const result = zg.enableVideoCaptureDevice(
+        $("#previewVideo")[0].srcObject,
+        !$("#toggleVideoCapturing").hasClass("disabled")
+    );
+    console.log("toggleCamera", result);
 });
 
 $('#toggleSpeaker').click(function () {

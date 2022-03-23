@@ -37,7 +37,10 @@ $(async () => {
         zg.useAudioDevice(previewVideo.srcObject, $('#audioList').val());
     });
     // --- test end
-
+    $("#publishImg").on("click", () => {
+        //@ts-ignore
+        zg.setDummyCaptureImagePath("./test.jpg", previewVideo.srcObject);
+      });
     $('#reAcquireDevice').click(() => {
         enumDevices()
     })
