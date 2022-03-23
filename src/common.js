@@ -38,6 +38,8 @@ let sei;
 let publishTimes = {};
 
 let completeStreamID;
+let sendSEIFPS = 0;
+let sendSEITimer;
 
 
 // 测试用代码，开发者请忽略
@@ -169,6 +171,22 @@ async function start() {
         zg.sendSEI(publishStreamId, seiArray);
         console.warn('发送 SEI ', seiInfo)
     });
+    $('#sendSEIInterval').click(() => {
+        const seiInfo = $('#seiInfo').val();
+        if (!seiInfo) {
+            alert('未填写SEI');
+            return;
+        }
+        if (!sendSEIFPS) {
+            console.error('no send fps')
+            return;
+        }
+        const seiArray = encodeString(seiInfo);
+        $('#seibytelen').text('' + seiArray.byteLength)
+        sendSEITimer = setInterval(() => {
+            zg.sendSEI(publishStreamId, seiArray);
+        }, 1000/sendSEIFPS);
+    })
 }
 
 async function enumDevices() {
@@ -581,6 +599,10 @@ async function logout() {
 
     roomList.splice(roomList.findIndex(room => room == roomId), 1);
 
+    if (sendSEITimer){
+        clearInterval(sendSEITimer);
+        sendSEITimer = null;
+    }
     if (previewVideo.srcObject && (!roomId || roomList.length == 0)) {
         previewVideo.srcObject = null;
         zg.stopPublishingStream(publishStreamId);
@@ -628,6 +650,17 @@ async function publish(constraints, isNew) {
     push(_constraints, { extraInfo: JSON.stringify({ playType }) }, isNew);
 }
 
+function getVideoFrame(camera) {
+    const { frameRate, videoQuality } = camera;
+    if (frameRate) {
+        sendSEIFPS = frameRate;
+    } else if (videoQuality == 1 || videoQuality == 2) {
+        sendSEIFPS = 15;
+    } else if (videoQuality == 3) {
+        sendSEIFPS = 20;
+    }
+}
+
 async function push(constraints, publishOption = {}, isNew) {
     try {
 
@@ -636,6 +669,10 @@ async function push(constraints, publishOption = {}, isNew) {
             zg.destroyStream(localStreamMap[currentRoomID])
         }
 
+        if (constraints.camera) {
+            getVideoFrame(constraints.camera);
+        }
+        // console.warn()
         const previewTime = new Date().getTime();
         localStreamMap[currentRoomID] = await zg.createStream(constraints);
         const previewConsumed = new Date().getTime() - previewTime;

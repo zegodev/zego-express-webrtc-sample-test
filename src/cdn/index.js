@@ -196,20 +196,6 @@ function encodeString(str) {
     );
 }
 
-function sendSEI() {
-    const filterStr = "zegozegozegozego";
-  // const filterStr = "";
-
-  // const u = new Uint8Array();
-  const str = "sse";
-  // const str =
-  //   "Hello, the World At least in the latest version of Node (haven't checked the others), the file descriptor is closed automatically. That said, I haven't done any kind of thorough test to ensure that the stream eventually fires error if it is never read. At least in the latest version of Node (haven't checked the others), the file descriptor is closed automatically. That said, I haven't done any kind of thorough test to ensure that the stream eventually fires error if it is never read.";
-
-  const u = encodeString(filterStr + str);
-  console.warn("sendSEI ", u);
-  // @ts-ignore
-  const sendOk = zg.zegoWebRTC.sendSEI(publishStreamId, u.buffer);
-}
 // async function updateCdnStatus(state) {
 //     const extra = { state, publishType };
 //     playType = publishType;
@@ -378,9 +364,7 @@ $(async () => {
     $('#playCDN').click(() => {
         flvPlayer && flvPlayer.play();
     });
-    $('#sendSEI').click(() => {
-        sendSEI()
-    });
+    
     $('#createRoom').unbind('click');
     $('#createRoom').click(async () => {
         // let loginSuc = false;
