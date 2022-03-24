@@ -7,15 +7,15 @@ $(async () => {
     const audioEffectList = [
         {
             effectId: '1',
-            path: 'https://zego-public.oss-cn-shanghai.aliyuncs.com/sdk-doc/assets/station.mp3',
+            path: 'https://zego-public.oss-cn-shanghai.aliyuncs.com/webplatform/websdk/station.mp3',
         },
         {
             effectId: '2',
-            path: '../assets/bike.mp3',
+            path: 'https://zego-public.oss-cn-shanghai.aliyuncs.com/webplatform/websdk/oldman.mp4',
         },
         {
             effectId: '3',
-            path: '../assets/station.mp3',
+            path: 'https://zego-public.oss-cn-shanghai.aliyuncs.com/webplatform/websdk/bike.mp3',
         }
     ];
     await checkAnRun();
