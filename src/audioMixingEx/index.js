@@ -11,11 +11,11 @@ $(async () => {
         },
         {
             effectId: '2',
-            path: 'https://storage.zego.im/demo/oldman.m4a',
+            path: '../assets/bike.mp3',
         },
         {
             effectId: '3',
-            path: 'https://storage.zego.im/demo/tonight.m4a',
+            path: '../assets/station.mp3',
         }
     ];
     await checkAnRun();
