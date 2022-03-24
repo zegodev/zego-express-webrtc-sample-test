@@ -39,7 +39,7 @@ $(async () => {
     $('#mixingBuffer').click(function() {
         const xhr = new XMLHttpRequest();
 
-        xhr.open('GET', 'https://storage.zego.im/demo/tonight.m4a', true);
+        xhr.open('GET', 'https://zego-public.oss-cn-shanghai.aliyuncs.com/webplatform/websdk/bike.mp3', true);
         xhr.responseType = 'arraybuffer';
         xhr.onload = () => {
             if (xhr.status == 200 || xhr.status == 304) {
