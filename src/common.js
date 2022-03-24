@@ -392,12 +392,12 @@ function initSDK() {
     });
 
     zg.on('remoteCameraStatusUpdate', (streamID, status) => {
-        if (!streamID.includes('webrtc')) return;
+        // if (!streamID.includes('webrtc')) return;
         console.warn(`remoteCameraStatusUpdate ${streamID} camera status ${status == 'OPEN' ? 'open' : 'close'}`);
     });
 
     zg.on('remoteMicStatusUpdate', (streamID, status) => {
-        if (!streamID.includes('webrtc')) return;
+        // if (!streamID.includes('webrtc')) return;
         console.warn(`remoteMicStatusUpdate ${streamID} micro status ${status == 'OPEN' ? 'open' : 'close'}`);
     });
 
