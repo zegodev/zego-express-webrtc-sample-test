@@ -2,7 +2,7 @@
 import VConsole from 'vconsole';
 import './assets/bootstrap.min';
 import './assets/bootstrap.min.css';
-import { ZegoExpressEngine } from 'zego-express-engine-webrtc';
+import { ZegoExpressEngine, MediaInfoType } from 'zego-express-engine-webrtc';
 import { getCgi } from './content';
 import { getBrowser, decodeString, encodeString } from './assets/utils';
 
@@ -40,6 +40,7 @@ let publishTimes = {};
 let completeStreamID;
 let sendSEIFPS = 0;
 let sendSEITimer;
+let seiUUID = '4fb6482e-9c68-66';
 
 
 // 测试用代码，开发者请忽略
@@ -85,9 +86,13 @@ let browser = {
 // eslint-disable-next-line prefer-const
 zg = new ZegoExpressEngine(appID, server);
 
+
 window.zg = zg;
 window.useLocalStreamList = useLocalStreamList;
 
+zg.setSEIConfig({
+    unregister_sei_filter: seiUUID
+});
 async function checkAnRun(checkScreen) {
     console.log('sdk version is', zg.getVersion());
     try {
@@ -166,7 +171,12 @@ async function start() {
             alert('未填写SEI');
             return;
         }
-        const seiArray = encodeString(seiInfo);
+        let _seiInfo = seiInfo;
+        const seiType = $('#seiType').val();
+        if (seiType === '1') {
+            _seiInfo = seiUUID + seiInfo
+        }
+        const seiArray = encodeString(_seiInfo);
         $('#seibytelen').text('' + seiArray.byteLength)
         zg.sendSEI(publishStreamId, seiArray);
         console.warn('发送 SEI ', seiInfo)
@@ -181,7 +191,12 @@ async function start() {
             console.error('no send fps')
             return;
         }
-        const seiArray = encodeString(seiInfo);
+        let _seiInfo = seiInfo;
+        const seiType = $('#seiType').val();
+        if (seiType === '1') {
+            _seiInfo = seiUUID + seiInfo
+        }
+        const seiArray = encodeString(_seiInfo);
         $('#seibytelen').text('' + seiArray.byteLength)
         sendSEITimer = setInterval(() => {
             zg.sendSEI(publishStreamId, seiArray);
@@ -696,6 +711,9 @@ async function push(constraints, publishOption = {}, isNew) {
         if ($("#videoCodec").val()) publishOption.videoCodec = $("#videoCodec").val();
         publishOption.roomID = currentRoomID;
         publishOption.isSeiStart = sei;
+        if ($("#seiType").val() == '1') {
+            publishOption.mediaInfoType = 2;
+        }
         completeStreamID = publishStreamId
         if (zg.zegoWebRTM.stateCenter.isMultiRoom) {
             completeStreamID = publishOption.roomID + "-" + publishStreamId
