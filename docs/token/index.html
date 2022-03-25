@@ -25,7 +25,7 @@
     }
   </style>
   <title class="base">推拉流基础功能</title>
-<link href="../index.8f573908.css" rel="stylesheet"></head>
+<link href="../index.733ddcec.css" rel="stylesheet"></head>
 
 <body class="bg-f2">
   <div class="container">
@@ -85,6 +85,17 @@
         <div class="col-sm">
           <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
+              <label class="input-group-text" for="expireTime"><strong class="text-gray-dark userID">过期时间</strong></label>
+            </div>
+            <input type="email" class="form-control d-inline" id="expireTime" value="300" style="width: 75%; max-width: 200px"
+              aria-describedby="emailHelp" placeholder="please enter expireTime">
+          </div>
+        </div>
+
+
+        <div class="col-sm">
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
               <label class="input-group-text" for="tokenRole"><strong
                   class="text-gray-dark tokenRole">token</strong></label>
             </div>
@@ -98,6 +109,8 @@
 
       <div class="row">
         <div class="col-sm">
+          <button type="button" id="createToken" class="btn btn-primary btn-sm">生成token</button>
+          <button type="button" id="createRoom" class="btn btn-primary btn-sm">进入房间（推流）</button>
           <button type="button" id="openRoom" class="btn btn-primary btn-sm enterRoomPlay">进入房间（先输入token）</button>
           <button type="button" id="renewToken" class="btn btn-primary btn-sm">更新token</button>
           <button type="button" id="publish" class="btn btn-primary btn-sm">推流</button>

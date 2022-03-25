@@ -1,4 +1,4 @@
-import { checkAnRun, zg, useLocalStreamList, enterRoom, previewVideo, logout, publish, publishStreamId, l3, enumDevices } from '../common';
+import { checkAnRun, zg, useLocalStreamList, enterRoom, previewVideo, login2, getToken, clear, logout, publish, publishStreamId, l3, enumDevices, userID } from '../common';
 import { getBrowser } from '../assets/utils';
 
 let playOption = {};
@@ -14,16 +14,64 @@ let screenStreamVideoTrack;
 let externalStream
 let screenStream
 let videoType
+// let loginTime
 
 $(async () => {
     await checkAnRun();
+
+    function play(streamID) {
+        let remoteStream;
+        remoteStreamID = streamID;
+        const handlePlaySuccess = (streamItem) => {
+            let video;
+            const bro = getBrowser();
+            if (bro == 'Safari' && playOption.video === false) {
+                $('.remoteVideo').append($(`<audio id=${streamItem.streamID} autoplay muted playsinline controls></audio>`));
+                video = $('.remoteVideo audio:last')[0];
+                console.warn('audio', video, remoteStream);
+            } else {
+                $('.remoteVideo').append($(`<video id=${streamItem.streamID} autoplay muted playsinline controls></video>`));
+                video = $('.remoteVideo video:last')[0];
+                console.warn('video', video, remoteStream);
+            }
+
+            video.srcObject = remoteStream;
+            video.muted = false;
+        };
+
+        playOption = {};
+        const _selectMode = $('#playMode option:selected').val();
+        console.warn('playMode', _selectMode, playOption);
+        if (_selectMode) {
+            if (_selectMode == 'all') {
+                playOption.video = true;
+                playOption.audio = true;
+            } else if (_selectMode == 'video') {
+                playOption.audio = false;
+            } else if (_selectMode == 'audio') {
+                playOption.video = false;
+            }
+        }
+
+        if ($("#videoCodec").val()) playOption.videoCodec = $("#videoCodec").val();
+        if (l3 == true) playOption.resourceMode = 2;
+
+        zg.startPlayingStream(streamID, playOption).then(stream => {
+            remoteStream = stream;
+            useLocalStreamList.push({ streamID });
+            handlePlaySuccess({ streamID });
+        }).catch(error => {
+            console.error(error);
+
+        })
+    }
 
     // --- test begin
     $('#publish').click(() => {
         const publishStreamID = new Date().getTime() + '';
         const stream = $('#publish-stream').val();
-        window.publishTime = new Date().getTime();
         // !cameraStreamVideoTrack && previewVideo.srcObject && (cameraStreamVideoTrack = previewStream.getVideoTracks()[0] && previewStream.getVideoTracks()[0].clone());
+        window.publishTime = new Date().getTime();
         const result = zg.startPublishingStream(stream || publishStreamID, previewStream ? previewStream : previewVideo.srcObject, { roomID: $('#roomId').val() });
         published = true;
         console.log('publish stream' + publishStreamID, result);
@@ -65,8 +113,13 @@ $(async () => {
         constraints.videoQuality = parseInt(videoQuality);
         console.warn('constraints', constraints);
         try {
+            // loginSuc = await enterRoom();
+            // loginSuc && (await publish({ camera: constraints }));
+
             loginSuc = await enterRoom();
+            
             loginSuc && (await publish({ camera: constraints }));
+            
         } catch (error) {
             console.error(error);
         }
@@ -74,6 +127,24 @@ $(async () => {
     $('#openRoom').unbind('click');
     $('#openRoom').click(async () => {
         await enterRoom();
+    });
+    $('#openRoomPlay').click(async () => {
+        const roomId = $('#roomId').val();
+        if (!roomId) {
+            alert('roomId is empty');
+            return false;
+        }
+        const token = await getToken(userID, roomId);
+        login2(token, roomId).then(res => {
+            console.warn('登录成功');
+        }).catch(e => {
+            console.warn('登录失败');
+        })
+        const playStreamIDs = $('#playStreamID').val();
+        const playstreamlist = playStreamIDs.split(';');
+        playstreamlist.forEach(stream => {
+            play(stream);
+        })
     });
     $('#extraInfo').click(() => {
         zg.setStreamExtraInfo(publishStreamId, $('#extraInfoInput').val());
@@ -315,10 +386,18 @@ $(async () => {
 
     zg.off('roomStreamUpdate');
     zg.on('roomStreamUpdate', async (roomID, updateType, streamList, extendedData) => {
-        console.log('roomStreamUpdate 2 roomID ', roomID, streamList, extendedData);
+        console.warn('roomStreamUpdate 2 roomID ', roomID, updateType, streamList, extendedData);
         if (updateType == 'ADD') {
             for (let i = 0; i < streamList.length; i++) {
                 console.info(streamList[i].streamID + ' was added');
+
+                const streamItem = useLocalStreamList.find(stream => stream.streamID === streamList[i].streamID);
+
+                if (streamItem) {
+                    console.warn('流已在拉');
+                    continue;
+                }
+
                 let remoteStream;
                 remoteStreamID = streamList[i].streamID
                 const handlePlaySuccess = (streamItem) => {
@@ -398,6 +477,39 @@ $(async () => {
             if (externalStream) {
                 zg.destroyStream(externalStream)
                 externalStream = null
+            }
+            clear()
+        }
+    })
+    zg.off('publisherStateUpdate')
+    zg.on('publisherStateUpdate', result => {
+        console.warn('publisherStateUpdate: ', result.streamID, result.state, result);
+        if (result.state == 'PUBLISHING') {
+            console.info(' publish  success ' + result.streamID);
+            const now = new Date().getTime();
+            const pushConsumed = now - window.publishTime;
+            console.warn("推流耗时 " + pushConsumed);
+
+            const publishConsumed = now - window.loginTime;
+            console.warn('登录推流耗时 ' + publishConsumed);
+
+            if (window.publishTimes[result.streamID]) {
+                const publishRetryConsumed = now - window.publishTimes[result.streamID];
+                console.warn('推流节点耗时 ' + publishRetryConsumed)
+                delete window.publishTimes[result.streamID];;
+            }
+            
+        } else if (result.state == 'PUBLISH_REQUESTING') {
+            console.info(' publish  retry');
+            if (result.errorCode !== 0 && !window.publishTimes[result.streamID]) {
+                window.publishTimes[result.streamID] = new Date().getTime();
+            }
+        } else {
+            delete window.publishTimes[result.streamID];
+            if (result.errorCode == 0) {
+                console.warn('publish stop ' + result.errorCode + ' ' + result.extendedData);
+            } else {
+                console.error('publish error ' + result.errorCode + ' ' + result.extendedData);
             }
         }
     })

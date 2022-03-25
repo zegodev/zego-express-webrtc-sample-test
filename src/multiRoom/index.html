@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <style>
+        .bg-f2 {
+            background-color: #f8f9fa;
+        }
+
+        video {
+            width: 160px;
+            height: auto;
+        }
+
+        .videoRow {
+            margin-top: 30px;
+        }
+
+        #previewLabel {
+            display: block;
+            position: absolute;
+        }
+    </style>
+    <title class="">多房间功能</title>
+</head>
+
+<body class="bg-f2">
+
+<div class="container">
+
+    <div class="my-3 p-3 bg-white rounded box-shadow small">
+
+        <h6 class="border-bottom border-gray pb-2 mb-0">多房间功能</h6>
+
+        <div class="row" style="margin-top:1%">
+
+            <div class="col-sm">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="audioList"><strong
+                                class="text-gray-dark audioDevices">音频设备</strong></label>
+                    </div>
+                    <select class="custom-select" id="audioList" style="width: 20%">
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-sm">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="videoList"><strong
+                                class="text-gray-dark videoDevices">视频设备</strong></label>
+                    </div>
+                    <select class="custom-select" id="videoList" style="width: 50%">
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-sm">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="userId"><strong class="text-gray-dark">用户ID</strong></label>
+                    </div>
+                    <input type="email" class="form-control d-inline" id="userId" style="width: 50%"
+                           aria-describedby="emailHelp" placeholder="please enter user ID">
+                </div>
+            </div>
+
+            <!-- <div class="col-sm">
+                <div class="input-group input-group-sm mb-3">
+                  <div class="input-group-prepend">
+                    <label class="input-group-text" for="memberList"><strong class="text-gray-dark userlist">房间人员</strong></label>
+                  </div>
+                  <select class="custom-select" id="memberList" style="width: 60%">
+                  </select>
+                </div>
+            </div> -->
+        </div>
+        <div class="row">
+            <div class="col-sm" style="display: flex;">
+                <div style="flex: 20%;">
+                    <button type="button" id="enableMulti" class="btn btn-primary btn-sm">开启多房间</button>
+                </div>
+                <div class="input-group input-group-sm mb-3" style="flex: 20%;">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="custom-expiretime"><strong class="text-gray-dark">token有效期</strong></label>
+                    </div>
+                    <input type="email" class="form-control d-inline" id="custom-expiretime" style="width: 50%"
+                           aria-describedby="emailHelp" placeholder="please enter time">
+                </div>
+     
+                <div class="input-group input-group-sm mb-3" style="flex: 20%;">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="maxUserRoomId"><strong class="text-gray-dark">roomID</strong></label>
+                    </div>
+                    <input type="email" class="form-control d-inline" id="maxUserRoomId" style="width: 50%"
+                           aria-describedby="emailHelp" placeholder="please enter room ID">
+                </div>
+                <div class="input-group input-group-sm mb-3" style="flex: 20%;">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="maxUserCount"><strong class="text-gray-dark">最大人数</strong></label>
+                    </div>
+                    <input type="email" class="form-control d-inline" id="maxUserCount" style="width: 50%"
+                           aria-describedby="emailHelp" placeholder="please enter max user count">
+                </div>
+                <div>
+                    <button type="button" id="setRoomCount" class="btn btn-primary btn-sm">设置人数</button>
+                </div>
+           
+            </div>
+        </div>
+
+        <h6 class="border-bottom border-gray pb-2 mb-0">房间1</h6>
+
+        <div class="row">
+            
+            <div class="col-sm">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="roomId1"><strong class="text-gray-dark">roomID</strong></label>
+                    </div>
+                    <input type="email" class="form-control d-inline" id="roomId1" style="width: 20%"
+                           aria-describedby="emailHelp" placeholder="please enter room ID">
+                </div>
+            </div>
+
+            <div class="col-sm">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="roomId1_expireTime"><strong class="text-gray-dark">过期时间</strong></label>
+                    </div>
+                    <input type="email" class="form-control d-inline" id="roomId1_expireTime" value="3000" style="width: 20%"
+                           aria-describedby="emailHelp" placeholder="please enter time">
+                </div>
+            </div>
+
+            <div class="col-sm">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                    <label class="input-group-text" for="playAutoRoom1"><strong
+                        class="text-gray-dark">自动拉流</strong></label>
+                    </div>
+                    <select class="custom-select" id="playAutoRoom1" style="width: 60%">
+                    <option value="1">是</option>
+                    <option value="0">否</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="roomId1_streamId1"><strong class="text-gray-dark">推流ID1</strong></label>
+                    </div>
+                    <input type="email" class="form-control d-inline" id="roomId1_streamId1" style="width: 20%"
+                        aria-describedby="emailHelp" placeholder="please enter stream ID1">
+                </div>
+            </div>
+
+            <div class="col-sm">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="roomId1_streamId2"><strong class="text-gray-dark">推流ID2</strong></label>
+                    </div>
+                    <input type="email" class="form-control d-inline" id="roomId1_streamId2" style="width: 20%"
+                        aria-describedby="emailHelp" placeholder="please enter stream ID2">
+                </div>
+            </div>
+
+            <div class="col-sm">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="roomId1_play_streamId"><strong class="text-gray-dark">拉流ID</strong></label>
+                    </div>
+                    <input type="email" class="form-control d-inline" id="roomId1_play_streamId" style="width: 20%"
+                        aria-describedby="emailHelp" placeholder="please enter play stream">
+                </div>
+            </div>
+
+            
+                
+        </div>
+
+        <div class="row">
+            <div class="col-sm">
+                <button type="button" id="createTokenRoom1" class="btn btn-primary btn-sm">生成token</button>
+                <button type="button" id="enterRoom1" class="btn btn-primary btn-sm">登录</button>
+                <button type="button" id="leaveRoom1" class="btn btn-primary btn-sm">登出</button>
+                <button type="button" id="renewTokenRoom1" class="btn btn-primary btn-sm">更新token</button>
+                <button type="button" id="publishRoom1Stream1" class="btn btn-primary btn-sm">推流1</button>
+                <button type="button" id="publishRoom1Stream2" class="btn btn-primary btn-sm">推流2</button>
+                <button type="button" id="stopPublishRoom1Stream1" class="btn btn-primary btn-sm">停止推流1</button>
+                <button type="button" id="stopPublishRoom1Stream2" class="btn btn-primary btn-sm">停止推流2</button>
+                <button type="button" id="playRoom1Stream" class="btn btn-primary btn-sm">手动拉流</button>
+                <button type="button" id="stopPlayRoom1Stream" class="btn btn-primary btn-sm">停止拉流</button>
+            </div>
+        </div>
+
+        <div class="row videoRow">
+            <div class="col-sm">
+                <label id="previewLabel" class="text-white"></label>
+                <video id="room1PreviewVideo1" autoplay muted playsinline></video>
+                <video id="room1PreviewVideo2" autoplay muted playsinline></video>
+            </div>
+            <div class="col-sm remoteVideo1">
+                <!-- <video  autoplay muted playsinline></video> -->
+            </div>
+        </div>
+
+        <h6 class="border-bottom border-gray pb-2 mb-0">房间2</h6>
+
+        <div class="row">
+            
+            <div class="col-sm">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="roomId2"><strong class="text-gray-dark">roomID</strong></label>
+                    </div>
+                    <input type="email" class="form-control d-inline" id="roomId2" style="width: 20%"
+                           aria-describedby="emailHelp" placeholder="please enter room ID">
+                </div>
+            </div>
+
+            <div class="col-sm">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="roomId2_expireTime"><strong class="text-gray-dark">过期时间</strong></label>
+                    </div>
+                    <input type="email" class="form-control d-inline" id="roomId2_expireTime" value="3000" style="width: 20%"
+                           aria-describedby="emailHelp" placeholder="please enter time">
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                    <label class="input-group-text" for="playAutoRoom2"><strong
+                        class="text-gray-dark">自动拉流</strong></label>
+                    </div>
+                    <select class="custom-select" id="playAutoRoom2" style="width: 60%">
+                    <option value="1">是</option>
+                    <option value="0">否</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="roomId2_streamId1"><strong class="text-gray-dark">推流ID1</strong></label>
+                    </div>
+                    <input type="email" class="form-control d-inline" id="roomId2_streamId1" style="width: 20%"
+                        aria-describedby="emailHelp" placeholder="please enter stream ID1">
+                </div>
+            </div>
+
+            <div class="col-sm">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="roomId2_streamId2"><strong class="text-gray-dark">推流ID2</strong></label>
+                    </div>
+                    <input type="email" class="form-control d-inline" id="roomId2_streamId2" style="width: 20%"
+                        aria-describedby="emailHelp" placeholder="please enter stream ID2">
+                </div>
+            </div>
+
+            <div class="col-sm">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="roomId2_play_streamId"><strong class="text-gray-dark">拉流ID</strong></label>
+                    </div>
+                    <input type="email" class="form-control d-inline" id="roomId2_play_streamId" style="width: 20%"
+                        aria-describedby="emailHelp" placeholder="please enter play stream">
+                </div>
+            </div>
+
+            
+                
+        </div>
+
+        <div class="row">
+            <div class="col-sm">
+                <button type="button" id="createTokenRoom2" class="btn btn-primary btn-sm">生成token</button>
+                <button type="button" id="enterRoom2" class="btn btn-primary btn-sm">登录</button>
+                <button type="button" id="leaveRoom2" class="btn btn-primary btn-sm">登出</button>
+                <button type="button" id="renewTokenRoom2" class="btn btn-primary btn-sm">更新token</button>
+                <button type="button" id="publishRoom2Stream1" class="btn btn-primary btn-sm">推流1</button>
+                <button type="button" id="publishRoom2Stream2" class="btn btn-primary btn-sm">推流2</button>
+                <button type="button" id="stopPublishRoom2Stream1" class="btn btn-primary btn-sm">停止推流1</button>
+                <button type="button" id="stopPublishRoom2Stream2" class="btn btn-primary btn-sm">停止推流2</button>
+                <button type="button" id="playRoom2Stream" class="btn btn-primary btn-sm">手动拉流</button>
+                <button type="button" id="stopPlayRoom2Stream" class="btn btn-primary btn-sm">停止拉流</button>
+            </div>
+        </div>
+
+        <div class="row videoRow">
+            <div class="col-sm">
+                <label id="previewLabel" class="text-white"></label>
+                <video id="room2PreviewVideo1" autoplay muted playsinline></video>
+                <video id="room2PreviewVideo2" autoplay muted playsinline></video>
+            </div>
+            <div class="col-sm remoteVideo2">
+                <!-- <video  autoplay muted playsinline></video> -->
+            </div>
+        </div>
+
+        <h6 class="border-bottom border-gray pb-2 mb-0">房间3</h6>
+
+        <div class="row">
+            
+            <div class="col-sm">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="roomId3"><strong class="text-gray-dark">roomID</strong></label>
+                    </div>
+                    <input type="email" class="form-control d-inline" id="roomId3" style="width: 20%"
+                           aria-describedby="emailHelp" placeholder="please enter room ID">
+                </div>
+            </div>
+
+            <div class="col-sm">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="roomId3_expireTime"><strong class="text-gray-dark">过期时间</strong></label>
+                    </div>
+                    <input type="email" class="form-control d-inline" id="roomId3_expireTime" value="3000" style="width: 20%"
+                           aria-describedby="emailHelp" placeholder="please enter time">
+                </div>
+            </div>
+
+            <div class="col-sm">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                    <label class="input-group-text" for="playAutoRoom3"><strong
+                        class="text-gray-dark">自动拉流</strong></label>
+                    </div>
+                    <select class="custom-select" id="playAutoRoom3" style="width: 60%">
+                    <option value="1">是</option>
+                    <option value="0">否</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="roomId3_streamId1"><strong class="text-gray-dark">推流ID1</strong></label>
+                    </div>
+                    <input type="email" class="form-control d-inline" id="roomId3_streamId1" style="width: 20%"
+                        aria-describedby="emailHelp" placeholder="please enter stream ID1">
+                </div>
+            </div>
+
+            <div class="col-sm">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="roomId3_streamId2"><strong class="text-gray-dark">推流ID2</strong></label>
+                    </div>
+                    <input type="email" class="form-control d-inline" id="roomId3_streamId2" style="width: 20%"
+                        aria-describedby="emailHelp" placeholder="please enter stream ID2">
+                </div>
+            </div>
+
+            <div class="col-sm">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="roomId3_play_streamId"><strong class="text-gray-dark">拉流ID</strong></label>
+                    </div>
+                    <input type="email" class="form-control d-inline" id="roomId3_play_streamId" style="width: 20%"
+                        aria-describedby="emailHelp" placeholder="please enter play stream">
+                </div>
+            </div>
+
+            
+                
+        </div>
+
+        <div class="row">
+            <div class="col-sm">
+                <button type="button" id="createTokenRoom3" class="btn btn-primary btn-sm">生成token</button>
+                <button type="button" id="enterRoom3" class="btn btn-primary btn-sm">登录</button>
+                <button type="button" id="leaveRoom3" class="btn btn-primary btn-sm">登出</button>
+                <button type="button" id="renewTokenRoom3" class="btn btn-primary btn-sm">更新token</button>
+                <button type="button" id="publishRoom3Stream1" class="btn btn-primary btn-sm">推流1</button>
+                <button type="button" id="publishRoom3Stream2" class="btn btn-primary btn-sm">推流2</button>
+                <button type="button" id="stopPublishRoom3Stream1" class="btn btn-primary btn-sm">停止推流1</button>
+                <button type="button" id="stopPublishRoom3Stream2" class="btn btn-primary btn-sm">停止推流2</button>
+                <button type="button" id="playRoom3Stream" class="btn btn-primary btn-sm">手动拉流</button>
+                <button type="button" id="stopPlayRoom3Stream" class="btn btn-primary btn-sm">停止拉流</button>
+            </div>
+        </div>
+
+        <div class="row videoRow">
+            <div class="col-sm">
+                <label id="previewLabel" class="text-white"></label>
+                <video id="room3PreviewVideo1" autoplay muted playsinline></video>
+                <video id="room3PreviewVideo2" autoplay muted playsinline></video>
+            </div>
+            <div class="col-sm remoteVideo3">
+                <!-- <video  autoplay muted playsinline></video> -->
+            </div>
+        </div>
+
+        <h6 class="border-bottom border-gray pb-2 mb-0">房间信令</h6>
+
+        <div class="row">
+            <div class="col-sm">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                    <label class="input-group-text" for="selectRoom"><strong
+                        class="text-gray-dark">指定房间</strong></label>
+                    </div>
+                    <select class="custom-select" id="selectRoom" style="width: 60%">
+                    
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-sm">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="msgContent"><strong class="text-gray-dark">消息内容</strong></label>
+                    </div>
+                    <input type="email" class="form-control d-inline" id="msgContent" style="width: 20%"
+                           aria-describedby="emailHelp" placeholder="please enter room ID">
+                </div>
+            </div>
+
+            <div class="col-sm">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="customers"><strong class="text-gray-dark">自定义信令用户</strong></label>
+                    </div>
+                    <input type="email" class="form-control d-inline" id="customers" style="width: 20%"
+                           aria-describedby="emailHelp" placeholder="please enter user ID, 逗号分隔">
+                </div>
+            </div>
+
+            <div class="col-sm">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="roomExtras"><strong class="text-gray-dark">附加消息</strong></label>
+                    </div>
+                    <input type="email" class="form-control d-inline" id="roomExtras" style="width: 20%"
+                           aria-describedby="emailHelp" placeholder="key=value">
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-sm">
+                <button type="button" id="BroadcastMessage" class="btn btn-primary btn-sm">房间消息</button>
+                <button type="button" id="BarrageMessage" class="btn btn-primary btn-sm barrage">弹幕消息</button>
+                <button type="button" id="sendCustomrMsg" class="btn btn-primary btn-sm customMessage">发送自定义消息</button>
+                <button type="button" id="ReliableMessage" class="btn btn-primary btn-sm">房间附加信息</button>
+            </div>
+        </div>
+
+    </div>
+
+        
+    </div>
+
+    <div class="toast fade hide" role="alert" aria-live="assertive" aria-atomic="true" id="toast">
+      <div class="toast-body" id="toastBody">
+
+      </div>
+    </div>
+
+</div>
+
+<!-- <div class="chatContainer">
+    <div class="chatBtn">
+        <i class="iconfont icon-xiaoxi1"></i>
+    </div>
+    <div class="chat-message-num">0</div>
+    <div class="chatBox" ref="chatBox">
+
+        <div class="chatBox-info">
+            <div class="chatBox-kuang" ref="chatBoxkuang">
+                <div class="chatBox-content">
+                    <div class="chatBox-content-demo" id="chatBox-content-demo">
+                    </div>
+                </div>
+                <div class="chatBox-send">
+                    <div class="div-textarea" contenteditable="true"></div>
+                    <div>
+                        <button id="chat-fasong" class="btn-default-styles"><i class="iconfont icon-fasong"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+<!-- Button trigger modal -->
+
+</body>
+</html>

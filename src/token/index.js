@@ -5,14 +5,14 @@ import "../assets/bootstrap.min.css";
 import { ZegoExpressEngine } from "zego-express-engine-webrtc";
 import { getCgi } from "../content";
 import { getBrowser } from "../assets/utils";
-
-
+// import { getToken } from '../common.js';
 
 new VConsole();
 let publishStreamId = "webrtc" + new Date().getTime();
 let zg;
-let appID = 383110717;//383110717;//2195363310; //2845718148; //1739272706; // 请从官网控制台获取对应的appID
-({ appID } = getCgi(appID));
+let isAccess;
+let appID = 2375819786;//383110717;//2195363310; //2845718148; //1739272706; // 请从官网控制台获取对应的appID
+({ appID, isAccess } = getCgi(appID));
 let server = "wss://webliveroom" + appID + "-api.zego.im/ws"; //'wss://wsliveroom-alpha.zego.im:8282/ws';//'ws://192.168.100.149:8181/ws';// 'wss://webliveroom-test.zego.im/ws'; // 请从官网控制台获取对应的server地址，否则可能登录失败
 
 
@@ -25,11 +25,18 @@ let loginRoom = false;
 
 let localStream;
 let publishType;
-let token, userID;
+let token, userID, expireTime;
 let isPeer;
 let roomList = [];
 // eslint-disable-next-line prefer-const
 zg = new ZegoExpressEngine(appID, server);
+
+if (isAccess === false) {
+    zg.zegoWebRTC.setAccess(false);
+    // zg.zegoWebRTM.stateCenter.useNetAgent = false;
+    // zg.zegoWebRTC.stateCenter.useNetAgent = false;
+}
+
 
 zg.zegoWebRTC.rtcModules.streamCenter.isPeer = isPeer == true ? true : false;
 window.zg = zg;
@@ -69,6 +76,30 @@ async function checkAnRun(checkScreen) {
     }
 }
 
+async function getToken(userID, roomId, expireTime) {
+    const res = await $.ajax({
+        url: 'https://sig-liveroom-admin.zego.cloud/thirdToken/get',
+        type: "POST",
+        data: JSON.stringify({
+            "version": "03",
+            "appId": appID,
+            "idName": userID,
+            "roomId": roomId,
+            "privilege": {
+                "1": 1,
+                "2": 1
+            },
+            "expire_time": expireTime
+        }),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8"
+    })
+    const token = res.data.token;
+ 
+    return token;
+}
+
+
 async function start() {
     initSDK();
 
@@ -81,8 +112,14 @@ async function start() {
     zg.setDebugVerbose(false);
     zg.setSoundLevelDelegate(true, 3000);
 
+    
+    $("#createRoom").click(async () => {
+        await enterRoom();
+        await publish();
+    });
     $("#openRoom").click(async () => {
         await enterRoom();
+        // await publish();
     });
 
     $("#leaveRoom").click(function () {
@@ -361,10 +398,23 @@ function initSDK() {
     zg.on("tokenWillExpire", (roomID) => {
         console.warn(`tokenWillExpire ${roomID}`);
     });
-
-    $("#renewToken").click(() => {
-        token = document.querySelector("#tokenRole").value;
+    
+    $("#createToken").click(async () => {
+        const _expireTime = document.querySelector("#expireTime").value;
+        expireTime = parseInt(_expireTime);
         const roomID = document.querySelector("#roomId").value;
+        userID = document.querySelector("#userID").value;
+        token = await getToken(userID, roomID, expireTime);
+        document.querySelector("#tokenRole").value = token;
+    });
+    $("#renewToken").click(async () => {
+        // token = document.querySelector("#tokenRole").value;
+        const roomID = document.querySelector("#roomId").value;
+        const _expireTime = document.querySelector("#expireTime").value;
+        expireTime = parseInt(_expireTime);
+        userID = document.querySelector("#userID").value;
+        token = await getToken(userID, roomID, expireTime);
+        document.querySelector("#tokenRole").value = token;
         zg.renewToken(token, roomID);
     });
 }
@@ -393,7 +443,20 @@ async function enterRoom() {
 
 async function login(roomId) {
     userID = document.querySelector("#userID").value;
-    token = document.querySelector("#tokenRole").value;
+    // userID = 'sample' + new Date().getTime();
+    // userID = 'sample1644905679033';
+
+    if (!token) {
+        const _expireTime = document.querySelector("#expireTime").value;
+        expireTime = parseInt(_expireTime);
+        token = await getToken(userID, roomId, expireTime);
+        document.querySelector("#tokenRole").value = token;
+        if (!token) {
+            alert('token 为空')
+        }
+    }
+    
+    console.error('token', token)
     await zg.loginRoom(roomId, token, { userID, userName: 'test' + userID }, { userUpdate: true });
     roomList.push(roomId);
 }
@@ -502,8 +565,8 @@ $(async () => {
         push();
     });
 
-    $("#renewToken").click(() => {
-        token = document.querySelector("#tokenRole").value;
-        const result = zg.renewToken(token);
-    });
+    // $("#").click(() => {
+    //     token = document.querySelector("#tokenRole").value;
+    //     const result = zg.renewToken(token);
+    // });
 });

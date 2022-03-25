@@ -32,6 +32,8 @@ export function getCgi(appId, serverUrl, cgi) {
     let userID = "";
     let l3 = false;
     let isPeer = false;
+    let accessDomain = '';
+    let isAccess = true;
     let auth = false;
     let ver = '00';
     if (location.search) {
@@ -64,25 +66,43 @@ export function getCgi(appId, serverUrl, cgi) {
             if (key == 'user_id') {
               userID = value;
             }
-
             if (key == 'ver') {
                 ver = value;
               }
-
             if (key == 'l3') {
               l3 = decodeURIComponent(value) == 'true' ? true : false;
             }
-
             if (key == 'auth') {
                 auth = decodeURIComponent(value) == 'true' ? true : false;
-              }
+            }
 
             if (key == 'isPeer') {
               isPeer = decodeURIComponent(value) == 'false' ? false : true;
             }
+
+            if (key == 'access_domain') {
+                const _domain = decodeURIComponent(value);
+                console.warn('_domain', _domain);
+                const _domArr = _domain.split('|');
+                if (_domArr.length > 1) {
+                    accessDomain = _domArr;
+                } else {
+                    accessDomain = _domArr;
+                }
+                console.warn('accessDomain', accessDomain);   
+            }
+
+            if (key == 'ver') {
+                ver = value;
+            }
+
+            if (key == 'isAccess') {
+                isAccess = decodeURIComponent(value) == 'false' ? false : true;
+                console.error('isAccess', isAccess)
+            }
         });
     }
-    return { appID, server, cgiToken, userID, l3, auth, isPeer, ver };
+    return { appID, server, cgiToken, userID, l3, isPeer, accessDomain, isAccess, auth, ver };
     // 测试用代码 end
     // Test code end
 }

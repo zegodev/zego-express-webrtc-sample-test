@@ -76,6 +76,19 @@
         <div class="col-sm">
           <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
+              <label class="input-group-text" for="resourceMode"><strong
+                  class="text-gray-dark resourceMode">拉流选项</strong></label>
+            </div>
+            <select class="custom-select" id="resourceMode" style="width: 50%">
+              <option value="0">rtc</option>
+              <option value="2">l3</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-sm">
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
               <label class="input-group-text" for="videoQuality"><strong
                   class="text-gray-dark videoQuality">推流质量</strong></label>
             </div>
@@ -159,6 +172,17 @@
             </div>
             <input type="input" class="form-control d-inline" id="extraInfoInput" style="width: 75%; max-width: 200px"
               aria-describedby="emailHelp" placeholder="please stream extraInfo">
+          </div>
+        </div>
+
+        <div class="col-sm">
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="playStreamID"><strong
+                  class="text-gray-dark">拉流ID</strong></label>
+            </div>
+            <input type="input" class="form-control d-inline" id="playStreamID" style="width: 75%; max-width: 200px"
+              aria-describedby="emailHelp" placeholder="please streamID">
           </div>
         </div>
 
@@ -297,7 +321,7 @@
             </div>
             <input type="text" class="form-control d-inline" id="publish-stream" style="width: 75%;" placeholder="流ID ">
           </div>
-        </div>
+        </div>      
       </div>
       <div class="row">
         <span>userID: </span>
@@ -321,6 +345,7 @@
           <button type="button" id="enterRoom" class="btn btn-primary btn-sm">进房预览</button>
           <button type="button" id="publish" class="btn btn-primary btn-sm">推流</button>
           <button type="button" id="openRoom" class="btn btn-primary btn-sm enterRoomPlay">进入房间（不推流）</button>
+          <button type="button" id="openRoomPlay" class="btn btn-primary btn-sm">进入房间拉流</button>
           <button type="button" id="useVideo" class="btn btn-secondary btn-sm">更改视频输入设备</button>
           <button type="button" id="useAudio" class="btn btn-secondary btn-sm">更改音频输入设备</button>
           <button type="button" id="toggleCamera" class="btn btn-primary btn-sm enableCamera">开关视频</button>
@@ -345,7 +370,7 @@
           <button type="button" id="addTrack" class="btn btn-primary btn-sm">增加轨道</button>
           <button type="button" id="removeTrack" class="btn btn-primary btn-sm">删除轨道</button>
           <button type="button" id="publishImg" class="btn btn-primary btn-sm" title="uploadQuality">关闭视频推图片</button>
-        </div>
+       </div>
 
         <fieldset>
           <legend>beauty config</legend>

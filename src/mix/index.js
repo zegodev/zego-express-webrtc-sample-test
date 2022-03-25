@@ -59,6 +59,7 @@ $(async () => {
                     outputHeight: 480,
                 },
             });
+            console.error(res)
             if (res.errorCode == 0) {
                 $('#stopMixStream').removeAttr('disabled');
                 const result = JSON.parse(res.extendedData).mixerOutputList;

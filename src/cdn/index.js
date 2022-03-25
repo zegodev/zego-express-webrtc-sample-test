@@ -17,11 +17,15 @@ import { getBrowser } from '../assets/utils';
 import flvjs from 'flv.js';
 
 let flvPlayer = null;
+let playTime;
 let cdnFlvPlayer = null;
 const ua = navigator.userAgent.toLowerCase();
 let isAndWechat = false;
 let videoElement;
+let cdnUrls = [];
 let cdnVideoElement;
+let cdnFlvPlayTimer;
+let cdnPlayTime;
 let isLogin = false;
 let playType = 'all';
 
@@ -57,16 +61,18 @@ function filterStreamList(streamInfo) {
     const pro = window.location.protocol;
     const browser = getBrowser();
 
-    if (browser == 'Safari' && !isAndWechat) {
-        for (const key in hls) {
-            if (hls[key]) {
-                if (hls[key].indexOf(pro) !== -1) streamListUrl.push(hls[key]);
-                else if (pro == 'https:' && hls[key].indexOf('https') === -1) {
-                    streamListUrl.push(hls[key].replace('http', 'https'));
-                }
-            }
-        }
-    } else if (pro == 'http:') {
+    // if (browser == 'Safari' && !isAndWechat) {
+    //     for (const key in hls) {
+    //         if (hls[key]) {
+    //             // if (hls[key].indexOf(pro) !== -1) streamListUrl.push(hls[key]);
+    //             // else if (pro == 'https:' && hls[key].indexOf('https') === -1) {
+    //             //     streamListUrl.push(hls[key].replace('http', 'https'));
+    //             // }
+    //             streamListUrl.push(hls[key]）
+    //         }
+    //     }
+    // } else 
+    if (pro == 'http:') {
         for (const key in flv) {
             if (flv[key]) {
                 if (flv[key].indexOf('http') !== -1 || flv[key].indexOf('https') !== -1) streamListUrl.push(flv[key]);
@@ -99,6 +105,14 @@ function playStream(streamID, cdnUrl) {
     let hasAudio = true;
     let hasVideo = true;
     let playType;
+    
+    $('#video-container').append(`
+        <video id="${streamID}" autoplay muted
+        x-webkit-airplay="true"
+        x5-video-player-type="h5-page"
+        webkit-playsinline="true"
+        playsinline></video>`
+    )
 
     const index = useLocalStreamList.findIndex(streamInfo => streamInfo.streamID == streamID);
     const streamInfo = useLocalStreamList[index];
@@ -114,11 +128,18 @@ function playStream(streamID, cdnUrl) {
     playType === 'Video' ? (hasAudio = false) : (hasAudio = true);
     playType === 'Audio' ? (hasVideo = false) : (hasVideo = true);
 
-    if (browser == 'Safari' && !isAndWechat && cdnUrl.length !== 0) {
-        videoElement.src = cdnUrl[0];
-        //videoElement.load();
-        //videoElement.muted = false;
-    } else if (cdnUrl.length !== 0) {
+    videoElement = document.getElementById(streamID);
+    // if (browser == 'Safari' && !isAndWechat && cdnUrl.length !== 0) {
+    //     console.error('Safari')
+    //     // videoElement.click();
+    //     videoElement.src = cdnUrl[0];
+    //     // videoElement.load();
+    //     // setTimeout(() => {
+    //         videoElement.muted = false;
+    //     // }, 500)
+    //     // videoElement.load();
+    // } else 
+    if (cdnUrl.length !== 0) {
         const flvUrl = cdnUrl[0];
         // const flvUrl = 'https://hdl-wsdemo.zego.im/livestream/test259.flv';
         if (flvjs.isSupported()) {
@@ -140,6 +161,36 @@ function playStream(streamID, cdnUrl) {
             videoElement.controls = true;
 
             useLocalStreamList[index].player = flvPlayer;
+
+            $(`#${streamID}`)[0].ontimeupdate = function () { 
+                // console.log('ontimeupdate ' + streamID + ' ' + $(`#${streamID}`)[0].currentTime);  
+                if ($(`#${streamID}`)[0]) {
+                    useLocalStreamList[index].playTime = $(`#${streamID}`)[0].currentTime;
+                }
+            };
+
+            if(cdnFlvPlayTimer){
+                clearInterval(cdnFlvPlayTimer);
+            } 
+
+            // 定时去检测
+            useLocalStreamList[index].playTimer = setInterval(()=>{
+                const online = navigator ? navigator.onLine ? true : false : true;
+                if (online) {
+                    // 如果检测到进度没有变化,重新拉流
+                    if( useLocalStreamList[index].playTime > 0 && $(`#${streamID}`)[0].currentTime === useLocalStreamList[index].playTime){
+                        console.warn('replay')
+                        useLocalStreamList[index].player.pause();
+                        useLocalStreamList[index].player.unload();
+                        // useLocalStreamList[index].player.destroy();
+                            // player.unload();
+                            // player.detachMediaElement();
+                            // player.destroy();
+                        useLocalStreamList[index].player.load();
+                        useLocalStreamList[index].player.play();
+                    }
+                }
+            },1000);
         }
     }
 }
@@ -159,22 +210,17 @@ $(async () => {
     await checkAnRun();
     zg.off('roomStreamUpdate');
     zg.on('roomStreamUpdate', (roomID, updateType, streamList, extendedData) => {
-        console.log('roomStreamUpdate roomID ', roomID, streamList, extendedData);
+        console.warn('roomStreamUpdate roomID ', roomID, updateType, streamList, extendedData);
         // console.log('l', zg.stateCenter.streamList);
         if (updateType == 'ADD') {
-            $('#video-container').append(`
-                <video id="test" autoplay muted
-                x-webkit-airplay="true"
-                x5-video-player-type="h5-page"
-                webkit-playsinline="true"
-                playsinline></video>`
-            )
-            videoElement = document.getElementById('test');
+            
+            // videoElement = document.getElementById('test');
             streamList.forEach(streamInfo => {
                 const streamID = streamInfo.streamID;
                 const cdnUrl = filterStreamList(streamInfo);
-
+                
                 useLocalStreamList.push(streamInfo);
+                cdnUrls.push({streamID, cdnUrl})
                 playStream(streamID, cdnUrl);
             })
         } else if (updateType == 'DELETE') {
@@ -191,7 +237,9 @@ $(async () => {
                             useLocalStreamList[k].player = null;
                             if (flvPlayer == player) flvPlayer = null;
                         }
-                        $('#video-container').html('');
+                        // $('#video-container').html('');
+                        $(`#${useLocalStreamList[k].streamID}`).remove();
+                        clearInterval(useLocalStreamList[k].playTimer);
                         useLocalStreamList.splice(k--, 1);
 
                         break;
@@ -236,6 +284,7 @@ $(async () => {
             // updateCdnStatus('add');
             ($('#cdnDelPush')[0]).disabled = false;
             ($('#cdnPlay')[0]).disabled = false;
+            alert('rtmp://rtmp.wsdemo.zego.im/livestream/'+publishStreamId)
         } else {
             console.warn('add push target fail ' + result.errorCode + ' ' + result.extendedData);
         }
@@ -304,9 +353,46 @@ $(async () => {
             cdnFlvPlayer.load();
             cdnVideoElement.muted = false;
             cdnVideoElement.controls = true;
+
+             // 监听播放进度
+            $('#cdn')[0].ontimeupdate = function () { 
+                // console.log('ontimeupdate',$('#cdn')[0].currentTime);  
+                cdnPlayTime = $('#cdn')[0].currentTime;
+            };
+            if(cdnFlvPlayTimer){
+                clearInterval(cdnFlvPlayTimer);
+            } 
+
+            // 定时去检测
+            cdnFlvPlayTimer = setInterval(()=>{
+            // 如果检测到进度没有变化,重新拉流
+                if(cdnPlayTime>0 && $('#cdn')[0].currentTime === cdnPlayTime){
+                    // console.log
+                    cdnFlvPlayer.unload();
+                    cdnFlvPlayer.load();
+                    cdnFlvPlayer.play();
+                }
+            },1000);
         }
     });
     $('#playCDN').click(() => {
+        console.error('play');
+        const browser = getBrowser();
+        // if (browser == 'Safari') {
+        //     cdnUrls.forEach(item => {
+        //         $(`#${item.streamID}`).remove();
+        //         setTimeout(() => {
+        //             playStream(item.streamID, item.cdnUrl);
+        //         }, 1000)
+        //     })
+        // }
+        useLocalStreamList.forEach(item => {
+            item.player && item.player.play()
+        })
+        
+        // videoElement.load();
+        // videoElement.src = videoElement.src;
+        // videoElement.muted = false;
         flvPlayer && flvPlayer.play();
     });
     $('#createRoom').unbind('click');
@@ -323,6 +409,11 @@ $(async () => {
     });
     $('#leaveRoom').unbind('click');
     $('#leaveRoom').click(function () {
+        useLocalStreamList.forEach(item => {
+            clearInterval(item.playTimer);
+            item.playTimer = null;
+        });
+        useLocalStreamList = []
         if (typeof flvPlayer !== 'undefined') {
             if (flvPlayer != null) {
                 flvPlayer.pause();
@@ -330,6 +421,10 @@ $(async () => {
                 flvPlayer.detachMediaElement();
                 flvPlayer.destroy();
                 flvPlayer = null;
+            }
+            if (cdnFlvPlayTimer) {
+                clearInterval(cdnFlvPlayTimer);
+                cdnFlvPlayTimer = null;
             }
         }
         $('#video-container').html('');
@@ -347,6 +442,7 @@ $(async () => {
         ($('#cdnDelPush')[0]).disabled = true;
         ($('#cdnPlay')[0]).disabled = true;
 
+
         logout();
         isLogin = false;
     });
@@ -360,4 +456,15 @@ $(async () => {
     //         ($('#cdnDelPush')[0]).disabled = true;
     //     }
     // });
+    // window.addEventListener('online', () => {
+    //     useLocalStreamList.forEach(item => {
+    //         if(item.playTime > 0 && $(`#${item.streamID}`)[0].currentTime === item.playTime){
+    //             console.warn('reload ', item.streamID)
+    //             item.player.unload();
+    //             item.player.load();
+    //             item.player.play();
+    //         }
+    //     })
+        
+    // })
 });

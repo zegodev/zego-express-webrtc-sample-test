@@ -14,7 +14,7 @@ $("#custom-userid").text(userID)
 let publishStreamId = 'webrtc' + new Date().getTime();
 let zg;
 let appID = 1739272706; // 请从官网控制台获取对应的appID
-let server = 'wss://webliveroom-test.zego.im/ws'; // 请从官网控制台获取对应的server地址，否则可能登录失败
+let server = 'wss://webliveroom1739272706-api.zego.im/ws';  // 请从官网控制台获取对应的server地址，否则可能登录失败
 
 let cgiToken = '';
 //const appSign = '';
@@ -29,22 +29,33 @@ let localStreamMap = {}
 let publishType;
 
 let l3;
-let auth;
 let roomList = [];
 let playQualityList = {};
+let accessDomain;
+let isAccess;
+let auth;
 let ver;
 
-let publishTimes = {};
-
+window.publishTimes = {};
+window.playTimes = {};
 
 // 测试用代码，开发者请忽略
 // Test code, developers please ignore
 
-({ appID, server, cgiToken, userID, l3, auth, ver } = getCgi(appID, server, cgiToken));
+({ appID, server, cgiToken, userID, l3, accessDomain, isAccess, auth, ver } = getCgi(appID, server, cgiToken));
+
 if (userID == "") {
     userID = 'sample' + new Date().getTime();
-    $("#custom-userid").text(userID)
+    // $("#custom-userid").text(userID)
 }
+
+console.warn('accessDomain', accessDomain)
+if (!accessDomain) {
+    accessDomain = ['access-wss-beta.zego.im']
+}
+
+
+$("#custom-userid").text(userID)
 
 if (cgiToken && tokenUrl == 'https://wsliveroom-alpha.zego.im:8282/token') {
     $.get(cgiToken, rsp => {
@@ -77,8 +88,16 @@ let browser = {
     language: (navigator.browserLanguage || navigator.language).toLowerCase()
 }
 
+
 // eslint-disable-next-line prefer-const
-zg = new ZegoExpressEngine(appID, server);
+zg = new ZegoExpressEngine(appID, server, { accessDomains: accessDomain });
+
+
+console.error('isAccessd', isAccess)
+if (isAccess === false) {
+    zg.zegoWebRTM.stateCenter.useNetAgent = false;
+    zg.zegoWebRTC.stateCenter.useNetAgent = false;
+}
 
 window.zg = zg;
 window.useLocalStreamList = useLocalStreamList;
@@ -131,8 +150,12 @@ async function start() {
     $('#createRoom').click(async () => {
         let loginSuc = false;
         try {
+            // loginTime = new Date().getTime();
             loginSuc = await enterRoom();
+            
             loginSuc && (await publish());
+            // const publishConsumed = new Date().getTime() - loginTime;
+            // console.warn('推流 ' + publishConsumed);
         } catch (error) {
             console.error(error);
         }
@@ -211,19 +234,19 @@ function initSDK() {
             const publishConsumed = now - window.loginTime;
             console.warn('登录推流耗时 ' + publishConsumed);
 
-            if (publishTimes[result.streamID]) {
-                const publishRetryConsumed = now - publishTimes[result.streamID];
+            if (window.publishTimes[result.streamID]) {
+                const publishRetryConsumed = now - window.publishTimes[result.streamID];
                 console.warn('推流节点耗时 ' + publishRetryConsumed)
-                delete publishTimes[result.streamID];;
+                delete window.publishTimes[result.streamID];;
             }
-
+            
         } else if (result.state == 'PUBLISH_REQUESTING') {
             console.info(' publish  retry');
-            if (result.errorCode !== 0 && !publishTimes[result.streamID]) {
-                publishTimes[result.streamID] = new Date().getTime();
+            if (result.errorCode !== 0 && !window.publishTimes[result.streamID]) {
+                window.publishTimes[result.streamID] = new Date().getTime();
             }
         } else {
-            delete publishTimes[result.streamID];
+            delete window.publishTimes[result.streamID];
             if (result.errorCode == 0) {
                 console.warn('publish stop ' + result.errorCode + ' ' + result.extendedData);
             } else {
@@ -247,6 +270,13 @@ function initSDK() {
         console.warn('playerStateUpdate', result.streamID, result.state);
         if (result.state == 'PLAYING') {
             console.info(' play  success ' + result.streamID);
+            const now = new Date().getTime();
+
+            if (window.playTimes[result.streamID]) {
+                const playRetryConsumed = now - window.playTimes[result.streamID];
+                console.warn('拉流节点耗时 ' + playRetryConsumed)
+                delete window.playTimes[result.streamID];;
+            }
             const browser = getBrowser();
             console.warn('browser', browser);
             if (browser === 'Safari') {
@@ -257,7 +287,11 @@ function initSDK() {
             }
         } else if (result.state == 'PLAY_REQUESTING') {
             console.info(' play  retry');
+            if (result.errorCode !== 0 && !window.playTimes[result.streamID]) {
+                window.playTimes[result.streamID] = new Date().getTime();
+            }
         } else {
+            delete window.playTimes[result.streamID];
             if (result.errorCode == 0) {
                 console.warn('play stop ' + result.errorCode + ' ' + result.extendedData);
             } else {
@@ -282,7 +316,7 @@ function initSDK() {
         console.warn(`streamExtraInfoUpdate: room ${roomID},  `, JSON.stringify(streamList));
     });
     zg.on('roomStreamUpdate', async (roomID, updateType, streamList, extendedData) => {
-        console.warn('roomStreamUpdate 1 roomID ', roomID, updateType, streamList, extendedData);
+        console.warn('roomStreamUpdate 1 roomID ', roomID, streamList, extendedData);
         // let queue = []
         if (updateType == 'ADD') {
             for (let i = 0; i < streamList.length; i++) {
@@ -354,29 +388,29 @@ function initSDK() {
             `play#${streamID} videoFPS: ${streamQuality.video.videoFPS} videoBitrate: ${streamQuality.video.videoBitrate} audioBitrate: ${streamQuality.audio.audioBitrate} audioFPS: ${streamQuality.audio.audioFPS}`,
         );
         if (playQualityList[streamID]) {
-            playQualityList[streamID].qualityCount++;
-            const totalVideoBitrate = playQualityList[streamID].totalVideoBitrate + streamQuality.video.videoBitrate;
-            const averVideoBitrate = totalVideoBitrate / playQualityList[streamID].qualityCount;
-            const totalVideoFPS = playQualityList[streamID].totalVideoFPS + streamQuality.video.videoFPS;
-            const averVideoFPS = totalVideoFPS / playQualityList[streamID].qualityCount;
+          playQualityList[streamID].qualityCount++;
+          const totalVideoBitrate = playQualityList[streamID].totalVideoBitrate + streamQuality.video.videoBitrate;
+          const averVideoBitrate = totalVideoBitrate/playQualityList[streamID].qualityCount;
+          const totalVideoFPS = playQualityList[streamID].totalVideoFPS + streamQuality.video.videoFPS;
+          const averVideoFPS = totalVideoFPS / playQualityList[streamID].qualityCount;
 
-            playQualityList[streamID].totalVideoBitrate = totalVideoBitrate;
-            playQualityList[streamID].averVideoBitrate = averVideoBitrate;
-            playQualityList[streamID].totalVideoFPS = totalVideoFPS;
-            playQualityList[streamID].averVideoFPS = averVideoFPS;
+          playQualityList[streamID].totalVideoBitrate = totalVideoBitrate;
+          playQualityList[streamID].averVideoBitrate = averVideoBitrate;
+          playQualityList[streamID].totalVideoFPS = totalVideoFPS;
+          playQualityList[streamID].averVideoFPS = averVideoFPS;
         } else {
-            playQualityList[streamID] = {
-                qualityCount: 1,
-                totalVideoBitrate: 0,
-                averVideoBitrate: 0,
-                totalVideoFPS: 0,
-                averVideoFPS: 0,
-            }
+          playQualityList[streamID] = {
+            qualityCount: 1,
+            totalVideoBitrate: 0,
+            averVideoBitrate: 0,
+            totalVideoFPS: 0,
+            averVideoFPS: 0,
+          }
 
-            playQualityList[streamID].totalVideoBitrate = streamQuality.video.videoBitrate;
-            playQualityList[streamID].averVideoBitrate = streamQuality.video.videoBitrate;
-            playQualityList[streamID].totalVideoFPS = streamQuality.video.videoFPS;
-            playQualityList[streamID].averVideoFPS = streamQuality.video.videoFPS;
+          playQualityList[streamID].totalVideoBitrate = streamQuality.video.videoBitrate;
+          playQualityList[streamID].averVideoBitrate = streamQuality.video.videoBitrate;
+          playQualityList[streamID].totalVideoFPS = streamQuality.video.videoFPS;
+          playQualityList[streamID].averVideoFPS = streamQuality.video.videoFPS;
         }
 
         console.warn("当前视频码率平均值：" + playQualityList[streamID].averVideoBitrate);
@@ -408,7 +442,7 @@ function initSDK() {
         });
     });
     zg.on("deviceError", async (errorCode, deviceName) => {
-        console.warn("deviceError", errorCode, deviceName);
+        console.log("deviceError", errorCode, deviceName);
         const deviceInfo = await zg.enumDevices();
         const cameras = deviceInfo.cameras;
         const micList = deviceInfo.microphones;
@@ -432,9 +466,71 @@ function initSDK() {
     });
 }
 
+async function getToken(userID, roomId, expireTime) {
+    
+    let token;
+    if (ver !== '00') {
+        const res = await $.ajax({
+            url: 'https://sig-liveroom-admin.zego.cloud/thirdToken/get',
+            type: "POST",
+            data: JSON.stringify({
+                "version": ver,
+                "appId": appID,
+                "idName": userID,
+                "roomId": roomId,
+                "privilege": {
+                    "1": 1,
+                    "2": 1
+                },
+                "expire_time": expireTime || 300
+            }),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8"
+        })
+        token = res.data.token;
+    } else {
+        token = await $.get('https://wsliveroom-alpha.zego.im:8282/token', {
+            app_id: appID,
+            id_name: userID,
+        });
+    }
+    return token;
+}
 
+function login2(token, roomId, config) {
+    return new Promise(async (resolve, reject) => {
+        // const res = await $.ajax({
+        //     url: 'https://sig-liveroom-admin.zego.cloud/thirdToken/get',
+        //     type: "POST",
+        //     data: JSON.stringify({
+        //         "version": "03",
+        //         "appId": appID,
+        //         "idName": userID,
+        //         "roomId": roomId,
+        //         "privilege": {
+        //             "1": 1,
+        //             "2": 1
+        //         },
+        //         "expire_time": 3000
+        //     }),
+        //     dataType: "json",
+        //     contentType: "application/json; charset=utf-8"
+        // })
+        // token = res.data.token;
+    
+        const _config = Object.assign({}, { userUpdate: true }, config);
+        
+        zg.loginRoom(roomId, token, { userID, userName }, _config).then(res => {
+            roomList.push(roomId);
+            resolve()
+        }).catch(e => {
+            reject(e)
+        });
+    })
+    
 
-async function login(roomId) {
+}
+const login = async (roomId, config) => {
     // 获取token需要客户自己实现，token是对登录房间的唯一验证
     // Obtaining a token needs to be implemented by the customer. The token is the only verification for the login room.
 
@@ -472,36 +568,37 @@ async function login(roomId) {
         //测试用结束
         //Test code end
     } else {
-        if (ver == '00') {
-            token = await $.get('https://wsliveroom-alpha.zego.im:8282/token', {
-                app_id: appID,
-                id_name: userID,
-            });
-        } else {
-            const res = await $.ajax({
-                url: 'https://sig-liveroom-admin.zego.cloud/thirdToken/get',
-                type: "POST",
-                data: JSON.stringify({
-                    "version": ver,
-                    "appId": appID,
-                    "idName": userID,
-                    "roomId": roomId,
-                    "privilege": {
-                        "1": 1,
-                        "2": 1
-                    },
-                    "expire_time": 3000
-                }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8"
-            })
-            token = res.data.token;
-        }
-    }
+        // token = await $.get('https://wsliveroom-alpha.zego.im:8282/token', {
+        //     app_id: appID,
+        //     id_name: userID,
+        // });
 
+        // const res = await $.ajax({
+        //     url: 'https://sig-liveroom-admin.zego.cloud/thirdToken/get',
+        //     type: "POST",
+        //     data: JSON.stringify({
+        //         "version": "03",
+        //         "appId": appID,
+        //         "idName": userID,
+        //         "roomId": roomId,
+        //         "privilege": {
+        //             "1": 1,
+        //             "2": 1
+        //         },
+        //         "expire_time": 3000
+        //     }),
+        //     dataType: "json",
+        //     contentType: "application/json; charset=utf-8"
+        // })
+        // token = res.data.token;
+        token = await getToken(userID, roomId, expireTime);
+
+    }
+    const _config = Object.assign({}, { userUpdate: true }, config);
+    
     window.loginTime = new Date().getTime();
-    await zg.loginRoom(roomId, token, { userID, userName }, { userUpdate: true });
-    const loginConsumed = new Date().getTime() - window.loginTime;
+    await zg.loginRoom(roomId, token, { userID, userName }, _config);
+    const loginConsumed = new Date().getTime() -  window.loginTime;
     console.warn('登录房间耗时 ' + loginConsumed);
 
     roomList.push(roomId);
@@ -529,6 +626,35 @@ async function enterRoom() {
     return true;
 }
 
+function clear() {
+    const roomId = $('#roomId').val();
+    
+    playQualityList = {};
+
+    // 清空页面
+    // Clear page
+    useLocalStreamList = [];
+    // window.useLocalStreamList = [];
+
+    roomList.splice(roomList.findIndex(room => room == roomId), 1);
+
+    if (previewVideo.srcObject  && (!roomId || roomList.length == 0)) {
+        previewVideo.srcObject = null;
+        zg.stopPublishingStream(publishStreamId);
+        zg.destroyStream(localStreamMap[roomId]);
+        isPreviewed = false;
+        !$('.sound').hasClass('d-none') && $('.sound').addClass('d-none');
+    }
+
+    if (!roomId || roomList.length == 0) {
+        $('.remoteVideo').html('');
+        $('#memberList').html('');
+    }
+
+    loginRoom = false;
+    publishType = undefined;
+}
+
 async function logout() {
     console.info('leave room  and close stream');
     const roomId = $('#roomId').val();
@@ -547,7 +673,7 @@ async function logout() {
 
     roomList.splice(roomList.findIndex(room => room == roomId), 1);
 
-    if (previewVideo.srcObject && (!roomId || roomList.length == 0)) {
+    if (previewVideo.srcObject  && (!roomId || roomList.length == 0)) {
         previewVideo.srcObject = null;
         zg.stopPublishingStream(publishStreamId);
         zg.destroyStream(localStreamMap[roomId]);
@@ -581,7 +707,7 @@ async function publish(constraints, isNew) {
             videoInput: $('#videoList').val(),
             video: video !== undefined ? video : $('#videoList').val() === '0' ? false : true,
             audio: $('#audioList').val() === '0' ? false : true,
-            videoOptimizationMode: $('#videoOptimizationMode').val() ? $('#videoOptimizationMode').val() : "default"
+            videoOptimizationMode: $('#videoOptimizationMode').val()? $('#videoOptimizationMode').val() : "default"
             // channelCount: constraints && constraints.camera && constraints.camera.channelCount,
         },
     };
@@ -601,11 +727,11 @@ async function push(constraints, publishOption = {}, isNew) {
         if (localStreamMap[currentRoomID]) {
             zg.destroyStream(localStreamMap[currentRoomID])
         }
-
         const previewTime = new Date().getTime();
         localStreamMap[currentRoomID] = await zg.createStream(constraints);
         const previewConsumed = new Date().getTime() - previewTime;
         console.warn('预览耗时 ' + previewConsumed);
+
         // var AudioContext = window.AudioContext || window.webkitAudioContext; // 兼容性
         // let localTrack= localStream.getAudioTracks()[0];
         // let audioContext = new AudioContext();// 创建Audio上下文
@@ -630,9 +756,6 @@ async function push(constraints, publishOption = {}, isNew) {
         }
         window.publishTime = new Date().getTime();
         const result = zg.startPublishingStream(completeStreamID, localStreamMap[currentRoomID], publishOption);
-        zg.createAudioEffectPlayer && (effectPlayer = zg.createAudioEffectPlayer(
-            localStreamMap[currentRoomID]
-        ))
         console.log('publish stream' + completeStreamID, result);
     } catch (err) {
         if (err.name) {
@@ -647,7 +770,6 @@ $('#toggleCamera').click(function () {
     zg.mutePublishStreamVideo(previewVideo.srcObject, !$(this).hasClass('disabled'), $('#retainPreview').val() == 1 ? true : false);
     $(this).toggleClass('disabled');
 });
-
 $("#toggleVideoCapturing").click(function () {
     $("#toggleVideoCapturing").toggleClass("disabled");
     const result = zg.enableVideoCaptureDevice(
@@ -656,7 +778,6 @@ $("#toggleVideoCapturing").click(function () {
     );
     console.log("toggleCamera", result);
 });
-
 $('#toggleSpeaker').click(function () {
     zg.mutePublishStreamAudio(previewVideo.srcObject, !$(this).hasClass('disabled'));
     $(this).toggleClass('disabled');
@@ -700,6 +821,8 @@ export {
     supportScreenSharing,
     userID,
     useLocalStreamList,
+    login,
+    login2,
     logout,
     enterRoom,
     push,
@@ -709,8 +832,11 @@ export {
     loginRoom,
     publishType,
     l3,
+    roomList,
     effectPlayer,
-    enumDevices
+    enumDevices,
+    getToken,
+    clear
 };
 
 // $(window).on('unload', function() {
