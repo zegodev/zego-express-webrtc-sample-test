@@ -897,6 +897,17 @@ const startPreview = async (constraints = {}) => {
         return {
             playType
         }
+        isNew && (publishStreamId = 'webrtc' + new Date().getTime());
+        if($("#videoCodec").val()) publishOption.videoCodec = $("#videoCodec").val();
+        if ($('#roomId').val()) publishOption.roomID = $('#roomId').val();
+
+        if ($("#enableDualStream").val() == "1") {
+          //debugger;
+          zg.enableDualStream(localStream);
+        }
+
+        const result = zg.startPublishingStream(publishStreamId, localStream, publishOption);
+        console.log('publish stream' + publishStreamId, result);
     } catch (err) {
         if (err.name) {
             console.error('createStream', err.name, err.message);
