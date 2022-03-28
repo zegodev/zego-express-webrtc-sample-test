@@ -14,7 +14,9 @@ import {
     loginRoom
 } from '../common';
 import { getBrowser } from '../assets/utils';
-import flvjs from 'flv.js';
+import { utf8ByteDecode } from '../assets/utils';
+import flvjs from '../assets/flv.min.js';
+// import flvjs from 'flv.js';
 
 let flvPlayer = null;
 let cdnFlvPlayer = null;
@@ -94,6 +96,47 @@ function filterStreamList(streamInfo) {
     });
 }
 
+// function utf8ByteDecode (utf8Bytes) {
+//     let content = Utf8ArrayToStr(utf8Bytes);
+//     console.warn('sei content', content);
+//     return content;
+//     // if (content.indexOf('RoomKit_SEI') !== -1) {
+//     //     content = Base64.decode(content.replace(/RoomKit_SEI:/g, ''));
+//     //     return content;
+//     // }
+// };
+
+// function Utf8ArrayToStr(array) {
+//     var out, i, len, c;
+//     var char2, char3;
+
+//     out = "";
+//     len = array.length;
+//     i = 0;
+//     while(i < len) {
+//     c = array[i++];
+//     switch(c >> 4)
+//     { 
+//     case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7:
+//         out += String.fromCharCode(c);
+//         break;
+//     case 12: case 13:
+//         char2 = array[i++];
+//         out += String.fromCharCode(((c & 0x1F) << 6) | (char2 & 0x3F));
+//         break;
+//     case 14:
+//         // 1110 xxxx  10xx xxxx  10xx xxxx
+//         char2 = array[i++];
+//         char3 = array[i++];
+//         out += String.fromCharCode(((c & 0x0F) << 12) |
+//                     ((char2 & 0x3F) << 6) |
+//                     ((char3 & 0x3F) << 0));
+//         break;
+//     }
+//     }
+
+//     return out;
+// }
 function playStream(streamID, cdnUrl) {
     const browser = getBrowser();
     let hasAudio = true;
@@ -134,6 +177,9 @@ function playStream(streamID, cdnUrl) {
                 console.error('LOADING_COMPLETE');
                 flvPlayer.play();
             });
+            flvjs.exportSEI((res) => {
+                console.log('获得了SEI信息', utf8ByteDecode(res));
+            })
             flvPlayer.attachMediaElement(videoElement);
             flvPlayer.load();
             videoElement.muted = false;
@@ -142,6 +188,12 @@ function playStream(streamID, cdnUrl) {
             useLocalStreamList[index].player = flvPlayer;
         }
     }
+}
+
+function encodeString(str) {
+    return Uint8Array.from(
+      Array.from(unescape(encodeURIComponent(str))).map(val => val.charCodeAt(0))
+    );
 }
 
 // async function updateCdnStatus(state) {
@@ -296,6 +348,9 @@ $(async () => {
                 hasAudio: hasAudio,
                 hasVideo: hasVideo,
             });
+            flvjs.exportSEI((res) => {
+                console.log('获得了SEI信息', utf8ByteDecode(res));
+            })
             cdnFlvPlayer.on(flvjs.Events.LOADING_COMPLETE, function () {
                 console.error('LOADING_COMPLETE');
                 cdnFlvPlayer.play();
@@ -309,6 +364,7 @@ $(async () => {
     $('#playCDN').click(() => {
         flvPlayer && flvPlayer.play();
     });
+    
     $('#createRoom').unbind('click');
     $('#createRoom').click(async () => {
         // let loginSuc = false;

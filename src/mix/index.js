@@ -1,13 +1,100 @@
 import '../common';
 import { checkAnRun, logout, publishStreamId, useLocalStreamList, zg } from '../common';
-import { getBrowser } from '../assets/utils';
-import flvjs from 'flv.js';
+import { encodeString, getBrowser } from '../assets/utils';
+// import flvjs from 'flv.js';
+import flvjs from '../assets/flv.min.js';
+import { utf8ByteDecode } from '../assets/utils';
+import '../assets/gbk';
+import '../assets/base64';
+import { Base64 } from '../assets/base64';
 
+const taskID = 'task-' + new Date().getTime();
+const mixStreamID = 'mixwebrtc-' + new Date().getTime();
+
+function base64ToUint8Array(base64String) {
+    const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding)
+      .replace(/\-/g, "+")
+      .replace(/_/g, "/");
+  
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+  
+    for (let i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+  }
+  
+  function uint8arrayToBase64(u8Arr) {
+    const CHUNK_SIZE = 0x8000; //arbitrary number
+    let index = 0;
+    const length = u8Arr.length;
+    let result = "";
+    let slice;
+    while (index < length) {
+      slice = u8Arr.subarray(index, Math.min(index + CHUNK_SIZE, length));
+      result += String.fromCharCode.apply(null, Array.from(slice));
+      index += CHUNK_SIZE;
+    }
+    // web image base64图片格式: "data:image/png;base64," + b64encoded;
+    // return  "data:image/png;base64," + btoa(result);
+    return btoa(result);
+  }
+
+async function updateMix() {
+    const streamList = [
+        {
+            streamID: publishStreamId,
+            layout: {
+                top: 0,
+                left: 0,
+                bottom: 240,
+                right: 320,
+            },
+        },
+    ];
+    if (useLocalStreamList.length !== 0) {
+        streamList.push({
+            streamID: useLocalStreamList[0].streamID,
+            layout: {
+                top: 240,
+                left: 0,
+                bottom: 480,
+                right: 320,
+            },
+        });
+    }
+
+    
+    const res = await zg.startMixerTask({
+        taskID,
+        inputList: streamList,
+        outputList: [
+            mixStreamID,
+            // {
+            //     target: mixStreamID,
+            //     // target: 'rtmp://test.aliyun.zego.im/livestream/zegodemo',
+            // },
+        ],
+        outputConfig: {
+            outputBitrate: 300,
+            outputFPS: 15,
+            outputWidth: 320,
+            outputHeight: 480,
+        },
+    });
+
+    return res;
+}
 $(async () => {
+    // console.warn('base64', Base64.base64encode('zegozegozegozego'))
+    // const str = '%3A%CD%E8%28%CD%E8%28%CD%E8%28%CD%E8%28%7D'.replace(/%/g, '%25')
+    // const s = $URL.decode(str)
+    // console.warn('s', s)
     await checkAnRun();
     $('');
-    const taskID = 'task-' + new Date().getTime();
-    const mixStreamID = 'mixwebrtc-' + new Date().getTime();
+    
     const mixVideo = $('#mixVideo')[0];
     let hlsUrl;
     let flvPlayer = null;
@@ -19,46 +106,7 @@ $(async () => {
     let flvPlayer2 = null;
     $('#mixStream').click(async () => {
         try {
-            const streamList = [
-                {
-                    streamID: publishStreamId,
-                    layout: {
-                        top: 0,
-                        left: 0,
-                        bottom: 240,
-                        right: 320,
-                    },
-                },
-            ];
-            if (useLocalStreamList.length !== 0) {
-                streamList.push({
-                    streamID: useLocalStreamList[0].streamID,
-                    layout: {
-                        top: 240,
-                        left: 0,
-                        bottom: 480,
-                        right: 320,
-                    },
-                });
-            }
-
-            const res = await zg.startMixerTask({
-                taskID,
-                inputList: streamList,
-                outputList: [
-                    mixStreamID,
-                    // {
-                    //     target: mixStreamID,
-                    //     // target: 'rtmp://test.aliyun.zego.im/livestream/zegodemo',
-                    // },
-                ],
-                outputConfig: {
-                    outputBitrate: 300,
-                    outputFPS: 15,
-                    outputWidth: 320,
-                    outputHeight: 480,
-                },
-            });
+            const res = await updateMix();
             if (res.errorCode == 0) {
                 $('#stopMixStream').removeAttr('disabled');
                 const result = JSON.parse(res.extendedData).mixerOutputList;
@@ -80,6 +128,13 @@ $(async () => {
                             type: 'flv',
                             url: flvUrl,
                         });
+                        flvjs.exportSEI((res) => {
+                            const r = utf8ByteDecode(res);
+                            // const str ='%D6%D0%B9%FA'
+                            // const s = $URL.decode(r.slice(44))
+	                        // console.warn('s', s)
+                            console.log('获得了SEI信息', new Date(), res, r);
+                        })
                         flvPlayer.attachMediaElement(mixVideo);
                         flvPlayer.load();
                     }
@@ -94,6 +149,26 @@ $(async () => {
         }
     });
 
+    $('#sendMixSEI').click(async () => {
+        const seiInfo = $('#mixSEI').val();
+        if (!seiInfo) {
+            alert('sei not exist');
+            return;
+        }
+        const u = encodeString("475")
+        zg.setMixerTaskConfig({
+            userData: u
+        });
+        try {
+            const res = await updateMix();
+            console.warn('sendMixSEI', res)
+            if (res.errorCode == 0) {
+                
+            }
+        } catch (err) {
+            console.error('err: ', err);
+        }
+    })
     $('#mixStreamOnlyAudio').click(async () => {
         try {
             const streamList = [
