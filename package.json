@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack",
     "dev": "webpack-dev-server",
-    "upload": "scp -r ./docs root@192.168.100.30:/opt/dev/express_webrtc/",
+    "upload": "scp -r ./docs root@192.168.100.30:/opt/dev/express_webrtc/2_14_0/",
     "deploy": "npm run build && npm run upload"
   },
   "author": "choui",
