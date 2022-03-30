@@ -50,9 +50,9 @@ if (userID == "") {
 }
 
 console.warn('accessDomain', accessDomain)
-if (!accessDomain) {
-    accessDomain = ['access-wss-beta.zego.im']
-}
+// if (!accessDomain) {
+//     accessDomain = ['access-wss-beta.zego.im']
+// }
 
 
 $("#custom-userid").text(userID)
