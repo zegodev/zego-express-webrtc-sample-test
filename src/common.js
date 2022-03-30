@@ -756,6 +756,9 @@ async function push(constraints, publishOption = {}, isNew) {
         }
         window.publishTime = new Date().getTime();
         const result = zg.startPublishingStream(completeStreamID, localStreamMap[currentRoomID], publishOption);
+        zg.createAudioEffectPlayer && (effectPlayer = zg.createAudioEffectPlayer(
+            localStreamMap[currentRoomID]
+        ))
         console.log('publish stream' + completeStreamID, result);
     } catch (err) {
         if (err.name) {
