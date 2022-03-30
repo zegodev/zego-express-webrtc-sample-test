@@ -86,7 +86,6 @@ $(async () => {
     });
     // --- test end
     $("#publishImg").on("click", () => {
-        //@ts-ignore
         zg.setDummyCaptureImagePath("./test.jpg", previewVideo.srcObject);
       });
     $('#reAcquireDevice').click(() => {
