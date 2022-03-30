@@ -81,7 +81,7 @@ $(async () => {
 
     $('#preloadEffect').click(async ()=> {
         await Promise.all(audioEffectList.map(async effect=>{
-            const res = await zg.preloadAudioEffect(effect.effectId, effect.path)
+            const res = await zg.loadAudioEffect(effect.effectId, effect.path)
             console.warn('preload success '  + res);   
             return res
         }))
