@@ -20,6 +20,10 @@ let roomMaxUser = {
 
 };
 
+let publishTimes = {};
+let loginTimes = {};
+let publishRooms = {};
+
 $(async () => {
     await checkAnRun();
 
@@ -234,6 +238,38 @@ $(async () => {
     zg.on("tokenWillExpire", (roomID) => {
         console.warn(`tokenWillExpire ${roomID}`);
     });
+    zg.off('publisherStateUpdate');
+    zg.on('publisherStateUpdate', result => {
+        console.warn('publisherStateUpdate: ', result.streamID, result.state, result);
+        if (result.state == 'PUBLISHING') {
+            console.info(' publish  success ' + result.streamID);
+            const now = new Date().getTime();
+            const pushConsumed = now - publishTimes[result.streamID];
+            console.warn("推流耗时 " + pushConsumed);
+
+            const publishConsumed = now - loginTimes[publishRooms[result.streamID]];
+            console.warn('登录推流耗时 ' + publishConsumed);
+
+            if (window.publishTimes[result.streamID]) {
+                const publishRetryConsumed = now - publishTimes[result.streamID];
+                console.warn('推流节点耗时 ' + publishRetryConsumed)
+                delete window.publishTimes[result.streamID];;
+            }
+            
+        } else if (result.state == 'PUBLISH_REQUESTING') {
+            console.info(' publish  retry');
+            if (result.errorCode !== 0 && !window.publishTimes[result.streamID]) {
+                window.publishTimes[result.streamID] = new Date().getTime();
+            }
+        } else {
+            delete window.publishTimes[result.streamID];
+            if (result.errorCode == 0) {
+                console.warn('publish stop ' + result.errorCode + ' ' + result.extendedData);
+            } else {
+                console.error('publish error ' + result.errorCode + ' ' + result.extendedData);
+            }
+        }
+    });
 
     $('.chatBox').hide();
 
@@ -412,6 +448,7 @@ $(async () => {
             alert('roomId is empty');
             return false;
         }
+        loginTimes[roomId] = new Date().getTime();
         try {
             if (room1Token) {
                 await login2(room1Token, roomId, { maxMemberCount: roomMaxUser[roomId] || 0, userUpdate: true });
@@ -450,6 +487,12 @@ $(async () => {
 
         zg.destroyStream(localStream1);
         localStream1 = null;
+        const previewVideo1 = $('#room1PreviewVideo1')[0];
+        previewVideo1 && (previewVideo1.srcObject = null);
+
+        const previewVideo2 = $('#room1PreviewVideo2')[0];
+        previewVideo2 && (previewVideo2.srcObject = null);
+
         zg.logoutRoom(roomId);
         handleRoomList('DELETE', roomId)
     });
@@ -471,6 +514,8 @@ $(async () => {
         let previewVideo1 = $('#room1PreviewVideo1')[0];
         previewVideo1.srcObject = localStream1;
 
+        publishTimes[streamId] = new Date().getTime();
+        publishRooms[streamId] = roomId;
         zg.startPublishingStream(streamId, localStream1, { roomID: roomId });
         
     });
@@ -492,6 +537,9 @@ $(async () => {
         
         let previewVideo1 = $('#room1PreviewVideo2')[0];
         previewVideo1.srcObject = localStream1;
+
+        publishTimes[streamId] = new Date().getTime();
+        publishRooms[streamId] = roomId;
 
         zg.startPublishingStream(streamId, localStream1, { roomID: roomId });
     });
@@ -570,6 +618,7 @@ $(async () => {
             alert('roomId is empty');
             return false;
         }
+        loginTimes[roomId] = new Date().getTime();
         try {
             if (room2Token) {
                 await login2(room2Token, roomId, { maxMemberCount: roomMaxUser[roomId] || 0, userUpdate: true });
@@ -608,6 +657,12 @@ $(async () => {
 
         zg.destroyStream(localStream2)
         localStream2 = null;
+        const previewVideo1 = $('#room2PreviewVideo1')[0];
+        previewVideo1 && (previewVideo1.srcObject = null);
+
+        const previewVideo2 = $('#room2PreviewVideo2')[0];
+        previewVideo2 && (previewVideo2.srcObject = null);
+
         zg.logoutRoom(roomId);
         handleRoomList('DELETE', roomId)
 
@@ -631,6 +686,9 @@ $(async () => {
         let previewVideo1 = $('#room2PreviewVideo1')[0];
         previewVideo1.srcObject = localStream2;
 
+        publishTimes[streamId] = new Date().getTime();
+        publishRooms[streamId] = roomId;
+
         zg.startPublishingStream(streamId, localStream2, { roomID: roomId});
         
     });
@@ -652,6 +710,9 @@ $(async () => {
 
         let previewVideo1 = $('#room2PreviewVideo2')[0];
         previewVideo1.srcObject = localStream2;
+
+        publishTimes[streamId] = new Date().getTime();
+        publishRooms[streamId] = roomId;
 
         zg.startPublishingStream(streamId, localStream2, { roomID: roomId });
     });
@@ -730,6 +791,7 @@ $(async () => {
             alert('roomId is empty');
             return false;
         }
+        loginTimes[roomId] = new Date().getTime();
         try {
             if (room3Token) {
                 await login2(room3Token, roomId, { maxMemberCount: roomMaxUser[roomId] || 0, userUpdate: true });
@@ -768,6 +830,11 @@ $(async () => {
 
         zg.destroyStream(localStream3)
         localStream3 = null;
+        const previewVideo1 = $('#room3PreviewVideo1')[0];
+        previewVideo1 && (previewVideo1.srcObject = null);
+
+        const previewVideo2 = $('#room3PreviewVideo2')[0];
+        previewVideo2 && (previewVideo2.srcObject = null);
         zg.logoutRoom(roomId);
         handleRoomList('DELETE', roomId)
 
@@ -790,12 +857,15 @@ $(async () => {
         let previewVideo1 = $('#room3PreviewVideo1')[0];
         previewVideo1.srcObject = localStream3;
 
-        zg.startPublishingStream(streamId, localStream3);
+        publishTimes[streamId] = new Date().getTime();
+        publishRooms[streamId] = roomId;
+
+        zg.startPublishingStream(streamId, localStream3, {roomID: roomId });
         
     });
 
     $('#publishRoom3Stream2').click(async function() {
-        const streamId = $('#roomId2_streamId2').val();
+        const streamId = $('#roomId3_streamId2').val();
         if (!streamId) {
             alert('streamId is empty');
             return false;
@@ -810,6 +880,9 @@ $(async () => {
         }
         let previewVideo1 = $('#room3PreviewVideo2')[0];
         previewVideo1.srcObject = localStream3;
+
+        publishTimes[streamId] = new Date().getTime();
+        publishRooms[streamId] = roomId;
 
         zg.startPublishingStream(streamId, localStream3, { roomID: roomId });
     });
