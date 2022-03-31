@@ -140,6 +140,10 @@ $(async () => {
             console.warn('登录失败');
         })
         const playStreamIDs = $('#playStreamID').val();
+        if (!playStreamIDs) {
+            alert('streamId is empty');
+            return false;
+        }
         const playstreamlist = playStreamIDs.split(';');
         playstreamlist.forEach(stream => {
             play(stream);

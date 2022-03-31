@@ -61,17 +61,22 @@ $(async () => {
         } else if (updateType === 'DELETE') {
             userList.forEach(user => {
                 localUserList = localUserList.filter(item => item.userID !== user.userID);
+                // console.warn($('#toastBody').val())
+                $('#toastBody').text().indexOf(user.userID) > -1 && ($('#toast')[0].className = "toast fade hide")
             });
         }
         let userListHtml = '';
         localUserList.forEach(user => {
             user.userID !== userID && (userListHtml += `<option value= ${user.userID}>${user.userName}</option>`);
         });
+        if (localUserList.length === 0) {
+            closeChatBox();
+        }
         $('#memberList').html(userListHtml);
     });
     zg.on('roomExtraInfoUpdate', (roomID, extraInfoList) => {
         console.warn(`roomExtraInfo: room ${roomID} `, extraInfoList);
-        $('#toastBody').text(`${extraInfoList[0].key} ${extraInfoList[0].value}`)
+        $('#toastBody').text(`roomExtraInfoUpdate from ${extraInfoList[0].updateUser.userID} ${extraInfoList[0].key} ${extraInfoList[0].value}`)
         $('#toast')[0].className = "toast fade show"
     });
     $('.chatBox').hide();
@@ -171,6 +176,15 @@ $(async () => {
         }
     });
 
+    function closeChatBox() {
+        $('.chatBox').toggle();
+        $('.chatBox-kuang').toggle();
+
+        $('.chatBox-content-demo').html('');
+        //聊天框默认最底部
+        $('#chatBox-content-demo').scrollTop($('#chatBox-content-demo')[0].scrollHeight);
+    }
+
     $('#ReliableMessage').click(async () => {
         const roomId= $('#roomId').val() ;
         const result = await zg.setRoomExtraInfo(roomId, '2', 'ReliableMessage test');
@@ -183,7 +197,8 @@ $(async () => {
     $('#leaveRoom').unbind('click');
     $('#leaveRoom').click(function() {
         localUserList = [];
-        $('#toast')[0].className = "toast fade hide"
+        $('#toast')[0].className = "toast fade hide";
+        closeChatBox();
         logout();
     });
 });
