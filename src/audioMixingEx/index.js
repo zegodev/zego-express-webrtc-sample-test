@@ -1,4 +1,4 @@
-import { checkAnRun, zg, publishStreamId, logout, effectPlayer} from '../common';
+import { checkAnRun, zg, publishStreamId, logout, effectPlayer } from '../common';
 
 $(async () => {
     let isMixingAudio = false;
@@ -21,8 +21,8 @@ $(async () => {
     await checkAnRun();
     $('#MixAudio').click(() => {
         const result = zg.startMixingAudio(publishStreamId, [
-            $('#extenerVideo1')[0] ,
-            $('#extenerVideo2')[0] ,
+            $('#extenerVideo1')[0],
+            $('#extenerVideo2')[0],
         ]);
         console.warn('混音', result);
     });
@@ -35,25 +35,26 @@ $(async () => {
         // @ts-ignore
         zg.setMixingAudioVolume(publishStreamId, parseInt($('#volume1').val()), $(
             '#extenerVideo1',
-        )[0] );
+        )[0]);
     });
 
     $('#volume2').on('input', () => {
         // @ts-ignore
         zg.setMixingAudioVolume(publishStreamId, parseInt($('#volume2').val()), $(
             '#extenerVideo2',
-        )[0] );
+        )[0]);
     });
 
-    $('#mixingBuffer').click(function() {
+    $('#mixingBuffer').click(function () {
         const xhr = new XMLHttpRequest();
 
-        xhr.open('GET', 'https://zego-public.oss-cn-shanghai.aliyuncs.com/webplatform/websdk/bike.mp3', true);
+        xhr.open('GET', 'https://zego-public.oss-cn-shanghai.aliyuncs.com/webplatform/websdk/oldman.mp4', true);
+        xhr.setRequestHeader("Range", "none")
         xhr.responseType = 'arraybuffer';
         xhr.onload = () => {
             if (xhr.status == 200 || xhr.status == 304) {
                 const buffer = xhr.response;
-                zg.zegoWebRTC.mixingBuffer(publishStreamId,effectId, buffer, (err) => {
+                zg.zegoWebRTC.mixingBuffer(publishStreamId, effectId, buffer, (err) => {
                     if (err) {
                         console.error(err);
                     } else {
@@ -61,126 +62,128 @@ $(async () => {
                         console.warn('real time effect success');
                     }
                 });
+            }else {
+                debugger
             }
-        };
+        };      
 
         xhr.send();
     });
 
-    $('#stopMixingBuffer').click(function() {
+    $('#stopMixingBuffer').click(function () {
         zg.zegoWebRTC.stopMixingBuffer(publishStreamId, effectId);
     });
 
-    $('#leaveMixRoom').click(function() {
+    $('#leaveMixRoom').click(function () {
         isMixingAudio && zg.stopMixingAudio(publishStreamId);
         isMixingBuffer && zg.zegoWebRTC.stopMixingBuffer(publishStreamId, '1');
-        isMixingAudio = false; 
+        isMixingAudio = false;
         isMixingBuffer = false;
         logout();
     });
 
-    $('#preloadEffect').click(async ()=> {
-        await Promise.all(audioEffectList.map(async effect=>{
+    $('#preloadEffect').click(async () => {
+        await Promise.all(audioEffectList.map(async effect => {
             const res = await zg.loadAudioEffect(effect.effectId, effect.path)
-            console.warn('preload success '  + res);   
+            console.warn('preload success ' + res);
             return res
         }))
 
         $('#playEffect')[0].disabled = false;
-        
+
         $('#unloadEffect')[0].disabled = false;
     });
     $('#playEffectWithPath').click(() => {
-        if(!effectId) {
+        if (!effectId) {
             alert("需要指定播放音效id")
         }
-     
-        if(!effectPlayer)  alert("推流前不支持调用")
+
+        if (!effectPlayer) alert("推流前不支持调用")
         const id = effectId
         effectPlayer.start(
             id,
-            {path:$("#musicPath").val()},
+            { path: $("#musicPath").val() },
             () => {
                 isMixingAudio = true;
-                
+
                 $('#pauseEffect')[0].disabled = false;
-                 
+
                 $('#resumeEffect')[0].disabled = false;
-                
+
                 $('#stopEffect')[0].disabled = false;
                 $("#unloadEffect")[0].disabled = false
                 console.warn('start play');
             },
             () => {
                 isMixingAudio = false;
-                alert("音效播放结束 "+ id)
-                console.warn('play end'+ id);
+                alert("音效播放结束 " + id)
+                console.warn('play end' + id);
             },
         );
     });
     $('#playEffect').click(() => {
-        if(!effectId) {
+        if (!effectId) {
             alert("需要指定播放音效id")
         }
-        if(!effectPlayer)  alert("推流前不支持调用")
+        if (!effectPlayer) alert("推流前不支持调用")
         const id = effectId
         effectPlayer.start(
             id,
             undefined,
             () => {
                 isMixingAudio = true;
-                
+
                 $('#pauseEffect')[0].disabled = false;
-                 
+
                 $('#resumeEffect')[0].disabled = false;
-                
+
                 $('#stopEffect')[0].disabled = false;
                 console.warn('start play');
             },
             () => {
                 isMixingAudio = false;
-                alert("音效播放结束 "+ id)
+                alert("音效播放结束 " + id)
                 // $('#pauseEffect')[0].disabled = true;
-                
+
                 // $('#resumeEffect')[0].disabled = true;
-                
+
                 // $('#stopEffect')[0].disabled = true;
-                console.warn('play end'+ id);
+                console.warn('play end' + id);
             },
         );
     });
 
     $('#pauseEffect').click(() => {
-        if(!effectPlayer)  alert("推流前不支持调用")
+        if (!effectPlayer) alert("推流前不支持调用")
         effectPlayer.pause(effectId);
     });
 
     $('#resumeEffect').click(() => {
-        if(!effectPlayer)  alert("推流前不支持调用")
+        if (!effectPlayer) alert("推流前不支持调用")
         effectPlayer.resume(effectId);
     });
 
     $('#stopEffect').click(() => {
-        if(!effectPlayer)  alert("推流前不支持调用")
+        if (!effectPlayer) alert("推流前不支持调用")
         effectPlayer.stop(effectId);
-        if(!effectId) {
+        if (!effectId) {
 
             $('#pauseEffect')[0].disabled = true;
-        
+
             $('#resumeEffect')[0].disabled = true;
-            
+
             $('#stopEffect')[0].disabled = true;
         }
     });
     $("#seekTo").click(() => {
-        if(!effectId) {
+        if (!effectId) {
             alert("no effectId")
         }
-        if(!effectPlayer)  alert("推流前不支持调用")
+        if (!effectPlayer) alert("推流前不支持调用")
         const total = effectPlayer.getTotalDuration(effectId)
         const origin = effectPlayer.getCurrentProgress(effectId)
-        const progress = (($("#progress").val()||0)/100) * total
-        
+        const progress = (($("#progress").val() || 0) / 100) * total
+
         effectPlayer.seekTo(effectId, progress);
         alert(`总时长：${total},指定位置：${progress}, 原位置：${origin}`)
     });
@@ -194,13 +197,13 @@ $(async () => {
 
         if (num === audioEffectList.length) {
             console.warn('all unload success');
-            
+
             $('#playEffect')[0].disabled = true;
-            
+
             $('#unloadEffect')[0].disabled = true;
         }
     });
-    $("#effectId").change(()=>{
+    $("#effectId").change(() => {
         effectId = $("#effectId").val()
     })
 });
