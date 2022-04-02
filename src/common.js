@@ -113,7 +113,7 @@ if (isAccess === false) {
     zg.zegoWebRTC.stateCenter.useNetAgent = false;
 }
 
-if (isSoftCoding) {
+if (isSoftCoding !== undefined) {
   zg.zegoWebRTC.setSoftCoding(true);
 }
 
