@@ -499,6 +499,7 @@
           <button type="button" id="resumePlaySound" class="btn btn-primary btn-sm resumeSound">恢复获取音浪</button>
           <button type="button" id="extraInfo" class="btn btn-primary btn-sm">修改流附加信息</button>
           <button type="button" id="switchConstraints" class="btn btn-primary btn-sm">改变推流视频参数</button>
+          <button type="button" id="replaceExternalVideo" class="btn btn-primary btn-sm">切换外部视频轨</button>
           <button type="button" id="setAudioConfig" class="btn btn-primary btn-sm">改变推流3A</button>
           <!-- <button type="button" id="playVideo" class="btn btn-primary btn-sm">播放视频</button> -->
           <button type="button" id="reAcquireDevice" class="btn btn-primary btn-sm">重新获取设备</button>
@@ -533,6 +534,7 @@
         <div class="col-sm">
           <h5 class="sound d-none"><span class="soundText">当前音量：</span> <span id="soundLevel">0</span></h5>
           <label id="previewLabel" class="text-white"></label>
+<<<<<<< HEAD
           <div class="view-wrapper" style="width: 240px;border: 1px solid #dfdfdf; font-size: 12px;">
             <div id="local-view" style="min-width: 240px;max-width: 240px; height: 240px;"></div>
             <div id="local-action">
@@ -551,6 +553,12 @@
           <video id="customVideo" style="max-width: 180px" crossOrigin="anonymous" muted playsinline autoplay controls
             src="https://zego-public.oss-cn-shanghai.aliyuncs.com/sdk-doc/assets/big_buck_bunny.mp4" loop></video>
           <video id="testVideo" style="max-width: 180px" autoplay muted playsinline></video>
+=======
+          <video id="previewVideo" autoplay muted playsinline></video>
+          <video id="customVideo" crossOrigin="anonymous" muted playsinline autoplay controls
+            src="https://zego-public.oss-cn-shanghai.aliyuncs.com/sdk-doc/assets/big_buck_bunny.mp4" loop></video>
+          <video id="testVideo" autoplay muted playsinline></video>
+>>>>>>> edb7c4ed (feat: 增加切换外部视轨功能)
         </div>
         <div class="col-sm remoteVideo">
           <!-- <video  autoplay muted playsinline></video> -->

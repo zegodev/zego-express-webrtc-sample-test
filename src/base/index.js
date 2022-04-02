@@ -9,7 +9,6 @@ import { getBrowser } from '../assets/utils';
 let playOption = {};
 // --test begin
 let previewStream;
-let published = false;
 const publishStreamID = 'web-' + new Date().getTime();
 let remoteStreamID = ""
 // ---test end
@@ -503,6 +502,31 @@ $(async () => {
         };
     })
 
+    $('#replaceExternalVideo').click(async function () {
+      if (!previewVideo.srcObject) {
+          alert('流不存在');
+          return;
+      }
+      // 优先保存摄像头视轨
+      !cameraStreamVideoTrack && previewVideo.srcObject && (cameraStreamVideoTrack = previewVideo.srcObject.getVideoTracks()[0] && previewVideo.srcObject.getVideoTracks()[0]);
+      if (!externalStream) {
+          externalStream = await zg.createStream({
+              custom: {
+                  source: $('#customVideo')[0],
+                  videoOptimizationMode: $('#videoOptimizationMode').val() ? $('#videoOptimizationMode').val() : "default"
+              }
+          });
+          externalStreamVideoTrack = externalStream.getVideoTracks()[0];
+          console.log('externalStreamVideoTrack', externalStreamVideoTrack);
+      }
+
+      zg.replaceTrack(previewVideo.srcObject, externalStreamVideoTrack)
+          .then(res => {
+              console.warn('replace custom track success');
+              // videoType = 'external';
+          })
+          .catch(err => console.error(err));
+    });
     zg.off('roomStreamUpdate');
     zg.on('roomStreamUpdate', async (roomID, updateType, streamList, extendedData) => {
         console.warn('roomStreamUpdate 2 roomID ', roomID, updateType, streamList, extendedData);
