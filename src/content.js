@@ -38,6 +38,9 @@ export function getCgi(appId, serverUrl, cgi) {
     let ver = '00';
     let sei = false;
     let seiUUID = '';
+    let signal = "";
+    let isDatachannel = false;
+    let isSoftCoding = true;
     if (location.search) {
         const arrConfig = location.search.substr(1).split('&');
 
@@ -107,6 +110,10 @@ export function getCgi(appId, serverUrl, cgi) {
               }
             if (key == 'seiUUID') {
                 seiUUID = value
+            }
+
+            if (key == "isSoftCoding") {
+              isSoftCoding = decodeURIComponent(value) == "false" ? false : true;
             }
         });
     }

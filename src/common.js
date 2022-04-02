@@ -48,6 +48,8 @@ let completeStreamID;
 let sendSEIFPS = 0;
 let sendSEITimer;
 let _seiUUID = '4fb6482e-9c68-66';
+let isDatachannel = false;
+let isSoftCoding = true;
 // 测试用代码，开发者请忽略
 // Test code, developers please ignore
 
@@ -109,6 +111,10 @@ console.error('isAccessd', isAccess)
 if (isAccess === false) {
     zg.zegoWebRTM.stateCenter.useNetAgent = false;
     zg.zegoWebRTC.stateCenter.useNetAgent = false;
+}
+
+if (isSoftCoding) {
+  zg.zegoWebRTC.setSoftCoding(true);
 }
 
 window.zg = zg;
