@@ -117,7 +117,7 @@ export function getCgi(appId, serverUrl, cgi) {
             }
         });
     }
-    return { appID, server, cgiToken, userID, l3, isPeer, accessDomain, isAccess, auth, ver, sei, seiUUID  };
+    return { appID, server, cgiToken, userID, l3, isPeer, accessDomain, isAccess, auth, ver, sei, seiUUID, signal, isDatachannel, isSoftCoding  };
     // 测试用代码 end
     // Test code end
 }

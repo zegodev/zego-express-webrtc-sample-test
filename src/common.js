@@ -114,7 +114,7 @@ if (isAccess === false) {
 }
 
 if (isSoftCoding !== undefined) {
-  zg.zegoWebRTC.setSoftCoding(true);
+  zg.zegoWebRTC.setSoftCoding(isSoftCoding);
 }
 
 window.zg = zg;
