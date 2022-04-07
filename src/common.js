@@ -35,22 +35,27 @@ let roomList = [];
 let playQualityList = {};
 let ver;
 let sei;
+let seiUUID;
 
 let publishTimes = {};
 
 let completeStreamID;
 let sendSEIFPS = 0;
 let sendSEITimer;
-let seiUUID = '4fb6482e-9c68-66';
+let _seiUUID = '4fb6482e-9c68-66';
 
 
 // 测试用代码，开发者请忽略
 // Test code, developers please ignore
 
-({ appID, server, cgiToken, userID, l3, auth, ver, sei } = getCgi(appID, server, cgiToken));
+({ appID, server, cgiToken, userID, l3, auth, ver, sei, seiUUID } = getCgi(appID, server, cgiToken));
 if (userID == "") {
     userID = 'sample' + new Date().getTime();
     $("#custom-userid").text(userID)
+}
+
+if (seiUUID.length === 16) {
+    _seiUUID = seiUUID
 }
 
 if (cgiToken && tokenUrl == 'https://wsliveroom-alpha.zego.im:8282/token') {
@@ -91,8 +96,9 @@ zg = new ZegoExpressEngine(appID, server);
 window.zg = zg;
 window.useLocalStreamList = useLocalStreamList;
 
+
 zg.setSEIConfig({
-    unregister_sei_filter: seiUUID
+    unregister_sei_filter: _seiUUID
 });
 async function checkAnRun(checkScreen) {
     console.log('sdk version is', zg.getVersion());
@@ -175,7 +181,7 @@ async function start() {
         let _seiInfo = seiInfo;
         const seiType = $('#seiType').val();
         if (seiType === '1') {
-            _seiInfo = seiUUID + seiInfo
+            _seiInfo = _seiUUID + seiInfo
         }
         const seiArray = encodeString(_seiInfo);
         $('#seibytelen').text('' + seiArray.byteLength)
@@ -195,7 +201,7 @@ async function start() {
         let _seiInfo = seiInfo;
         const seiType = $('#seiType').val();
         if (seiType === '1') {
-            _seiInfo = seiUUID + seiInfo
+            _seiInfo = _seiUUID + seiInfo
         }
         const seiArray = encodeString(_seiInfo);
         $('#seibytelen').text('' + seiArray.byteLength)
