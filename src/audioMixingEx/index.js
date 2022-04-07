@@ -1,4 +1,4 @@
-import { checkAnRun, zg, publishStreamId, logout, effectPlayer } from '../common';
+import { checkAnRun, zg, publishStreamId, logout, effectPlayer, logouted } from '../common';
 
 $(async () => {
     let isMixingAudio = false;
@@ -75,6 +75,7 @@ $(async () => {
     });
 
     $('#leaveMixRoom').click(function () {
+        console.warn('leave')
         isMixingAudio && zg.stopMixingAudio(publishStreamId);
         isMixingBuffer && zg.zegoWebRTC.stopMixingBuffer(publishStreamId, '1');
         isMixingAudio = false;
@@ -116,7 +117,9 @@ $(async () => {
             },
             () => {
                 isMixingAudio = false;
-                alert("音效播放结束 " + id)
+                if (!logouted) {
+                    alert("音效播放结束 " + id)
+                }
                 console.warn('play end' + id);
             },
         );
@@ -142,13 +145,15 @@ $(async () => {
             },
             () => {
                 isMixingAudio = false;
-                alert("音效播放结束 " + id)
+                console.warn('play end' + id, logouted);
+                if (!logouted) {
+                    alert("音效播放结束 " + id)
+                }
                 // $('#pauseEffect')[0].disabled = true;
 
                 // $('#resumeEffect')[0].disabled = true;
 
                 // $('#stopEffect')[0].disabled = true;
-                console.warn('play end' + id);
             },
         );
     });

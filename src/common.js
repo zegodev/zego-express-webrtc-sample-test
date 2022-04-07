@@ -24,6 +24,7 @@ let effectPlayer = null
 let isPreviewed = false;
 let supportScreenSharing = false;
 let loginRoom = false;
+let logouted = true;
 
 let localStreamMap = {}
 let publishType;
@@ -617,6 +618,7 @@ async function enterRoom() {
     //     useLocalStreamList[i].streamID && zg.stopPlayingStream(useLocalStreamList[i].streamID);
     // }
 
+    logouted = false;
     await login(roomId);
     loginRoom = true;
 
@@ -658,6 +660,7 @@ function clear() {
 async function logout() {
     console.info('leave room  and close stream');
     const roomId = $('#roomId').val();
+    logouted = true;
     // 停止拉流
     // stop playing
     for (let i = 0; i < useLocalStreamList.length; i++) {
@@ -839,7 +842,8 @@ export {
     effectPlayer,
     enumDevices,
     getToken,
-    clear
+    clear,
+    logouted
 };
 
 // $(window).on('unload', function() {
