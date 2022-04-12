@@ -6,14 +6,14 @@ import { ZegoExpressEngine, MediaInfoType } from 'zego-express-engine-webrtc';
 import { getCgi } from './content';
 import { getBrowser, decodeString, encodeString } from './assets/utils';
 
-new VConsole();
+// new VConsole();
 const userName = 'sampleUser' + new Date().getTime();
 const tokenUrl = 'https://wsliveroom-alpha.zego.im:8282/token';
 let userID = 'sample' + new Date().getTime();
 $("#custom-userid").text(userID)
 let publishStreamId = 'webrtc' + new Date().getTime();
 let zg;
-let appID = 306301044; // 请从官网控制台获取对应的appID
+let appID = 2375819786; // 请从官网控制台获取对应的appID
 let server = 'wss://webliveroom-beta.zego.im/ws'; // 请从官网控制台获取对应的server地址，否则可能登录失败
 // let server = "wss://webliveroom" + appID + "-api.zego.im/ws"
 

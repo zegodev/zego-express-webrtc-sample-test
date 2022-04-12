@@ -155,7 +155,7 @@ $(async () => {
             alert('sei not exist');
             return;
         }
-        const u = encodeString("475")
+        const u = encodeString(seiInfo)
         zg.setMixerTaskConfig({
             userData: u
         });
