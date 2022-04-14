@@ -170,24 +170,24 @@ $(async () => {
 
     $('#pauseEffect').click(() => {
         if (!getEffectPlayer()) alert("预览之前不支持调用")
-        getEffectPlayer().pause(effectId);
+        getEffectPlayer().pause(effectId || undefined);
     });
 
     $('#resumeEffect').click(() => {
         if (!getEffectPlayer()) alert("预览之前不支持调用")
-        getEffectPlayer().resume(effectId);
+        getEffectPlayer().resume(effectId || undefined);
     });
 
     $('#stopEffect').click(() => {
         if (!getEffectPlayer()) alert("预览之前不支持调用")
-        getEffectPlayer().stop(effectId);
+        getEffectPlayer().stop(effectId || undefined);
         if (!effectId) {
 
-            $('#pauseEffect')[0].disabled = true;
+            // $('#pauseEffect')[0].disabled = true;
 
-            $('#resumeEffect')[0].disabled = true;
+            // $('#resumeEffect')[0].disabled = true;
 
-            $('#stopEffect')[0].disabled = true;
+            // $('#stopEffect')[0].disabled = true;
         }
     });
     $("#seekTo").click(() => {
