@@ -1,4 +1,4 @@
-import { checkAnRun, zg, publishStreamId, logout, effectPlayer, logouted, stopPublish, startPreview, startPublish, getPreviewStream } from '../common';
+import { checkAnRun, zg, publishStreamId, logout, getEffectPlayer, logouted, stopPublish, startPreview, startPublish, getPreviewStream } from '../common';
 
 $(async () => {
     let isMixingAudio = false;
@@ -109,9 +109,9 @@ $(async () => {
             alert("需要指定播放音效id")
         }
 
-        if (!effectPlayer) alert("预览之前不支持调用")
+        if (!getEffectPlayer()) alert("预览之前不支持调用")
         const id = effectId
-        effectPlayer.start(
+        getEffectPlayer().start(
             id,
             { path: $("#musicPath").val() },
             () => {
@@ -138,9 +138,9 @@ $(async () => {
         if (!effectId) {
             alert("需要指定播放音效id")
         }
-        if (!effectPlayer) alert("预览之前不支持调用")
+        if (!getEffectPlayer()) alert("预览之前不支持调用")
         const id = effectId
-        effectPlayer.start(
+        getEffectPlayer().start(
             id,
             undefined,
             () => {
@@ -169,18 +169,18 @@ $(async () => {
     });
 
     $('#pauseEffect').click(() => {
-        if (!effectPlayer) alert("预览之前不支持调用")
-        effectPlayer.pause(effectId);
+        if (!getEffectPlayer()) alert("预览之前不支持调用")
+        getEffectPlayer().pause(effectId);
     });
 
     $('#resumeEffect').click(() => {
-        if (!effectPlayer) alert("预览之前不支持调用")
-        effectPlayer.resume(effectId);
+        if (!getEffectPlayer()) alert("预览之前不支持调用")
+        getEffectPlayer().resume(effectId);
     });
 
     $('#stopEffect').click(() => {
-        if (!effectPlayer) alert("预览之前不支持调用")
-        effectPlayer.stop(effectId);
+        if (!getEffectPlayer()) alert("预览之前不支持调用")
+        getEffectPlayer().stop(effectId);
         if (!effectId) {
 
             $('#pauseEffect')[0].disabled = true;
@@ -194,12 +194,12 @@ $(async () => {
         if (!effectId) {
             alert("no effectId")
         }
-        if (!effectPlayer) alert("预览之前不支持调用")
-        const total = effectPlayer.getTotalDuration(effectId)
-        const origin = effectPlayer.getCurrentProgress(effectId)
+        if (!getEffectPlayer()) alert("预览之前不支持调用")
+        const total = getEffectPlayer().getTotalDuration(effectId)
+        const origin = getEffectPlayer().getCurrentProgress(effectId)
         const progress = (($("#progress").val() || 0) / 100) * total
 
-        effectPlayer.seekTo(effectId, progress);
+        getEffectPlayer().seekTo(effectId, progress);
         alert(`总时长：${total},指定位置：${progress}, 原位置：${origin}`)
     });
 

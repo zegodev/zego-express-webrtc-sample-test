@@ -226,6 +226,7 @@ function initSDK() {
     });
     zg.on('publisherStateUpdate', result => {
         console.warn('publisherStateUpdate: ', result.streamID, result.state, result);
+        $("#streamState").innerText = result.state
         if (result.state == 'PUBLISHING') {
             console.info(' publish  success ' + result.streamID);
             const now = new Date().getTime();
@@ -319,6 +320,7 @@ function initSDK() {
     zg.on('roomStreamUpdate', async (roomID, updateType, streamList, extendedData) => {
         console.warn('roomStreamUpdate 1 roomID ', roomID, streamList, extendedData);
         // let queue = []
+        $("#roomState").innerText = updateType
         if (updateType == 'ADD') {
             for (let i = 0; i < streamList.length; i++) {
                 console.info(streamList[i].streamID + ' was added');
@@ -738,6 +740,9 @@ const  startPreview = async (constraints)=> {
         previewVideo.srcObject = localStreamMap[currentRoomID];
         isPreviewed = true;
         $('.sound').hasClass('d-none') && $('.sound').removeClass('d-none');
+        zg.createAudioEffectPlayer && (effectPlayer = zg.createAudioEffectPlayer(
+            localStreamMap[currentRoomID]
+        ))
         return {
             playType
         }
@@ -753,6 +758,10 @@ const  startPreview = async (constraints)=> {
 const getPreviewStream = () =>{
     return localStreamMap[$('#roomId').val()]
 }
+const getEffectPlayer = () =>{
+    return effectPlayer
+    
+}
 
 const startPublish = async (publishOption = {}, isNew) =>{
     isNew && (publishStreamId = 'webrtc' + new Date().getTime());
@@ -765,9 +774,7 @@ const startPublish = async (publishOption = {}, isNew) =>{
     }
     window.publishTime = new Date().getTime();
     const result = await zg.startPublishingStream(completeStreamID, localStreamMap[currentRoomID], publishOption);
-    zg.createAudioEffectPlayer && (effectPlayer = zg.createAudioEffectPlayer(
-        localStreamMap[currentRoomID]
-    ))
+ 
     console.log('publish stream' + completeStreamID, result);
 }
 
@@ -871,7 +878,7 @@ export {
     publishType,
     l3,
     roomList,
-    effectPlayer,
+    getEffectPlayer,
     enumDevices,
     getToken,
     clear,
