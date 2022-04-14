@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -27,97 +28,108 @@
     </style>
     <title class="mixAudio">混音</title>
 </head>
+
 <body class="bg-f2">
-<div class="container">
+    <div class="container">
 
-    <div class="my-3 p-3 bg-white rounded box-shadow small">
+        <div class="my-3 p-3 bg-white rounded box-shadow small">
 
-        <h6 class="border-bottom border-gray pb-2 mb-0 mixAudio">Express 混音</h6>
+            <h6 class="border-bottom border-gray pb-2 mb-0 mixAudio">Express 混音</h6>
 
-        <div class="row" style="margin-top:1%">
+            <div class="row" style="margin-top:1%">
 
-            <div class="col-sm">
-                <div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
-                        <label class="input-group-text" for="audioList"><strong
-                                class="text-gray-dark audioDevices">音频设备</strong></label>
+                <div class="col-sm">
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="audioList"><strong
+                                    class="text-gray-dark audioDevices">音频设备</strong></label>
+                        </div>
+                        <select class="custom-select" id="audioList" style="width: 50%">
+                        </select>
                     </div>
-                    <select class="custom-select" id="audioList" style="width: 50%">
-                    </select>
+                </div>
+
+                <div class="col-sm">
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="videoList"><strong
+                                    class="text-gray-dark videoDevices">视频设备</strong></label>
+                        </div>
+                        <select class="custom-select" id="videoList" style="width: 50%">
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="col-sm">
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="roomId"><strong
+                                    class="text-gray-dark roomid">房间号</strong></label>
+                        </div>
+                        <input type="email" class="form-control d-inline" id="roomId" style="width: 75%"
+                            aria-describedby="emailHelp" placeholder="please enter room ID">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-sm">
+                    <button type="button" id="createRoom" class="btn btn-primary btn-sm enterRoomPush">创建房间</button>
+                    <button type="button" id="openRoom" class="btn btn-primary btn-sm enterRoomPlay">进入房间</button>
+                    <button type="button" id="startPreview" class="btn btn-primary btn-sm ">预览</button>
+                    <button type="button" id="startPublish" class="btn btn-primary btn-sm ">推流</button>
+                    <button type="button" id="stopPublish" class="btn btn-primary btn-sm ">停止推流</button>
+                    <button type="button" id="leaveMixRoom" class="btn btn-secondary btn-sm leaveRoom">退出</button>
+                    <button type="button" id="MixAudio" class="btn btn-primary btn-sm mixAudio">混音</button>
+                    <button type="button" id="stopMixAudio" class="btn btn-primary btn-sm stopMixAudio">停止混音</button>
+                    <button type="button" id="toggleSpeaker"
+                        class="btn btn-primary btn-sm enableMicrophone">开关音频</button>
+
                 </div>
             </div>
+            <br>
 
             <div class="col-sm">
-                <div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
-                        <label class="input-group-text" for="videoList"><strong
-                                class="text-gray-dark videoDevices">视频设备</strong></label>
-                    </div>
-                    <select class="custom-select" id="videoList" style="width: 50%">
-                    </select>
-                </div>
+                <audio id="extenerVideo1"
+                    src="https://zego-public.oss-cn-shanghai.aliyuncs.com/webplatform/websdk/bike.mp3" playsinline
+                    controls loop crossOrigin="anonymous"></audio>
+                音量 <input type="range" id="volume1" min="0" max="100" value="100">
+                <audio id="extenerVideo2"
+                    src="https://zego-public.oss-cn-shanghai.aliyuncs.com/webplatform/websdk/oldman.mp4" playsinline
+                    controls loop crossOrigin="anonymous"></audio>
+                音量 <input type="range" id="volume2" min="0" max="100" value="100">
             </div>
+            <div class="row">
+                音效id: <input type="text" id="effectId" value="1">
 
-
-            <div class="col-sm">
-                <div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
-                        <label class="input-group-text" for="roomId"><strong class="text-gray-dark roomid">房间号</strong></label>
-                    </div>
-                    <input type="email" class="form-control d-inline" id="roomId" style="width: 75%"
-                           aria-describedby="emailHelp" placeholder="please enter room ID">
-                </div>
-            </div>
-
-        </div>
-
-        <div class="row">
-            <div class="col-sm">
-                <button type="button" id="createRoom" class="btn btn-primary btn-sm enterRoomPush">创建房间</button>
-                <button type="button" id="openRoom" class="btn btn-primary btn-sm enterRoomPlay">进入房间</button>
-                <button type="button" id="leaveMixRoom" class="btn btn-secondary btn-sm leaveRoom">退出</button>
-                <button type="button" id="MixAudio" class="btn btn-primary btn-sm mixAudio">混音</button>
-                <button type="button" id="stopMixAudio" class="btn btn-primary btn-sm stopMixAudio">停止混音</button>
-                <button type="button" id="toggleSpeaker" class="btn btn-primary btn-sm enableMicrophone">开关音频</button>
-               
-            </div>
-        </div>
-        <br>
-
-        <div class="col-sm">
-            <audio id="extenerVideo1" src="https://zego-public.oss-cn-shanghai.aliyuncs.com/webplatform/websdk/bike.mp3" playsinline controls loop crossOrigin="anonymous"></audio>
-            音量 <input type="range" id="volume1" min="0" max="100" value="100">
-            <audio id="extenerVideo2" src="https://zego-public.oss-cn-shanghai.aliyuncs.com/webplatform/websdk/oldman.mp4" playsinline controls loop crossOrigin="anonymous"></audio>
-            音量 <input type="range" id="volume2" min="0" max="100" value="100">
-        </div>
-        <div class="row">
-            音效id: <input type="text" id="effectId" value="1">
-           
-            <button type="button" id="preloadEffect" class="btn btn-primary btn-sm">预加载音效资源</button>
-            <button type="button" id="playEffect" class="btn btn-primary btn-sm" disabled>播放音效</button>
-            <button type="button" id="pauseEffect" class="btn btn-primary btn-sm" disabled>暂停音效</button>
-            <button type="button" id="resumeEffect" class="btn btn-primary btn-sm" disabled>恢复音效</button>
-            <button type="button" id="stopEffect" class="btn btn-primary btn-sm" disabled>停止音效</button>
-            <button type="button" id="unloadEffect" class="btn btn-primary btn-sm" disabled>释放音效</button> 
-            <!-- <button type="button" id="mixingBuffer" class="btn btn-primary btn-sm">mixingBuffer实时混音</button>
+                <button type="button" id="preloadEffect" class="btn btn-primary btn-sm">预加载音效资源</button>
+                <button type="button" id="playEffect" class="btn btn-primary btn-sm" disabled>播放音效</button>
+                <button type="button" id="pauseEffect" class="btn btn-primary btn-sm" disabled>暂停音效</button>
+                <button type="button" id="resumeEffect" class="btn btn-primary btn-sm" disabled>恢复音效</button>
+                <button type="button" id="stopEffect" class="btn btn-primary btn-sm" disabled>停止音效</button>
+                <button type="button" id="unloadEffect" class="btn btn-primary btn-sm" disabled>释放音效</button>
+                <!-- <button type="button" id="mixingBuffer" class="btn btn-primary btn-sm">mixingBuffer实时混音</button>
             <button type="button" id="stopMixingBuffer" class="btn btn-primary btn-sm">stopMixingBuffer停止实时混音</button> -->
-            <input type="range" id="progress" min="0" max="100" value="0">
-            <button type="button" id="seekTo" class="btn btn-primary btn-sm ">设置进度</button>
-            音效文件： <input type="text" id="musicPath" value="https://zego-public.oss-cn-shanghai.aliyuncs.com/webplatform/websdk/bike.mp3">
-            <button type="button" id="playEffectWithPath" class="btn btn-primary btn-sm">加载并播放音效</button>
-         
-        </div>
-        <div class="row videoRow">
-            <div class="col-sm">
-                <label id="previewLabel" class="text-white"></label>
-                <video id="previewVideo" autoplay muted playsinline controls></video>
-            </div>
-            <div class="col-sm remoteVideo">
-            </div>
-        </div>
-    </div>
+                <input type="range" id="progress" min="0" max="100" value="0">
+                <button type="button" id="seekTo" class="btn btn-primary btn-sm ">设置进度</button>
+                音效文件： <input type="text" id="musicPath"
+                    value="https://zego-public.oss-cn-shanghai.aliyuncs.com/webplatform/websdk/bike.mp3">
+                <button type="button" id="playEffectWithPath" class="btn btn-primary btn-sm">加载并播放音效</button>
 
-</div>
+            </div>
+            <div class="row videoRow">
+                <div class="col-sm">
+                    <label id="previewLabel" class="text-white"></label>
+                    <video id="previewVideo" autoplay muted playsinline controls></video>
+                </div>
+                <div class="col-sm remoteVideo">
+                </div>
+            </div>
+        </div>
+
+    </div>
 
 
 </body>

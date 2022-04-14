@@ -1,4 +1,4 @@
-import { checkAnRun, zg, publishStreamId, logout, effectPlayer, logouted } from '../common';
+import { checkAnRun, zg, publishStreamId, logout, effectPlayer, logouted, stopPublish, startPreview, startPublish, getPreviewStream } from '../common';
 
 $(async () => {
     let isMixingAudio = false;
@@ -19,8 +19,18 @@ $(async () => {
         }
     ];
     await checkAnRun();
+    $('#startPreview').on("click", () => {
+        startPreview()
+    })
+    $('#startPublish').on("click", () => {
+        startPublish()
+    })
+    $("#stopPublish").on("click", () => {
+        stopPublish()
+    })
+
     $('#MixAudio').click(() => {
-        const result = zg.startMixingAudio(publishStreamId, [
+        const result = zg.startMixingAudio(getPreviewStream(), [
             $('#extenerVideo1')[0],
             $('#extenerVideo2')[0],
         ]);
@@ -28,19 +38,19 @@ $(async () => {
     });
 
     $('#stopMixAudio').click(() => {
-        zg.stopMixingAudio(publishStreamId);
+        zg.stopMixingAudio(getPreviewStream());
     });
 
     $('#volume1').on('input', () => {
         // @ts-ignore
-        zg.setMixingAudioVolume(publishStreamId, parseInt($('#volume1').val()), $(
+        zg.setMixingAudioVolume(getPreviewStream(), parseInt($('#volume1').val()), $(
             '#extenerVideo1',
         )[0]);
     });
 
     $('#volume2').on('input', () => {
         // @ts-ignore
-        zg.setMixingAudioVolume(publishStreamId, parseInt($('#volume2').val()), $(
+        zg.setMixingAudioVolume(getPreviewStream(), parseInt($('#volume2').val()), $(
             '#extenerVideo2',
         )[0]);
     });
@@ -62,10 +72,10 @@ $(async () => {
                         console.warn('real time effect success');
                     }
                 });
-            }else {
+            } else {
                 debugger
             }
-        };      
+        };
 
         xhr.send();
     });
@@ -76,8 +86,8 @@ $(async () => {
 
     $('#leaveMixRoom').click(function () {
         console.warn('leave')
-        isMixingAudio && zg.stopMixingAudio(publishStreamId);
-        isMixingBuffer && zg.zegoWebRTC.stopMixingBuffer(publishStreamId, '1');
+        // isMixingAudio && zg.stopMixingAudio(publishStreamId);
+        // isMixingBuffer && zg.zegoWebRTC.stopMixingBuffer(publishStreamId, '1');
         isMixingAudio = false;
         isMixingBuffer = false;
         logout();
@@ -99,7 +109,7 @@ $(async () => {
             alert("需要指定播放音效id")
         }
 
-        if (!effectPlayer) alert("推流前不支持调用")
+        if (!effectPlayer) alert("预览之前不支持调用")
         const id = effectId
         effectPlayer.start(
             id,
@@ -128,7 +138,7 @@ $(async () => {
         if (!effectId) {
             alert("需要指定播放音效id")
         }
-        if (!effectPlayer) alert("推流前不支持调用")
+        if (!effectPlayer) alert("预览之前不支持调用")
         const id = effectId
         effectPlayer.start(
             id,
@@ -159,17 +169,17 @@ $(async () => {
     });
 
     $('#pauseEffect').click(() => {
-        if (!effectPlayer) alert("推流前不支持调用")
+        if (!effectPlayer) alert("预览之前不支持调用")
         effectPlayer.pause(effectId);
     });
 
     $('#resumeEffect').click(() => {
-        if (!effectPlayer) alert("推流前不支持调用")
+        if (!effectPlayer) alert("预览之前不支持调用")
         effectPlayer.resume(effectId);
     });
 
     $('#stopEffect').click(() => {
-        if (!effectPlayer) alert("推流前不支持调用")
+        if (!effectPlayer) alert("预览之前不支持调用")
         effectPlayer.stop(effectId);
         if (!effectId) {
 
@@ -184,7 +194,7 @@ $(async () => {
         if (!effectId) {
             alert("no effectId")
         }
-        if (!effectPlayer) alert("推流前不支持调用")
+        if (!effectPlayer) alert("预览之前不支持调用")
         const total = effectPlayer.getTotalDuration(effectId)
         const origin = effectPlayer.getCurrentProgress(effectId)
         const progress = (($("#progress").val() || 0) / 100) * total

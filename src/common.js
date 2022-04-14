@@ -153,7 +153,7 @@ async function start() {
         try {
             // loginTime = new Date().getTime();
             loginSuc = await enterRoom();
-            
+
             loginSuc && (await publish());
             // const publishConsumed = new Date().getTime() - loginTime;
             // console.warn('推流 ' + publishConsumed);
@@ -240,7 +240,7 @@ function initSDK() {
                 console.warn('推流节点耗时 ' + publishRetryConsumed)
                 delete window.publishTimes[result.streamID];;
             }
-            
+
         } else if (result.state == 'PUBLISH_REQUESTING') {
             console.info(' publish  retry');
             if (result.errorCode !== 0 && !window.publishTimes[result.streamID]) {
@@ -389,29 +389,29 @@ function initSDK() {
             `play#${streamID} videoFPS: ${streamQuality.video.videoFPS} videoBitrate: ${streamQuality.video.videoBitrate} audioBitrate: ${streamQuality.audio.audioBitrate} audioFPS: ${streamQuality.audio.audioFPS}`,
         );
         if (playQualityList[streamID]) {
-          playQualityList[streamID].qualityCount++;
-          const totalVideoBitrate = playQualityList[streamID].totalVideoBitrate + streamQuality.video.videoBitrate;
-          const averVideoBitrate = totalVideoBitrate/playQualityList[streamID].qualityCount;
-          const totalVideoFPS = playQualityList[streamID].totalVideoFPS + streamQuality.video.videoFPS;
-          const averVideoFPS = totalVideoFPS / playQualityList[streamID].qualityCount;
+            playQualityList[streamID].qualityCount++;
+            const totalVideoBitrate = playQualityList[streamID].totalVideoBitrate + streamQuality.video.videoBitrate;
+            const averVideoBitrate = totalVideoBitrate / playQualityList[streamID].qualityCount;
+            const totalVideoFPS = playQualityList[streamID].totalVideoFPS + streamQuality.video.videoFPS;
+            const averVideoFPS = totalVideoFPS / playQualityList[streamID].qualityCount;
 
-          playQualityList[streamID].totalVideoBitrate = totalVideoBitrate;
-          playQualityList[streamID].averVideoBitrate = averVideoBitrate;
-          playQualityList[streamID].totalVideoFPS = totalVideoFPS;
-          playQualityList[streamID].averVideoFPS = averVideoFPS;
+            playQualityList[streamID].totalVideoBitrate = totalVideoBitrate;
+            playQualityList[streamID].averVideoBitrate = averVideoBitrate;
+            playQualityList[streamID].totalVideoFPS = totalVideoFPS;
+            playQualityList[streamID].averVideoFPS = averVideoFPS;
         } else {
-          playQualityList[streamID] = {
-            qualityCount: 1,
-            totalVideoBitrate: 0,
-            averVideoBitrate: 0,
-            totalVideoFPS: 0,
-            averVideoFPS: 0,
-          }
+            playQualityList[streamID] = {
+                qualityCount: 1,
+                totalVideoBitrate: 0,
+                averVideoBitrate: 0,
+                totalVideoFPS: 0,
+                averVideoFPS: 0,
+            }
 
-          playQualityList[streamID].totalVideoBitrate = streamQuality.video.videoBitrate;
-          playQualityList[streamID].averVideoBitrate = streamQuality.video.videoBitrate;
-          playQualityList[streamID].totalVideoFPS = streamQuality.video.videoFPS;
-          playQualityList[streamID].averVideoFPS = streamQuality.video.videoFPS;
+            playQualityList[streamID].totalVideoBitrate = streamQuality.video.videoBitrate;
+            playQualityList[streamID].averVideoBitrate = streamQuality.video.videoBitrate;
+            playQualityList[streamID].totalVideoFPS = streamQuality.video.videoFPS;
+            playQualityList[streamID].averVideoFPS = streamQuality.video.videoFPS;
         }
 
         console.warn("当前视频码率平均值：" + playQualityList[streamID].averVideoBitrate);
@@ -468,7 +468,7 @@ function initSDK() {
 }
 
 async function getToken(userID, roomId, expireTime) {
-    
+
     let token;
     if (ver !== '00') {
         const res = await $.ajax({
@@ -518,9 +518,9 @@ function login2(token, roomId, config) {
         //     contentType: "application/json; charset=utf-8"
         // })
         // token = res.data.token;
-    
+
         const _config = Object.assign({}, { userUpdate: true }, config);
-        
+
         zg.loginRoom(roomId, token, { userID, userName }, _config).then(res => {
             roomList.push(roomId);
             resolve()
@@ -528,7 +528,7 @@ function login2(token, roomId, config) {
             reject(e)
         });
     })
-    
+
 
 }
 const login = async (roomId, config) => {
@@ -596,10 +596,10 @@ const login = async (roomId, config) => {
 
     }
     const _config = Object.assign({}, { userUpdate: true }, config);
-    
+
     window.loginTime = new Date().getTime();
     await zg.loginRoom(roomId, token, { userID, userName }, _config);
-    const loginConsumed = new Date().getTime() -  window.loginTime;
+    const loginConsumed = new Date().getTime() - window.loginTime;
     console.warn('登录房间耗时 ' + loginConsumed);
 
     roomList.push(roomId);
@@ -630,7 +630,7 @@ async function enterRoom() {
 
 function clear() {
     const roomId = $('#roomId').val();
-    
+
     playQualityList = {};
 
     // 清空页面
@@ -640,7 +640,7 @@ function clear() {
 
     roomList.splice(roomList.findIndex(room => room == roomId), 1);
 
-    if (previewVideo.srcObject  && (!roomId || roomList.length == 0)) {
+    if (previewVideo.srcObject && (!roomId || roomList.length == 0)) {
         previewVideo.srcObject = null;
         zg.stopPublishingStream(publishStreamId);
         zg.destroyStream(localStreamMap[roomId]);
@@ -676,7 +676,7 @@ async function logout() {
 
     roomList.splice(roomList.findIndex(room => room == roomId), 1);
 
-    if (previewVideo.srcObject  && (!roomId || roomList.length == 0)) {
+    if (previewVideo.srcObject && (!roomId || roomList.length == 0)) {
         previewVideo.srcObject = null;
         zg.stopPublishingStream(publishStreamId);
         zg.destroyStream(localStreamMap[roomId]);
@@ -699,6 +699,12 @@ async function logout() {
 async function publish(constraints, isNew) {
     console.warn('createStream', $('#audioList').val(), $('#videoList').val());
     console.warn('constraints', constraints);
+
+    // console.error('playType', playType);
+    push(constraints, {  }, isNew);
+}
+
+const  startPreview = async (constraints)=> {
     const video =
         constraints && constraints.camera && typeof constraints.camera.video === 'boolean'
             ? constraints.camera.video
@@ -710,7 +716,7 @@ async function publish(constraints, isNew) {
             videoInput: $('#videoList').val(),
             video: video !== undefined ? video : $('#videoList').val() === '0' ? false : true,
             audio: $('#audioList').val() === '0' ? false : true,
-            videoOptimizationMode: $('#videoOptimizationMode').val()? $('#videoOptimizationMode').val() : "default"
+            videoOptimizationMode: $('#videoOptimizationMode').val() ? $('#videoOptimizationMode').val() : "default"
             // channelCount: constraints && constraints.camera && constraints.camera.channelCount,
         },
     };
@@ -719,50 +725,22 @@ async function publish(constraints, isNew) {
     const playType =
         _constraints.camera.audio === false ? 'Video' : _constraints.camera.video === false ? 'Audio' : 'all';
     publishType = playType;
-    // console.error('playType', playType);
-    push(_constraints, { extraInfo: JSON.stringify({ playType }) }, isNew);
-}
 
-async function push(constraints, publishOption = {}, isNew) {
+    const currentRoomID = $('#roomId').val() || undefined;
+    if (localStreamMap[currentRoomID]) {
+        zg.destroyStream(localStreamMap[currentRoomID])
+    }
     try {
-
-        const currentRoomID = $('#roomId').val() || undefined;
-        if (localStreamMap[currentRoomID]) {
-            zg.destroyStream(localStreamMap[currentRoomID])
-        }
         const previewTime = new Date().getTime();
-        localStreamMap[currentRoomID] = await zg.createStream(constraints);
+        localStreamMap[currentRoomID] = await zg.createStream(_constraints);
         const previewConsumed = new Date().getTime() - previewTime;
-        console.warn('预览耗时 ' + previewConsumed);
-
-        // var AudioContext = window.AudioContext || window.webkitAudioContext; // 兼容性
-        // let localTrack= localStream.getAudioTracks()[0];
-        // let audioContext = new AudioContext();// 创建Audio上下文
-        // let mediaStreamSource = audioContext.createMediaStreamSource(localStream);
-        // let destination = audioContext.createMediaStreamDestination();
-        // let gainNode = audioContext.createGain();
-        // mediaStreamSource.connect(gainNode);
-        // gainNode.connect(destination);
-        // gainNode.gain.value=3;
-        // let audioTrack = destination.stream.getAudioTracks()[0];
-        // localStream.removeTrack(localTrack);
-        // localStream.addTrack(audioTrack);
+        console.warn('createStream success! 预览耗时 ' + previewConsumed);
         previewVideo.srcObject = localStreamMap[currentRoomID];
         isPreviewed = true;
         $('.sound').hasClass('d-none') && $('.sound').removeClass('d-none');
-        isNew && (publishStreamId = 'webrtc' + new Date().getTime());
-        if ($("#videoCodec").val()) publishOption.videoCodec = $("#videoCodec").val();
-        publishOption.roomID = currentRoomID;
-        let completeStreamID = publishStreamId
-        if (zg.zegoWebRTM.stateCenter.isMultiRoom) {
-            completeStreamID = publishOption.roomID + "-" + publishStreamId
+        return {
+            playType
         }
-        window.publishTime = new Date().getTime();
-        const result = zg.startPublishingStream(completeStreamID, localStreamMap[currentRoomID], publishOption);
-        zg.createAudioEffectPlayer && (effectPlayer = zg.createAudioEffectPlayer(
-            localStreamMap[currentRoomID]
-        ))
-        console.log('publish stream' + completeStreamID, result);
     } catch (err) {
         if (err.name) {
             console.error('createStream', err.name, err.message);
@@ -770,6 +748,58 @@ async function push(constraints, publishOption = {}, isNew) {
             console.error('createStream error', err);
         }
     }
+}
+
+const getPreviewStream = () =>{
+    return localStreamMap[$('#roomId').val()]
+}
+
+const startPublish = async (publishOption = {}, isNew) =>{
+    isNew && (publishStreamId = 'webrtc' + new Date().getTime());
+    if ($("#videoCodec").val()) publishOption.videoCodec = $("#videoCodec").val();
+    const currentRoomID = $('#roomId').val()
+    publishOption.roomID = currentRoomID;
+    let completeStreamID = publishStreamId
+    if (zg.zegoWebRTM.stateCenter.isMultiRoom) {
+        completeStreamID = publishOption.roomID + "-" + publishStreamId
+    }
+    window.publishTime = new Date().getTime();
+    const result = await zg.startPublishingStream(completeStreamID, localStreamMap[currentRoomID], publishOption);
+    zg.createAudioEffectPlayer && (effectPlayer = zg.createAudioEffectPlayer(
+        localStreamMap[currentRoomID]
+    ))
+    console.log('publish stream' + completeStreamID, result);
+}
+
+const stopPublish = async () =>{
+    const currentRoomID = $('#roomId').val()
+    let completeStreamID = publishStreamId
+    if (zg.zegoWebRTM.stateCenter.isMultiRoom) {
+        completeStreamID = currentRoomID + "-" + publishStreamId
+    }
+    const result = zg.stopPublishingStream(completeStreamID);
+    console.warn('stop publish stream' + completeStreamID, result);
+}
+
+
+async function push(constraints, publishOption = {}, isNew) {
+    const { playType } = await startPreview(constraints)
+    await startPublish({ ...publishOption, extraInfo: JSON.stringify({ playType }) }, isNew)
+
+    // var AudioContext = window.AudioContext || window.webkitAudioContext; // 兼容性
+    // let localTrack= localStream.getAudioTracks()[0];
+    // let audioContext = new AudioContext();// 创建Audio上下文
+    // let mediaStreamSource = audioContext.createMediaStreamSource(localStream);
+    // let destination = audioContext.createMediaStreamDestination();
+    // let gainNode = audioContext.createGain();
+    // mediaStreamSource.connect(gainNode);
+    // gainNode.connect(destination);
+    // gainNode.gain.value=3;
+    // let audioTrack = destination.stream.getAudioTracks()[0];
+    // localStream.removeTrack(localTrack);
+    // localStream.addTrack(audioTrack);
+
+
 }
 
 $('#toggleCamera').click(function () {
@@ -819,6 +849,8 @@ $('#enterRoom').click(async () => {
     }
 });
 
+
+
 export {
     zg,
     appID,
@@ -843,7 +875,12 @@ export {
     enumDevices,
     getToken,
     clear,
-    logouted
+    logouted,
+    startPreview,
+    startPublish,
+    stopPublish,
+    localStreamMap,
+    getPreviewStream
 };
 
 // $(window).on('unload', function() {
