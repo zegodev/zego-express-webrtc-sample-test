@@ -109,7 +109,7 @@ $(async () => {
             alert("需要指定播放音效id")
         }
 
-        if (!getEffectPlayer()) alert("预览之前不支持调用")
+        if (!getEffectPlayer()) return alert("预览之前不支持调用")
         const id = effectId
         getEffectPlayer().start(
             id,
@@ -138,7 +138,7 @@ $(async () => {
         if (!effectId) {
             alert("需要指定播放音效id")
         }
-        if (!getEffectPlayer()) alert("预览之前不支持调用")
+        if (!getEffectPlayer()) return alert("预览之前不支持调用")
         const id = effectId
         getEffectPlayer().start(
             id,
@@ -169,17 +169,17 @@ $(async () => {
     });
 
     $('#pauseEffect').click(() => {
-        if (!getEffectPlayer()) alert("预览之前不支持调用")
+        if (!getEffectPlayer()) return alert("预览之前不支持调用")
         getEffectPlayer().pause(effectId || undefined);
     });
 
     $('#resumeEffect').click(() => {
-        if (!getEffectPlayer()) alert("预览之前不支持调用")
+        if (!getEffectPlayer()) return alert("预览之前不支持调用")
         getEffectPlayer().resume(effectId || undefined);
     });
 
     $('#stopEffect').click(() => {
-        if (!getEffectPlayer()) alert("预览之前不支持调用")
+        if (!getEffectPlayer()) return alert("预览之前不支持调用")
         getEffectPlayer().stop(effectId || undefined);
         if (!effectId) {
 
@@ -194,7 +194,7 @@ $(async () => {
         if (!effectId) {
             alert("no effectId")
         }
-        if (!getEffectPlayer()) alert("预览之前不支持调用")
+        if (!getEffectPlayer()) return alert("预览之前不支持调用")
         const total = getEffectPlayer().getTotalDuration(effectId)
         const origin = getEffectPlayer().getCurrentProgress(effectId)
         const progress = (($("#progress").val() || 0) / 100) * total

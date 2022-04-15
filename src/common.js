@@ -740,9 +740,12 @@ const  startPreview = async (constraints)=> {
         previewVideo.srcObject = localStreamMap[currentRoomID];
         isPreviewed = true;
         $('.sound').hasClass('d-none') && $('.sound').removeClass('d-none');
-        zg.createAudioEffectPlayer && (effectPlayer = zg.createAudioEffectPlayer(
-            localStreamMap[currentRoomID]
-        ))
+        if(zg.createAudioEffectPlayer) {
+            
+            effectPlayer = zg.createAudioEffectPlayer(
+                localStreamMap[currentRoomID]
+            )
+        }
         return {
             playType
         }
@@ -756,7 +759,9 @@ const  startPreview = async (constraints)=> {
 }
 
 const getPreviewStream = () =>{
-    return localStreamMap[$('#roomId').val()]
+    const  stream = localStreamMap[$('#roomId').val()]
+
+    return stream
 }
 const getEffectPlayer = () =>{
     return effectPlayer
