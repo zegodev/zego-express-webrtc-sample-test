@@ -34,6 +34,12 @@ $(async () => {
             $('#extenerVideo1')[0],
             $('#extenerVideo2')[0],
         ]);
+        zg.setMixingAudioVolume(getPreviewStream(), parseInt($('#volume1').val()), $(
+            '#extenerVideo1',
+        )[0]);
+        zg.setMixingAudioVolume(getPreviewStream(), parseInt($('#volume2').val()), $(
+            '#extenerVideo2',
+        )[0]);
         console.warn('混音', result);
     });
 

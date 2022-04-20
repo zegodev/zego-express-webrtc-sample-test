@@ -217,6 +217,7 @@ function initSDK() {
 
     zg.on('roomStateUpdate', (roomID, state, errorCode, extendedData) => {
         console.warn('roomStateUpdate: ', roomID, state, errorCode, extendedData);
+        $("#roomState").text(state)
     });
     zg.on('roomUserUpdate', (roomID, updateType, userList) => {
         console.warn(
@@ -226,7 +227,7 @@ function initSDK() {
     });
     zg.on('publisherStateUpdate', result => {
         console.warn('publisherStateUpdate: ', result.streamID, result.state, result);
-        $("#streamState").innerText = result.state
+        $("#streamState").text(result.state)
         if (result.state == 'PUBLISHING') {
             console.info(' publish  success ' + result.streamID);
             const now = new Date().getTime();
