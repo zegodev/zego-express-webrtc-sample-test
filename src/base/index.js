@@ -1,4 +1,4 @@
-import { checkAnRun, zg, useLocalStreamList, enterRoom, previewVideo, login2, getToken, clear, logout, publish, publishStreamId, l3, enumDevices, userID, sei, } from '../common';
+import { checkAnRun, zg, useLocalStreamList, startPreview, enterRoom, previewVideo, login2, getToken, clear, logout, publish, publishStreamId, l3, enumDevices, userID, sei, } from '../common';
 import { getBrowser } from '../assets/utils';
 
 let playOption = {};
@@ -88,7 +88,7 @@ $(async () => {
     // --- test end
     $("#publishImg").on("click", () => {
         zg.setDummyCaptureImagePath("./test.jpg", previewVideo.srcObject);
-      });
+    });
     $('#reAcquireDevice').click(() => {
         enumDevices()
     })
@@ -117,9 +117,9 @@ $(async () => {
             // loginSuc && (await publish({ camera: constraints }));
 
             loginSuc = await enterRoom();
-            
+
             loginSuc && (await publish({ camera: constraints }));
-            
+
         } catch (error) {
             console.error(error);
         }
@@ -149,6 +149,36 @@ $(async () => {
         playstreamlist.forEach(stream => {
             play(stream);
         })
+    });
+    $('#enterRoom').unbind('click');
+    $('#enterRoom').click(async () => {
+        let loginSuc = false;
+        try {
+            loginSuc = await enterRoom();
+            const currentRoomID = $('#roomId').val()
+            if (loginSuc) {
+                const constraints = {};
+                const channelCount = parseInt($('#channelCount').val());
+                constraints.channelCount = channelCount;
+                const videoQuality = $('#videoQuality').val();
+                if (videoQuality == 4) {
+                    $('#width').val() && (constraints.width = parseInt($('#width').val())),
+                        $('#height').val() && (constraints.height = parseInt($('#height').val())),
+                        $('#frameRate').val() && (constraints.frameRate = parseInt($('#frameRate').val())),
+                        $('#bitrate').val() && (constraints.bitrate = parseInt($('#bitrate').val()))
+                }
+                $('#noiseSuppression').val() === '1' ? (constraints.ANS = true) : (constraints.ANS = false);
+                $('#autoGainControl').val() === '1' ? (constraints.AGC = true) : (constraints.AGC = false);
+                $('#echoCancellation').val() === '1' ? (constraints.AEC = true) : (constraints.AEC = false);
+                $('#audioBitrate').val() && (constraints.audioBitrate = parseInt($('#audioBitrate').val()));
+
+                constraints.videoQuality = parseInt(videoQuality);
+                console.warn('constraints', constraints);
+                startPreview({ camera: constraints })
+            }
+        } catch (error) {
+            console.error(error);
+        }
     });
     $('#extraInfo').click(() => {
         zg.setStreamExtraInfo(publishStreamId, $('#extraInfoInput').val());
@@ -503,7 +533,7 @@ $(async () => {
                 console.warn('推流节点耗时 ' + publishRetryConsumed)
                 delete window.publishTimes[result.streamID];;
             }
-            
+
         } else if (result.state == 'PUBLISH_REQUESTING') {
             console.info(' publish  retry');
             if (result.errorCode !== 0 && !window.publishTimes[result.streamID]) {
