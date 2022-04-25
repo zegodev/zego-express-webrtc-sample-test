@@ -1,4 +1,4 @@
-import { checkAnRun, zg, useLocalStreamList, enterRoom, previewVideo, login2, getToken, clear, logout, publish, publishStreamId, l3, enumDevices, userID } from '../common';
+import { checkAnRun, zg, useLocalStreamList, enterRoom, previewVideo, login2, getToken, clear, logout, publish, publishStreamId, l3, enumDevices, userID, sei, } from '../common';
 import { getBrowser } from '../assets/utils';
 
 let playOption = {};
@@ -80,6 +80,7 @@ $(async () => {
     $('#useVideo').click(() => {
         zg.useVideoDevice(previewVideo.srcObject, $('#videoList').val());
     });
+    
 
     $('#useAudio').click(() => {
         zg.useAudioDevice(previewVideo.srcObject, $('#audioList').val());
@@ -197,18 +198,18 @@ $(async () => {
         resultDiv.innerHTML = value + ": " + JSON.stringify(res);
     })
 
-    // $('#mutePlayStreamVideo').click(() => {
-    //     useLocalStreamList.forEach(item => {
-    //         zg.zegoWebRTC.mutePlayStreamVideo(item.streamID, !$(this).hasClass('disabled'));
-    //     })
-    //     $(this).toggleClass('disabled');
-    // })
-    // $('#mutePlayStreamAudio').click(() => {
-    //     useLocalStreamList.forEach(item => {
-    //         zg.zegoWebRTC.mutePlayStreamAudio(item.streamID, !$(this).hasClass('disabled'));
-    //     })
-    //     $(this).toggleClass('disabled');
-    // })
+    $('#mutePlayStreamVideo').click(() => {
+        useLocalStreamList.forEach(item => {
+            zg.zegoWebRTC.mutePlayStreamVideo(item.streamID, !$(this).hasClass('disabled'));
+        })
+        $(this).toggleClass('disabled');
+    })
+    $('#mutePlayStreamAudio').click(() => {
+        useLocalStreamList.forEach(item => {
+            zg.zegoWebRTC.mutePlayStreamAudio(item.streamID, !$(this).hasClass('disabled'));
+        })
+        $(this).toggleClass('disabled');
+    })
 
     $("#custom-resetToken").click(() => {
         const token = $("#custom-token").val()
@@ -436,6 +437,7 @@ $(async () => {
 
                 if ($("#videoCodec").val()) playOption.videoCodec = $("#videoCodec").val();
                 if (l3 == true) playOption.resourceMode = 2;
+                playOption.isSeiStart = sei;
 
                 zg.startPlayingStream(streamList[i].streamID, playOption).then(stream => {
                     remoteStream = stream;

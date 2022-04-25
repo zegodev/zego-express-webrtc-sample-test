@@ -36,6 +36,8 @@ export function getCgi(appId, serverUrl, cgi) {
     let isAccess = true;
     let auth = false;
     let ver = '00';
+    let sei = false;
+    let seiUUID = '';
     if (location.search) {
         const arrConfig = location.search.substr(1).split('&');
 
@@ -100,9 +102,15 @@ export function getCgi(appId, serverUrl, cgi) {
                 isAccess = decodeURIComponent(value) == 'false' ? false : true;
                 console.error('isAccess', isAccess)
             }
+            if (key == 'sei') {
+                sei = decodeURIComponent(value) == 'true' ? true : false;
+              }
+            if (key == 'seiUUID') {
+                seiUUID = value
+            }
         });
     }
-    return { appID, server, cgiToken, userID, l3, isPeer, accessDomain, isAccess, auth, ver };
+    return { appID, server, cgiToken, userID, l3, isPeer, accessDomain, isAccess, auth, ver, sei, seiUUID  };
     // 测试用代码 end
     // Test code end
 }

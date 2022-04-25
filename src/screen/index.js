@@ -4,13 +4,16 @@ import {
     logout,
     publishStreamId,
     zg,
+    sei,
     loginRoom,
     previewVideo,
     enterRoom,
     publishType
 } from '../common';
-import { getBrowser } from '../assets/utils';
-import rangeShareFunction from './rangeShare'
+import { getBrowser, encodeString } from '../assets/utils';
+import rangeShareFunction from './rangeShare';
+
+let screenStreamId;
 
 $(async () => {
     await checkAnRun(true);
@@ -392,7 +395,7 @@ $(async () => {
                     videoOptimizationMode: $('#videoOptimizationMode').val()? $('#videoOptimizationMode').val() : "default"
                 },
             });
-            const screenStreamId = publishStreamId + 'screen' + screenCount++;
+            screenStreamId = publishStreamId + 'screen' + screenCount++;
             $('.previewScreenVideo').append(
                 $(`<video id="${screenStreamId}" autoplay muted playsinline></video>`),
             );
@@ -403,7 +406,7 @@ $(async () => {
             video.srcObject = screenStream;
 
             let videoCodec= $('#videoCodec').val();
-            const publisRes= zg.startPublishingStream(screenStreamId, screenStream, {videoCodec: videoCodec == 'VP8'? 'VP8': 'H264'});
+            const publisRes= zg.startPublishingStream(screenStreamId, screenStream, {videoCodec: videoCodec == 'VP8'? 'VP8': 'H264' , isSeiStart: sei,});
             publisRes &&
                 screenStreamList.push({
                     streamId: screenStreamId,
@@ -516,6 +519,16 @@ $(async () => {
         }
         stopRangeScreen()
         logout();
+    });
+
+    $('#sendSEI').unbind('click');
+    $('#sendSEI').click(() => {
+        const seiInfo = $('#seiInfo').val();
+        if (!seiInfo) {
+            alert('未填写SEI');
+            return;
+        }
+        zg.sendSEI(screenStreamId, encodeString(seiInfo));
     });
 
     document.onkeydown = function(e) {

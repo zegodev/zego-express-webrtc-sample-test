@@ -2,11 +2,11 @@
 import VConsole from 'vconsole';
 import './assets/bootstrap.min';
 import './assets/bootstrap.min.css';
-import { ZegoExpressEngine } from 'zego-express-engine-webrtc';
+import { ZegoExpressEngine, MediaInfoType } from 'zego-express-engine-webrtc';
 import { getCgi } from './content';
-import { getBrowser } from './assets/utils';
+import { getBrowser, decodeString, encodeString } from './assets/utils';
 
-new VConsole();
+// new VConsole();
 const userName = 'sampleUser' + new Date().getTime();
 const tokenUrl = 'https://wsliveroom-alpha.zego.im:8282/token';
 let userID = 'sample' + new Date().getTime();
@@ -36,14 +36,23 @@ let accessDomain;
 let isAccess;
 let auth;
 let ver;
+let sei;
+let seiUUID;
 
 window.publishTimes = {};
 window.playTimes = {};
+let publishTimes = {};
+
+let completeStreamID;
+let sendSEIFPS = 0;
+let sendSEITimer;
+let _seiUUID = '4fb6482e-9c68-66';
+
 
 // 测试用代码，开发者请忽略
 // Test code, developers please ignore
 
-({ appID, server, cgiToken, userID, l3, accessDomain, isAccess, auth, ver } = getCgi(appID, server, cgiToken));
+({ appID, server, cgiToken, userID, l3, accessDomain, isAccess, auth, sei, seiUUID, ver } = getCgi(appID, server, cgiToken));
 
 if (userID == "") {
     userID = 'sample' + new Date().getTime();
@@ -57,6 +66,9 @@ console.warn('accessDomain', accessDomain)
 
 
 $("#custom-userid").text(userID)
+if (seiUUID.length === 16) {
+    _seiUUID = seiUUID
+}
 
 if (cgiToken && tokenUrl == 'https://wsliveroom-alpha.zego.im:8282/token') {
     $.get(cgiToken, rsp => {
@@ -100,9 +112,14 @@ if (isAccess === false) {
     zg.zegoWebRTC.stateCenter.useNetAgent = false;
 }
 
+
 window.zg = zg;
 window.useLocalStreamList = useLocalStreamList;
 
+
+zg.setSEIConfig({
+    unregister_sei_filter: _seiUUID
+});
 async function checkAnRun(checkScreen) {
     console.log('sdk version is', zg.getVersion());
     try {
@@ -178,6 +195,44 @@ async function start() {
         zg.setSoundLevelDelegate(false);
         zg.setSoundLevelDelegate(true);
     });
+
+    $('#sendSEI').click(() => {
+        const seiInfo = $('#seiInfo').val();
+        if (!seiInfo) {
+            alert('未填写SEI');
+            return;
+        }
+        let _seiInfo = seiInfo;
+        const seiType = $('#seiType').val();
+        if (seiType === '1') {
+            _seiInfo = _seiUUID + seiInfo
+        }
+        const seiArray = encodeString(_seiInfo);
+        $('#seibytelen').text('' + seiArray.byteLength)
+        zg.sendSEI(publishStreamId, seiArray);
+        console.warn('发送 SEI ', seiInfo)
+    });
+    $('#sendSEIInterval').click(() => {
+        const seiInfo = $('#seiInfo').val();
+        if (!seiInfo) {
+            alert('未填写SEI');
+            return;
+        }
+        if (!sendSEIFPS) {
+            console.error('no send fps')
+            return;
+        }
+        let _seiInfo = seiInfo;
+        const seiType = $('#seiType').val();
+        if (seiType === '1') {
+            _seiInfo = _seiUUID + seiInfo
+        }
+        const seiArray = encodeString(_seiInfo);
+        $('#seibytelen').text('' + seiArray.byteLength)
+        sendSEITimer = setInterval(() => {
+            zg.sendSEI(publishStreamId, seiArray);
+        }, 1000/sendSEIFPS);
+    })
 }
 
 async function enumDevices() {
@@ -331,6 +386,8 @@ function initSDK() {
                 if ($("#videoCodec").val()) playOption.videoCodec = $("#videoCodec").val();
                 if (l3 == true) playOption.resourceMode = 2;
 
+                playOption.isSeiStart = sei;
+
                 zg.startPlayingStream(streamList[i].streamID, playOption).then(stream => {
                     remoteStream = stream;
                     useLocalStreamList.push(streamList[i]);
@@ -468,6 +525,23 @@ function initSDK() {
     zg.on('tokenWillExpire', (roomID) => {
         console.warn('tokenWillExpire', roomID);
     });
+    zg.on("playerRecvSEI", (streamID, uintArray) => {
+        // const str = decodeString(seiBuf);
+        console.warn(
+            "recv " + streamID + " sei ",
+            uintArray,
+          );
+        let offset = 0;
+        let mediaSideInfoType = 0;
+        mediaSideInfoType = uintArray[offset++] << 24;
+        mediaSideInfoType |= uintArray[offset++] << 16;
+        mediaSideInfoType |= uintArray[offset++] << 8;
+        mediaSideInfoType |= uintArray[offset++];
+
+        const seiContent = decodeString(uintArray.subarray(4));
+        
+        console.warn('收到 SEI ', mediaSideInfoType, seiContent)
+    })
 }
 
 async function getToken(userID, roomId, expireTime) {
@@ -679,6 +753,10 @@ async function logout() {
 
     roomList.splice(roomList.findIndex(room => room == roomId), 1);
 
+    if (sendSEITimer){
+        clearInterval(sendSEITimer);
+        sendSEITimer = null;
+    }
     if (previewVideo.srcObject && (!roomId || roomList.length == 0)) {
         previewVideo.srcObject = null;
         zg.stopPublishingStream(publishStreamId);
@@ -728,12 +806,29 @@ const  startPreview = async (constraints)=> {
     const playType =
         _constraints.camera.audio === false ? 'Video' : _constraints.camera.video === false ? 'Audio' : 'all';
     publishType = playType;
+}
 
+function getVideoFrame(camera) {
+    const { frameRate, videoQuality } = camera;
+    if (frameRate) {
+        sendSEIFPS = frameRate;
+    } else if (videoQuality == 1 || videoQuality == 2) {
+        sendSEIFPS = 15;
+    } else if (videoQuality == 3) {
+        sendSEIFPS = 20;
+    }
+}
+
+async function push(constraints, publishOption = {}, isNew) {
     const currentRoomID = $('#roomId').val() || undefined;
     if (localStreamMap[currentRoomID]) {
         zg.destroyStream(localStreamMap[currentRoomID])
     }
     try {
+        if (constraints.camera) {
+            getVideoFrame(constraints.camera);
+        }
+        // console.warn()
         const previewTime = new Date().getTime();
         localStreamMap[currentRoomID] = await zg.createStream(_constraints);
         const previewConsumed = new Date().getTime() - previewTime;
@@ -741,6 +836,18 @@ const  startPreview = async (constraints)=> {
         previewVideo.srcObject = localStreamMap[currentRoomID];
         isPreviewed = true;
         $('.sound').hasClass('d-none') && $('.sound').removeClass('d-none');
+        isNew && (publishStreamId = 'webrtc' + new Date().getTime());
+        if ($("#videoCodec").val()) publishOption.videoCodec = $("#videoCodec").val();
+        publishOption.roomID = currentRoomID;
+        publishOption.isSeiStart = sei;
+        if ($("#seiType").val() == '1') {
+            publishOption.mediaInfoType = 2;
+        }
+        completeStreamID = publishStreamId
+        if (zg.zegoWebRTM.stateCenter.isMultiRoom) {
+            completeStreamID = publishOption.roomID + "-" + publishStreamId
+        }
+        
         if(zg.createAudioEffectPlayer) {
             
             effectPlayer = zg.createAudioEffectPlayer(
@@ -792,27 +899,6 @@ const stopPublish = async () =>{
     }
     const result = zg.stopPublishingStream(completeStreamID);
     console.warn('stop publish stream' + completeStreamID, result);
-}
-
-
-async function push(constraints, publishOption = {}, isNew) {
-    const { playType } = await startPreview(constraints)
-    await startPublish({ ...publishOption, extraInfo: JSON.stringify({ playType }) }, isNew)
-
-    // var AudioContext = window.AudioContext || window.webkitAudioContext; // 兼容性
-    // let localTrack= localStream.getAudioTracks()[0];
-    // let audioContext = new AudioContext();// 创建Audio上下文
-    // let mediaStreamSource = audioContext.createMediaStreamSource(localStream);
-    // let destination = audioContext.createMediaStreamDestination();
-    // let gainNode = audioContext.createGain();
-    // mediaStreamSource.connect(gainNode);
-    // gainNode.connect(destination);
-    // gainNode.gain.value=3;
-    // let audioTrack = destination.stream.getAudioTracks()[0];
-    // localStream.removeTrack(localTrack);
-    // localStream.addTrack(audioTrack);
-
-
 }
 
 $('#toggleCamera').click(function () {
@@ -893,9 +979,7 @@ export {
     startPublish,
     stopPublish,
     localStreamMap,
-    getPreviewStream
-};
-
-// $(window).on('unload', function() {
-//     logout();
-// });
+    getPreviewStream,
+    sei,
+    effectPlayer,
+}

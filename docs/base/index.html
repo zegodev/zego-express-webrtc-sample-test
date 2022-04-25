@@ -25,7 +25,7 @@
     }
   </style>
   <title class="base">推拉流基础功能</title>
-<link href="../index.8f573908.css" rel="stylesheet"></head>
+<link href="../index.733ddcec.css" rel="stylesheet"></head>
 
 <body class="bg-f2">
   <div class="container">
@@ -186,6 +186,12 @@
           </div>
         </div>
 
+              <label class="input-group-text" for="audioBitRate"><strong class="text-gray-dark">音频码率</strong></label>
+            </div>
+            <input type="email" class="form-control d-inline" id="audioBitrate" aria-describedby="emailHelp"
+              placeholder="音频码率" value="">
+          </div>
+        </div>
         <!-- <div class="col-sm">
           <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
@@ -251,16 +257,19 @@
             </select>
           </div>
         </div>
-
         <div class="col-sm">
           <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
-              <label class="input-group-text" for="audioBitRate"><strong class="text-gray-dark">音频码率</strong></label>
+              <label class="input-group-text" for="retainPreview"><strong
+                  class="text-gray-dark">SEI type</strong></label>
             </div>
-            <input type="email" class="form-control d-inline" id="audioBitrate" aria-describedby="emailHelp"
-              placeholder="音频码率" value="">
+            <select class="custom-select" id="seiType" style="width: 50%">
+              <option value="1">标准</option>
+              <option value="0" selected>zego</option>
+            </select>
           </div>
         </div>
+        
 
       </div>
 
@@ -339,6 +348,34 @@
           </div>
         </div>
       </div>
+      <!-- <div class="row">
+        <div class="col-sm">
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="seiUUID"><strong class="text-gray-dark ">媒体次要信息UUID</strong></label>
+            </div>
+            
+            <input type="text" class="form-control d-inline" id="seiUUID" style="width: 75%;" placeholder="seiUUID" value="4fb6482e-9c68-66">
+          </div>
+        </div>
+      </div> -->
+      <div class="row">
+        <div class="col-sm">
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="seiInfo"><strong class="text-gray-dark ">媒体次要信息</strong></label>
+            </div>
+            <!-- <input type="label" class="form-control d-inline" style="width: 180px"
+              placeholder="userid"> -->
+            <input type="text" class="form-control d-inline" id="seiInfo" style="width: 75%;" placeholder="seiInfo" value="Hello, the world">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <span>sei字节长度: </span>
+        <span id="seibytelen"></span>
+      </div>
       <div class="row">
         <div class="col-sm">
           <button type="button" id="createRoom" class="btn btn-primary btn-sm enterRoomPush">进入房间（推流）</button>
@@ -346,13 +383,15 @@
           <button type="button" id="publish" class="btn btn-primary btn-sm">推流</button>
           <button type="button" id="openRoom" class="btn btn-primary btn-sm enterRoomPlay">进入房间（不推流）</button>
           <button type="button" id="openRoomPlay" class="btn btn-primary btn-sm">进房同时拉流</button>
+          <button type="button" id="sendSEI" class="btn btn-primary btn-sm">发送SEI</button>
+          <button type="button" id="sendSEIInterval" class="btn btn-primary btn-sm">自动发送SEI</button>
           <button type="button" id="useVideo" class="btn btn-secondary btn-sm">更改视频输入设备</button>
           <button type="button" id="useAudio" class="btn btn-secondary btn-sm">更改音频输入设备</button>
           <button type="button" id="toggleCamera" class="btn btn-primary btn-sm enableCamera">开关视频</button>
           <button type="button" id="toggleSpeaker" class="btn btn-primary btn-sm enableMicrophone">开关音频</button>
           <button type="button" id="toggleVideoCapturing" class="btn btn-primary btn-sm" title="toggleCapturing">开关摄像头</button>
-          <!-- <button type="button" id="mutePlayStreamVideo" class="btn btn-primary btn-sm">停止/恢复拉视频流</button> -->
-          <!-- <button type="button" id="mutePlayStreamAudio" class="btn btn-primary btn-sm">停止/恢复拉音频流</button> -->
+          <button type="button" id="mutePlayStreamVideo" class="btn btn-primary btn-sm">停止/恢复拉视频流</button>
+          <button type="button" id="mutePlayStreamAudio" class="btn btn-primary btn-sm">停止/恢复拉音频流</button>
           <button type="button" id="stopPlaySound" class="btn btn-primary btn-sm unenableSound">停止获取音浪</button>
           <button type="button" id="resumePlaySound" class="btn btn-primary btn-sm resumeSound">恢复获取音浪</button>
           <button type="button" id="extraInfo" class="btn btn-primary btn-sm">修改流附加信息</button>
