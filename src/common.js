@@ -2,11 +2,11 @@
 import VConsole from 'vconsole';
 import './assets/bootstrap.min';
 import './assets/bootstrap.min.css';
-import { ZegoExpressEngine, MediaInfoType } from 'zego-express-engine-webrtc';
+import { ZegoExpressEngine } from 'zego-express-engine-webrtc';
 import { getCgi } from './content';
 import { getBrowser, decodeString, encodeString } from './assets/utils';
 
-// new VConsole();
+new VConsole();
 const userName = 'sampleUser' + new Date().getTime();
 const tokenUrl = 'https://wsliveroom-alpha.zego.im:8282/token';
 let userID = 'sample' + new Date().getTime();
@@ -36,23 +36,22 @@ let accessDomain;
 let isAccess;
 let auth;
 let ver;
-let sei;
-let seiUUID;
 
 window.publishTimes = {};
 window.playTimes = {};
+let sei;
+let seiUUID;
+
 let publishTimes = {};
 
 let completeStreamID;
 let sendSEIFPS = 0;
 let sendSEITimer;
 let _seiUUID = '4fb6482e-9c68-66';
-
-
 // 测试用代码，开发者请忽略
 // Test code, developers please ignore
 
-({ appID, server, cgiToken, userID, l3, accessDomain, isAccess, auth, sei, seiUUID, ver } = getCgi(appID, server, cgiToken));
+({ appID, server, cgiToken, userID, l3, accessDomain, isAccess, auth, ver, sei, seiUUID } = getCgi(appID, server, cgiToken));
 
 if (userID == "") {
     userID = 'sample' + new Date().getTime();
@@ -63,12 +62,12 @@ console.warn('accessDomain', accessDomain)
 // if (!accessDomain) {
 //     accessDomain = ['access-wss-beta.zego.im']
 // }
-
-
-$("#custom-userid").text(userID)
 if (seiUUID.length === 16) {
     _seiUUID = seiUUID
 }
+
+
+$("#custom-userid").text(userID)
 
 if (cgiToken && tokenUrl == 'https://wsliveroom-alpha.zego.im:8282/token') {
     $.get(cgiToken, rsp => {
@@ -112,11 +111,8 @@ if (isAccess === false) {
     zg.zegoWebRTC.stateCenter.useNetAgent = false;
 }
 
-
 window.zg = zg;
 window.useLocalStreamList = useLocalStreamList;
-
-
 zg.setSEIConfig({
     unregister_sei_filter: _seiUUID
 });
@@ -195,7 +191,6 @@ async function start() {
         zg.setSoundLevelDelegate(false);
         zg.setSoundLevelDelegate(true);
     });
-
     $('#sendSEI').click(() => {
         const seiInfo = $('#seiInfo').val();
         if (!seiInfo) {
@@ -385,9 +380,7 @@ function initSDK() {
 
                 if ($("#videoCodec").val()) playOption.videoCodec = $("#videoCodec").val();
                 if (l3 == true) playOption.resourceMode = 2;
-
                 playOption.isSeiStart = sei;
-
                 zg.startPlayingStream(streamList[i].streamID, playOption).then(stream => {
                     remoteStream = stream;
                     useLocalStreamList.push(streamList[i]);
@@ -752,7 +745,6 @@ async function logout() {
     // window.useLocalStreamList = [];
 
     roomList.splice(roomList.findIndex(room => room == roomId), 1);
-
     if (sendSEITimer){
         clearInterval(sendSEITimer);
         sendSEITimer = null;
@@ -806,48 +798,22 @@ const  startPreview = async (constraints)=> {
     const playType =
         _constraints.camera.audio === false ? 'Video' : _constraints.camera.video === false ? 'Audio' : 'all';
     publishType = playType;
-}
 
-function getVideoFrame(camera) {
-    const { frameRate, videoQuality } = camera;
-    if (frameRate) {
-        sendSEIFPS = frameRate;
-    } else if (videoQuality == 1 || videoQuality == 2) {
-        sendSEIFPS = 15;
-    } else if (videoQuality == 3) {
-        sendSEIFPS = 20;
-    }
-}
-
-async function push(constraints, publishOption = {}, isNew) {
     const currentRoomID = $('#roomId').val() || undefined;
     if (localStreamMap[currentRoomID]) {
         zg.destroyStream(localStreamMap[currentRoomID])
     }
     try {
+        const previewTime = new Date().getTime();
         if (constraints.camera) {
             getVideoFrame(constraints.camera);
         }
-        // console.warn()
-        const previewTime = new Date().getTime();
         localStreamMap[currentRoomID] = await zg.createStream(_constraints);
         const previewConsumed = new Date().getTime() - previewTime;
         console.warn('createStream success! 预览耗时 ' + previewConsumed);
         previewVideo.srcObject = localStreamMap[currentRoomID];
         isPreviewed = true;
         $('.sound').hasClass('d-none') && $('.sound').removeClass('d-none');
-        isNew && (publishStreamId = 'webrtc' + new Date().getTime());
-        if ($("#videoCodec").val()) publishOption.videoCodec = $("#videoCodec").val();
-        publishOption.roomID = currentRoomID;
-        publishOption.isSeiStart = sei;
-        if ($("#seiType").val() == '1') {
-            publishOption.mediaInfoType = 2;
-        }
-        completeStreamID = publishStreamId
-        if (zg.zegoWebRTM.stateCenter.isMultiRoom) {
-            completeStreamID = publishOption.roomID + "-" + publishStreamId
-        }
-        
         if(zg.createAudioEffectPlayer) {
             
             effectPlayer = zg.createAudioEffectPlayer(
@@ -863,6 +829,17 @@ async function push(constraints, publishOption = {}, isNew) {
         } else {
             console.error('createStream error', err);
         }
+    }
+}
+
+function getVideoFrame(camera) {
+    const { frameRate, videoQuality } = camera;
+    if (frameRate) {
+        sendSEIFPS = frameRate;
+    } else if (videoQuality == 1 || videoQuality == 2) {
+        sendSEIFPS = 15;
+    } else if (videoQuality == 3) {
+        sendSEIFPS = 20;
     }
 }
 
@@ -886,6 +863,10 @@ const startPublish = async (publishOption = {}, isNew) =>{
         completeStreamID = publishOption.roomID + "-" + publishStreamId
     }
     window.publishTime = new Date().getTime();
+    publishOption.isSeiStart = sei;
+    if ($("#seiType").val() == '1') {
+        publishOption.mediaInfoType = 2;
+    }
     const result = await zg.startPublishingStream(completeStreamID, localStreamMap[currentRoomID], publishOption);
  
     console.log('publish stream' + completeStreamID, result);
@@ -899,6 +880,27 @@ const stopPublish = async () =>{
     }
     const result = zg.stopPublishingStream(completeStreamID);
     console.warn('stop publish stream' + completeStreamID, result);
+}
+
+
+async function push(constraints, publishOption = {}, isNew) {
+    const { playType } = await startPreview(constraints)
+    await startPublish({ ...publishOption, extraInfo: JSON.stringify({ playType }) }, isNew)
+
+    // var AudioContext = window.AudioContext || window.webkitAudioContext; // 兼容性
+    // let localTrack= localStream.getAudioTracks()[0];
+    // let audioContext = new AudioContext();// 创建Audio上下文
+    // let mediaStreamSource = audioContext.createMediaStreamSource(localStream);
+    // let destination = audioContext.createMediaStreamDestination();
+    // let gainNode = audioContext.createGain();
+    // mediaStreamSource.connect(gainNode);
+    // gainNode.connect(destination);
+    // gainNode.gain.value=3;
+    // let audioTrack = destination.stream.getAudioTracks()[0];
+    // localStream.removeTrack(localTrack);
+    // localStream.addTrack(audioTrack);
+
+
 }
 
 $('#toggleCamera').click(function () {
@@ -981,5 +983,8 @@ export {
     localStreamMap,
     getPreviewStream,
     sei,
-    effectPlayer,
-}
+};
+
+// $(window).on('unload', function() {
+//     logout();
+// });
