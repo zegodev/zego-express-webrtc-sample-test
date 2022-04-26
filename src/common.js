@@ -268,8 +268,8 @@ function initSDK() {
     zg.on('roomStateUpdate', (roomID, state, errorCode, extendedData) => {
         $("#roomState").text(state)
     }); 
-    zg.on('roomStateChange', (roomID, state, errorCode, extendedData) => {
-        console.warn('roomStateChange: ', roomID, state, errorCode, extendedData);
+    zg.on('roomStateChanged', (roomID, state, errorCode, extendedData) => {
+        console.warn('roomStateChanged: ', roomID, state, errorCode, extendedData);
         $("#roomState").text(state)
     });
     zg.on('roomUserUpdate', (roomID, updateType, userList) => {
