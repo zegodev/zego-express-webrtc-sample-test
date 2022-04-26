@@ -226,7 +226,7 @@ async function start() {
         $('#seibytelen').text('' + seiArray.byteLength)
         sendSEITimer = setInterval(() => {
             zg.sendSEI(publishStreamId, seiArray);
-        }, 1000/sendSEIFPS);
+        }, 1000 / sendSEIFPS);
     })
 }
 
@@ -266,7 +266,10 @@ function initSDK() {
     enumDevices();
 
     zg.on('roomStateUpdate', (roomID, state, errorCode, extendedData) => {
-        console.warn('roomStateUpdate: ', roomID, state, errorCode, extendedData);
+        $("#roomState").text(state)
+    }); 
+    zg.on('roomStateChange', (roomID, state, errorCode, extendedData) => {
+        console.warn('roomStateChange: ', roomID, state, errorCode, extendedData);
         $("#roomState").text(state)
     });
     zg.on('roomUserUpdate', (roomID, updateType, userList) => {
@@ -523,7 +526,7 @@ function initSDK() {
         console.warn(
             "recv " + streamID + " sei ",
             uintArray,
-          );
+        );
         let offset = 0;
         let mediaSideInfoType = 0;
         mediaSideInfoType = uintArray[offset++] << 24;
@@ -532,7 +535,7 @@ function initSDK() {
         mediaSideInfoType |= uintArray[offset++];
 
         const seiContent = decodeString(uintArray.subarray(4));
-        
+
         console.warn('收到 SEI ', mediaSideInfoType, seiContent)
     })
 }
@@ -745,7 +748,7 @@ async function logout() {
     // window.useLocalStreamList = [];
 
     roomList.splice(roomList.findIndex(room => room == roomId), 1);
-    if (sendSEITimer){
+    if (sendSEITimer) {
         clearInterval(sendSEITimer);
         sendSEITimer = null;
     }
@@ -774,10 +777,10 @@ async function publish(constraints, isNew) {
     console.warn('constraints', constraints);
 
     // console.error('playType', playType);
-    push(constraints, {  }, isNew);
+    push(constraints, {}, isNew);
 }
 
-const  startPreview = async (constraints = {})=> {
+const startPreview = async (constraints = {}) => {
     const video =
         constraints && constraints.camera && typeof constraints.camera.video === 'boolean'
             ? constraints.camera.video
@@ -814,8 +817,8 @@ const  startPreview = async (constraints = {})=> {
         previewVideo.srcObject = localStreamMap[currentRoomID];
         isPreviewed = true;
         $('.sound').hasClass('d-none') && $('.sound').removeClass('d-none');
-        if(zg.createAudioEffectPlayer) {
-            
+        if (zg.createAudioEffectPlayer) {
+
             effectPlayer = zg.createAudioEffectPlayer(
                 localStreamMap[currentRoomID]
             )
@@ -844,17 +847,17 @@ function getVideoFrame(camera) {
     }
 }
 
-const getPreviewStream = () =>{
-    const  stream = localStreamMap[$('#roomId').val()]
+const getPreviewStream = () => {
+    const stream = localStreamMap[$('#roomId').val()]
 
     return stream
 }
-const getEffectPlayer = () =>{
+const getEffectPlayer = () => {
     return effectPlayer
-    
+
 }
 
-const startPublish = async (publishOption = {}, isNew) =>{
+const startPublish = async (publishOption = {}, isNew) => {
     isNew && (publishStreamId = 'webrtc' + new Date().getTime());
     if ($("#videoCodec").val()) publishOption.videoCodec = $("#videoCodec").val();
     const currentRoomID = $('#roomId').val()
@@ -869,11 +872,11 @@ const startPublish = async (publishOption = {}, isNew) =>{
         publishOption.mediaInfoType = 2;
     }
     const result = await zg.startPublishingStream(completeStreamID, localStreamMap[currentRoomID], publishOption);
- 
+
     console.log('publish stream' + completeStreamID, result);
 }
 
-const stopPublish = async () =>{
+const stopPublish = async () => {
     const currentRoomID = $('#roomId').val()
     let completeStreamID = publishStreamId
     if (zg.zegoWebRTM.stateCenter.isMultiRoom) {
