@@ -230,15 +230,15 @@ $(async () => {
         resultDiv.innerHTML = value + ": " + JSON.stringify(res);
     })
 
-    $('#mutePlayStreamVideo').click(() => {
+    $('#mutePlayStreamVideo').click(function() {
         useLocalStreamList.forEach(item => {
-            zg.zegoWebRTC.mutePlayStreamVideo(item.streamID, !$(this).hasClass('disabled'));
+            zg.mutePlayStreamVideo(item.streamID, !$(this).hasClass('disabled'));
         })
         $(this).toggleClass('disabled');
     })
-    $('#mutePlayStreamAudio').click(() => {
+    $('#mutePlayStreamAudio').click(function() {
         useLocalStreamList.forEach(item => {
-            zg.zegoWebRTC.mutePlayStreamAudio(item.streamID, !$(this).hasClass('disabled'));
+            zg.mutePlayStreamAudio(item.streamID, !$(this).hasClass('disabled'));
         })
         $(this).toggleClass('disabled');
     })

@@ -808,8 +808,8 @@ const startPreview = async (constraints = {}) => {
     }
     try {
         const previewTime = new Date().getTime();
-        if (constraints.camera) {
-            getVideoFrame(constraints.camera);
+        if (_constraints.camera) {
+            getVideoFrame(_constraints.camera);
         }
         localStreamMap[currentRoomID] = await zg.createStream(_constraints);
         const previewConsumed = new Date().getTime() - previewTime;
