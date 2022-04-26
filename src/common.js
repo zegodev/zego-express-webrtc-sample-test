@@ -777,7 +777,7 @@ async function publish(constraints, isNew) {
     push(constraints, {  }, isNew);
 }
 
-const  startPreview = async (constraints)=> {
+const  startPreview = async (constraints = {})=> {
     const video =
         constraints && constraints.camera && typeof constraints.camera.video === 'boolean'
             ? constraints.camera.video
@@ -829,6 +829,7 @@ const  startPreview = async (constraints)=> {
         } else {
             console.error('createStream error', err);
         }
+        throw err
     }
 }
 

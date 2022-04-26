@@ -80,7 +80,7 @@ $(async () => {
     $('#useVideo').click(() => {
         zg.useVideoDevice(previewVideo.srcObject, $('#videoList').val());
     });
-    
+
 
     $('#useAudio').click(() => {
         zg.useAudioDevice(previewVideo.srcObject, $('#audioList').val());
@@ -189,11 +189,13 @@ $(async () => {
         const h = $('#height').val() ? parseInt($('#height').val()) : 0;
         const f = $('#frameRate').val() ? parseInt($('#frameRate').val()) : 0;
         const b = $('#bitrate').val() ? parseInt($('#bitrate').val()) : 0;
+        const videoQuality = $('#videoQuality').val();
 
         w && Object.assign(constraints, { width: w });
         h && Object.assign(constraints, { height: h });
         f && Object.assign(constraints, { frameRate: f });
         b && Object.assign(constraints, { maxBitrate: b });
+        videoQuality && Object.assign(constraints, { videoQuality: parseInt(videoQuality) });
 
         zg.setVideoConfig(previewVideo.srcObject, constraints).then(
             () => {
