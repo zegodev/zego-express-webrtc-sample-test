@@ -528,7 +528,11 @@ $(async () => {
             alert('未填写SEI');
             return;
         }
-        zg.sendSEI(screenStreamId, encodeString(seiInfo));
+  
+        const res = zg.sendSEI(screenStreamId, encodeString(seiInfo));
+        if (res) {
+            console.warn('发送 SEI ', seiInfo)
+        }
     });
 
     document.onkeydown = function(e) {

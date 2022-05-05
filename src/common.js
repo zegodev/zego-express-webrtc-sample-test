@@ -204,8 +204,10 @@ async function start() {
         }
         const seiArray = encodeString(_seiInfo);
         $('#seibytelen').text('' + seiArray.byteLength)
-        zg.sendSEI(publishStreamId, seiArray);
-        console.warn('发送 SEI ', seiInfo)
+        const res = zg.sendSEI(publishStreamId, seiArray);
+        if (res) {
+            console.warn('发送 SEI ', seiInfo)
+        }
     });
     $('#sendSEIInterval').click(() => {
         const seiInfo = $('#seiInfo').val();
