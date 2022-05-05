@@ -269,7 +269,7 @@ function initSDK() {
 
     zg.on('roomStateUpdate', (roomID, state, errorCode, extendedData) => {
         $("#roomState").text(state)
-    }); 
+    });
     zg.on('roomStateChanged', (roomID, state, errorCode, extendedData) => {
         console.warn('roomStateChanged: ', roomID, state, errorCode, extendedData);
         $("#roomState").text(state)
@@ -794,7 +794,8 @@ const startPreview = async (constraints = {}) => {
             videoInput: $('#videoList').val(),
             video: video !== undefined ? video : $('#videoList').val() === '0' ? false : true,
             audio: $('#audioList').val() === '0' ? false : true,
-            videoOptimizationMode: $('#videoOptimizationMode').val() ? $('#videoOptimizationMode').val() : "default"
+            videoOptimizationMode: $('#videoOptimizationMode').val() ? $('#videoOptimizationMode').val() : "default",
+            startBitrate: "target",
             // channelCount: constraints && constraints.camera && constraints.camera.channelCount,
         },
     };
