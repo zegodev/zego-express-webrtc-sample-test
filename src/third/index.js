@@ -69,7 +69,7 @@ $(async () => {
         zg.createStream(config).then(stream => {
           previewVideo.srcObject = stream;
 
-          zg.startPublishingStream(streamID ? streamID : idName, stream, { videoCodec: $('#videoCodeType').val(), extraInfo: JSON.stringify({ role: 2 }), isSeiStart: sei, })
+          zg.startPublishingStream(streamID ? streamID : idName, stream, { videoCodec: $('#videoCodeType').val(), extraInfo: JSON.stringify({ role: 2 }), isSEIStart: sei, })
 
         }).catch(err => {
             console.error(err)

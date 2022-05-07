@@ -407,7 +407,7 @@ $(async () => {
             video.srcObject = screenStream;
 
             let videoCodec= $('#videoCodec').val();
-            const publisRes= zg.startPublishingStream(screenStreamId, screenStream, {videoCodec: videoCodec == 'VP8'? 'VP8': 'H264' , isSeiStart: sei,});
+            const publisRes= zg.startPublishingStream(screenStreamId, screenStream, {videoCodec: videoCodec == 'VP8'? 'VP8': 'H264' , isSEIStart: sei,});
             publisRes &&
                 screenStreamList.push({
                     streamId: screenStreamId,

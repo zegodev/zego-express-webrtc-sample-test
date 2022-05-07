@@ -114,7 +114,7 @@ if (isAccess === false) {
 window.zg = zg;
 window.useLocalStreamList = useLocalStreamList;
 zg.setSEIConfig({
-    unregister_sei_filter: _seiUUID
+    unregisterSEIFilter: _seiUUID
 });
 async function checkAnRun(checkScreen) {
     console.log('sdk version is', zg.getVersion());
@@ -385,7 +385,7 @@ function initSDK() {
 
                 if ($("#videoCodec").val()) playOption.videoCodec = $("#videoCodec").val();
                 if (l3 == true) playOption.resourceMode = 2;
-                playOption.isSeiStart = sei;
+                playOption.isSEIStart = sei;
                 zg.startPlayingStream(streamList[i].streamID, playOption).then(stream => {
                     remoteStream = stream;
                     useLocalStreamList.push(streamList[i]);
@@ -870,9 +870,9 @@ const startPublish = async (publishOption = {}, isNew) => {
         completeStreamID = publishOption.roomID + "-" + publishStreamId
     }
     window.publishTime = new Date().getTime();
-    publishOption.isSeiStart = sei;
+    publishOption.isSEIStart = sei;
     if ($("#seiType").val() == '1') {
-        publishOption.mediaInfoType = 1;
+        publishOption.SEIType = 1;
     }
     const result = await zg.startPublishingStream(completeStreamID, localStreamMap[currentRoomID], publishOption);
 
