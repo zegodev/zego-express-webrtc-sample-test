@@ -872,7 +872,7 @@ const startPublish = async (publishOption = {}, isNew) => {
     window.publishTime = new Date().getTime();
     publishOption.isSeiStart = sei;
     if ($("#seiType").val() == '1') {
-        publishOption.mediaInfoType = 2;
+        publishOption.mediaInfoType = 1;
     }
     const result = await zg.startPublishingStream(completeStreamID, localStreamMap[currentRoomID], publishOption);
 
