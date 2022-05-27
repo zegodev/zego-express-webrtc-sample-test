@@ -100,10 +100,10 @@ $(async () => {
         constraints.channelCount = channelCount;
         const videoQuality = $('#videoQuality').val();
         if (videoQuality == 4) {
-            $('#width').val() && (constraints.width = parseInt($('#width').val())),
-                $('#height').val() && (constraints.height = parseInt($('#height').val())),
-                $('#frameRate').val() && (constraints.frameRate = parseInt($('#frameRate').val())),
-                $('#bitrate').val() && (constraints.bitrate = parseInt($('#bitrate').val()))
+            $('#width').val() && (constraints.width = parseInt($('#width').val()) || JSON.parse($('#width').val())),
+            $('#height').val() && (constraints.height = parseInt($('#height').val()) || JSON.parse($('#height').val())),
+            $('#frameRate').val() && (constraints.frameRate = parseInt($('#frameRate').val()) || JSON.parse($('#frameRate').val())),
+            $('#bitrate').val() && (constraints.bitrate = parseInt($('#bitrate').val()))
         }
         $('#noiseSuppression').val() === '1' ? (constraints.ANS = true) : (constraints.ANS = false);
         $('#autoGainControl').val() === '1' ? (constraints.AGC = true) : (constraints.AGC = false);
@@ -420,6 +420,51 @@ $(async () => {
         console.error(result);
     });
 
+    function setExtendModelData(inputElement) {
+        const exact = parseInt(document.querySelector('#exact').value);
+        const ideal = parseInt(document.querySelector('#ideal').value);
+        const max = parseInt(document.querySelector('#max').value);
+        const min = parseInt(document.querySelector('#min').value);
+        const obj = {};
+        if (exact) {
+            obj.exact = exact;
+        }
+        if (ideal) {
+            obj.ideal = ideal;
+        }
+        if (max) {
+            obj.max = max;
+        }
+        if (min) {
+            obj.min = min;
+        }
+        inputElement.value = JSON.stringify(obj)
+    }
+    function clearExtendModelData() {
+        document.querySelector('#exact').value = '';
+        document.querySelector('#ideal').value = '';
+        document.querySelector('#max').value = '';
+        document.querySelector('#min').value = '';
+    }
+    document.querySelector('#widthExtendButton').addEventListener('click', e => {
+        clearExtendModelData();
+        document.querySelector('#extendOK').onclick = e => {
+            setExtendModelData(document.querySelector('#width'));
+        };
+    })
+    document.querySelector('#heightExtendButton').addEventListener('click', e => {
+        clearExtendModelData();
+        document.querySelector('#extendOK').onclick = e => {
+            setExtendModelData(document.querySelector('#height'));
+        };
+    })
+    document.querySelector('#frameRateExtendButton').addEventListener('click', e => {
+        clearExtendModelData();
+        document.querySelector('#extendOK').onclick = e => {
+            setExtendModelData(document.querySelector('#frameRate'));
+        };
+    })
+
     zg.off('roomStreamUpdate');
     zg.on('roomStreamUpdate', async (roomID, updateType, streamList, extendedData) => {
         console.warn('roomStreamUpdate 2 roomID ', roomID, updateType, streamList, extendedData);
@@ -550,4 +595,5 @@ $(async () => {
             }
         }
     })
+
 });
