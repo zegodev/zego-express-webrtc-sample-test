@@ -389,9 +389,9 @@ $(async () => {
                     audio: $('#isScreenAudio').val() == 'yes' ? true : false,
                     videoQuality: 4,
                     bitrate: $('#screenBitRate').val() * 1,
-                    frameRate: $('#screenFrameRate').val() * 1,
-                    width: $('#screenWidth').val() * 1 || screen.width,
-                    height:  $('#screenHeight').val() * 1 || screen.height,
+                    frameRate: parseInt($('#screenFrameRate').val()) || JSON.parse($('#screenFrameRate').val()),
+                    width: parseInt($('#screenWidth').val()) || JSON.parse($('#screenWidth').val()) || screen.width,
+                    height:  parseInt($('#screenHeight').val()) || JSON.parse($('#screenHeight').val()) || screen.height,
                     startBitrate: "target",
                     videoOptimizationMode: $('#videoOptimizationMode').val()? $('#videoOptimizationMode').val() : "default"
                 },
@@ -625,4 +625,48 @@ $(async () => {
         let mv = document.getElementById('moving_box');
         mv && mv.setAttribute('id', 'before_box') && (mouseDrag = false);
       };
+    function setExtendModelData(inputElement) {
+        const exact = parseInt(document.querySelector('#exact').value);
+        const ideal = parseInt(document.querySelector('#ideal').value);
+        const max = parseInt(document.querySelector('#max').value);
+        const min = parseInt(document.querySelector('#min').value);
+        const obj = {};
+        if (exact) {
+            obj.exact = exact;
+        }
+        if (ideal) {
+            obj.ideal = ideal;
+        }
+        if (max) {
+            obj.max = max;
+        }
+        if (min) {
+            obj.min = min;
+        }
+        inputElement.value = JSON.stringify(obj)
+    }
+    function clearExtendModelData() {
+        document.querySelector('#exact').value = '';
+        document.querySelector('#ideal').value = '';
+        document.querySelector('#max').value = '';
+        document.querySelector('#min').value = '';
+    }
+    document.querySelector('#screenWidthExtendButton').addEventListener('click', e => {
+        clearExtendModelData();
+        document.querySelector('#extendOK').onclick = e => {
+            setExtendModelData(document.querySelector('#screenWidth'));
+        };
+    })
+    document.querySelector('#screenHeightButton').addEventListener('click', e => {
+        clearExtendModelData();
+        document.querySelector('#extendOK').onclick = e => {
+            setExtendModelData(document.querySelector('#screenHeight'));
+        };
+    })
+    document.querySelector('#screenFrameRateButton').addEventListener('click', e => {
+        clearExtendModelData();
+        document.querySelector('#extendOK').onclick = e => {
+            setExtendModelData(document.querySelector('#screenFrameRate'));
+        };
+    })  
 });
