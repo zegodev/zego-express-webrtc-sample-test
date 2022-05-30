@@ -652,30 +652,30 @@ $(async () => {
         mv && mv.setAttribute('id', 'before_box') && (mouseDrag = false);
       };
     function setExtendModelData(inputElement) {
-        const exact = parseInt(document.querySelector('#exact').value);
+        // const exact = parseInt(document.querySelector('#exact').value);
         const ideal = parseInt(document.querySelector('#ideal').value);
         const max = parseInt(document.querySelector('#max').value);
-        const min = parseInt(document.querySelector('#min').value);
+        // const min = parseInt(document.querySelector('#min').value);
         const obj = {};
-        if (exact) {
-            obj.exact = exact;
-        }
+        // if (exact) {
+        //     obj.exact = exact;
+        // }
         if (ideal) {
             obj.ideal = ideal;
         }
         if (max) {
             obj.max = max;
         }
-        if (min) {
-            obj.min = min;
-        }
+        // if (min) {
+        //     obj.min = min;
+        // }
         inputElement.value = JSON.stringify(obj)
     }
     function clearExtendModelData() {
-        document.querySelector('#exact').value = '';
+        // document.querySelector('#exact').value = '';
         document.querySelector('#ideal').value = '';
         document.querySelector('#max').value = '';
-        document.querySelector('#min').value = '';
+        // document.querySelector('#min').value = '';
     }
     document.querySelector('#screenWidthExtendButton').addEventListener('click', e => {
         clearExtendModelData();
