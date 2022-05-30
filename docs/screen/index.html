@@ -47,7 +47,7 @@
     }
   </style>
   <title class="screenSharing">屏幕共享</title>
-<link href="../index.8f573908.css" rel="stylesheet"></head>
+<link href="../index.46287f6b.css" rel="stylesheet"></head>
 
 <body class="bg-f2">
 
@@ -153,6 +153,11 @@
             </div>
             <input type="email" class="form-control d-inline" id="screenWidth" style="width: 60%; max-width: 200px;"
               aria-describedby="emailHelp" placeholder="please enter screen width">
+            <div class="input-group-append">
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#constraintExtendModel" id="screenWidthExtendButton">
+                约束扩展
+              </button>
+            </div>
           </div>
         </div>
 
@@ -164,6 +169,11 @@
             </div>
             <input type="email" class="form-control d-inline" id="screenHeight" style="width: 60%; max-width: 200px;"
               aria-describedby="emailHelp" placeholder="please enter screen height">
+            <div class="input-group-append">
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#constraintExtendModel" id="screenHeightButton">
+                约束扩展
+              </button>
+            </div>
           </div>
         </div>
         <!-- <div class="col-sm">
@@ -186,13 +196,21 @@
               <label class="input-group-text" for="screenFrameRate"><strong
                   class="text-gray-dark height">共享帧率</strong></label>
             </div>
-            <select class="custom-select" id="screenFrameRate">
+            <input type="email" class="form-control d-inline" id="screenFrameRate" style="width: 60%; max-width: 200px;"
+              aria-describedby="emailHelp" placeholder="default:10,please enter screen frameRate;">
+            <div class="input-group-append">
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#constraintExtendModel" id="screenFrameRateButton">
+                约束扩展
+              </button>
+            </div>
+            <!-- <select class="custom-select" id="screenFrameRate">
               <option value="5">5</option>
               <option value="10" selected>10</option>
               <option value="15">15</option>
               <option value="20">20</option>
               <option value="30">30</option>
-            </select>
+            </select> -->
+            
           </div>
         </div>
 
@@ -210,6 +228,51 @@
           </div>
         </div>
       </div>
+
+      <!-- ConstraintExtendModel -->
+      <div class="modal fade" id="constraintExtendModel" tabindex="-1" role="dialog" aria-labelledby="constraintExtendModelLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="constraintExtendModelLabel">约束扩展</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <!-- <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="exact"><strong class="text-gray-dark">exact</strong></label>
+                </div>
+                <input type="text" class="form-control" aria-describedby="exact" id="exact">
+              </div> -->
+              <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="ideal"><strong class="text-gray-dark">ideal</strong></label>
+                </div>
+                <input type="text" class="form-control" aria-describedby="ideal" id="ideal">
+              </div>
+              <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="max"><strong class="text-gray-dark">max</strong></label>
+                </div>
+                <input type="text" class="form-control" aria-describedby="max" id="max">
+              </div>
+              <!-- <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="min"><strong class="text-gray-dark">min</strong></label>
+                </div>
+                <input type="text" class="form-control" aria-describedby="min" id="min">
+              </div> -->
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" id="extendOK" data-dismiss="modal">OK</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="row">
         <div class="col-sm">
           <div class="input-group input-group-sm mb-3">

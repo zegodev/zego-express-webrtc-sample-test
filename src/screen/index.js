@@ -62,6 +62,32 @@ $(async () => {
     const browser = getBrowser();
 
     console.warn('bro', browser)
+
+
+    const getScreenWidth = () => {
+        try {
+            const extend = JSON.parse($('#screenWidth').val());
+            return extend;
+        } catch(err) {}
+        return parseInt($('#screenWidth').val()) || screen.width
+    }
+
+    const getScreenHeight = () => {
+        try {
+            const extend = JSON.parse($('#screenHeight').val());
+            return extend;
+        } catch(err) {}
+        return parseInt($('#screenHeight').val()) || screen.height
+    }
+
+    const getScreenFrameRate = () => {
+        try {
+            const extend = JSON.parse($('#screenFrameRate').val());
+            return extend;
+        } catch(err) {}
+        return parseInt($('#screenFrameRate').val()) || 10
+    }
+
     const stopScreenShot = (screenStream)=> {
         zg.stopPublishingStream(screenStream.streamId);
         $(`#screenList option[value='${screenStream.streamId}']`).remove();
@@ -141,8 +167,8 @@ $(async () => {
         if(!globalCanvas) {
             let video = $('.previewScreenVideo video:last')[0];
             const settings = video.srcObject.getVideoTracks()[0].getSettings()
-            !$('#screenWidth').val() && (clientWidth =  settings.width)
-            !$('#screenHeight').val() && (clientHeight = settings.height)
+            !getScreenWidth() && (clientWidth =  settings.width)
+            !getScreenHeight() && (clientHeight = settings.height)
             console.log(settings.width, settings.height);
         }
         const boxDom = $('#before_box')[0]
@@ -266,10 +292,10 @@ $(async () => {
             screendStream = await zg.createStream({
                 screen: true,
                 videoQuality: 4,
-                width: $('#screenWidth').val() * 1,
-                height:  $('#screenHeight').val() * 1,
+                width: getScreenWidth(),
+                height:  getScreenHeight(),
                 bitrate: $('#screenBitRate').val() * 1,
-                frameRate: $('#screenFrameRate').val() * 1,
+                frameRate: getScreenFrameRate(),
                 startBitrate: "target",
                 videoOptimizationMode: $('#videoOptimizationMode').val()? $('#videoOptimizationMode').val() : "default"
             });
@@ -389,9 +415,9 @@ $(async () => {
                     audio: $('#isScreenAudio').val() == 'yes' ? true : false,
                     videoQuality: 4,
                     bitrate: $('#screenBitRate').val() * 1,
-                    frameRate: parseInt($('#screenFrameRate').val()) || JSON.parse($('#screenFrameRate').val()),
-                    width: parseInt($('#screenWidth').val()) || JSON.parse($('#screenWidth').val()) || screen.width,
-                    height:  parseInt($('#screenHeight').val()) || JSON.parse($('#screenHeight').val()) || screen.height,
+                    frameRate: getScreenFrameRate(),
+                    width: getScreenWidth(),
+                    height:  getScreenHeight(),
                     startBitrate: "target",
                     videoOptimizationMode: $('#videoOptimizationMode').val()? $('#videoOptimizationMode').val() : "default"
                 },
@@ -425,8 +451,8 @@ $(async () => {
         if(!globalCanvas) {
             let video = $('.previewScreenVideo video:last')[0];
             const settings = video.srcObject.getVideoTracks()[0].getSettings()
-            !$('#screenWidth').val() && (clientWidth =  settings.width)
-            !$('#screenHeight').val() && (clientHeight = settings.height)
+            !getScreenWidth() && (clientWidth =  settings.width)
+            !getScreenHeight() && (clientHeight = settings.height)
             console.log(settings.width, settings.height);
             $("#videoWidthInput").val(0.2 * clientWidth)
             $("#videoHeightInput").val(0.2 * clientHeight)

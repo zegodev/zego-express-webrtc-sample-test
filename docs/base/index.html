@@ -25,7 +25,7 @@
     }
   </style>
   <title class="base">推拉流基础功能</title>
-<link href="../index.8f573908.css" rel="stylesheet"></head>
+<link href="../index.46287f6b.css" rel="stylesheet"></head>
 
 <body class="bg-f2">
   <div class="container">
@@ -284,6 +284,11 @@
             </div>
             <input type="email" class="form-control d-inline" id="width" aria-describedby="emailHelp" placeholder=""
               value="">
+            <div class="input-group-append">
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#constraintExtendModel" id="widthExtendButton">
+                约束扩展
+              </button>
+            </div>
           </div>
         </div>
 
@@ -294,6 +299,11 @@
             </div>
             <input type="email" class="form-control d-inline" id="height" aria-describedby="emailHelp" placeholder=""
               value="">
+            <div class="input-group-append">
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#constraintExtendModel" id="heightExtendButton">
+                约束扩展
+              </button>
+            </div>
           </div>
         </div>
 
@@ -304,6 +314,11 @@
             </div>
             <input type="email" class="form-control d-inline" id="frameRate" aria-describedby="emailHelp" placeholder=""
               value="">
+            <div class="input-group-append">
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#constraintExtendModel" id="frameRateExtendButton">
+                约束扩展
+              </button>
+            </div>
           </div>
         </div>
         <div class="col-sm">
@@ -316,6 +331,51 @@
           </div>
         </div>
       </div>
+
+      <!-- ConstraintExtendModel -->
+      <div class="modal fade" id="constraintExtendModel" tabindex="-1" role="dialog" aria-labelledby="constraintExtendModelLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="constraintExtendModelLabel">约束扩展</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="exact"><strong class="text-gray-dark">exact</strong></label>
+                </div>
+                <input type="text" class="form-control" aria-describedby="exact" id="exact">
+              </div>
+              <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="ideal"><strong class="text-gray-dark">ideal</strong></label>
+                </div>
+                <input type="text" class="form-control" aria-describedby="ideal" id="ideal">
+              </div>
+              <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="max"><strong class="text-gray-dark">max</strong></label>
+                </div>
+                <input type="text" class="form-control" aria-describedby="max" id="max">
+              </div>
+              <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="min"><strong class="text-gray-dark">min</strong></label>
+                </div>
+                <input type="text" class="form-control" aria-describedby="min" id="min">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" id="extendOK" data-dismiss="modal">OK</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="row">
         <div class="col-sm">
           <div class="input-group input-group-sm mb-3">
