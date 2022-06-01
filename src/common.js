@@ -113,9 +113,11 @@ if (isAccess === false) {
 
 window.zg = zg;
 window.useLocalStreamList = useLocalStreamList;
-zg.setSEIConfig({
-    unregisterSEIFilter: _seiUUID
-});
+if (zg.getVersion() > "2.15.0") {
+    zg.setSEIConfig({
+        unregisterSEIFilter: _seiUUID
+    });
+}
 async function checkAnRun(checkScreen) {
     console.log('sdk version is', zg.getVersion());
     try {
@@ -522,6 +524,9 @@ function initSDK() {
     });
     zg.on('tokenWillExpire', (roomID) => {
         console.warn('tokenWillExpire', roomID);
+    });
+    zg.on('beautyEffectError', (stream, code, msg) => {
+        console.error('beautyEffectError', code, msg);
     });
     zg.on("playerRecvSEI", (streamID, uintArray) => {
         // const str = decodeString(seiBuf);
