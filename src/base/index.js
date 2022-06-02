@@ -295,9 +295,7 @@ $(async () => {
     async function setBeautyEffect(enable) {
         if (enable === undefined) {
             enable = isBeauty
-        } else {
-            isBeauty = enable
-        }
+        } 
 
         // 设置美颜之前保存摄像头视轨
         !cameraStreamVideoTrack && previewVideo.srcObject && (cameraStreamVideoTrack = previewVideo.srcObject.getVideoTracks()[0] && previewVideo.srcObject.getVideoTracks()[0]);
@@ -311,6 +309,7 @@ $(async () => {
             $("#previewVideo")[0].srcObject,
             enable, beautyConfig
         );
+        isBeauty = enable
         console.warn("setBeautyEffect", res, beautyConfig);
     }
     $("#range-sharp").on("change", () => { setBeautyEffect(isBeauty) })
