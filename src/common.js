@@ -391,13 +391,40 @@ function initSDK() {
                 zg.startPlayingStream(streamList[i].streamID, playOption).then(stream => {
                     remoteStream = stream;
                     useLocalStreamList.push(streamList[i]);
-                    let videoTemp = $(`<video id=${streamList[i].streamID} autoplay muted playsinline controls></video>`)
-                    //queue.push(videoTemp)
-                    $('.remoteVideo').append(videoTemp);
-                    const video = $('.remoteVideo video:last')[0];
-                    console.warn('video', video, remoteStream);
-                    video.srcObject = remoteStream;
-                    video.muted = false;
+                    
+
+                    if (zg.getVersion() >= "2.17.0") {
+                        const id = streamList[i].streamID
+                        $(".remoteVideo").append(
+                            $(`
+                            <div class="view-wrapper" id="wrap${id}" style="display:inline-block;width: 240px; border: 1px solid #dfdfdf; font-size: 12px;">
+                              <div id="${id}"  style="min-width: 240px;width: 240px; height: 180px;"></div>
+                              <div id="local-action">
+                                <button id="local-ctrl-audio${id}">开关声音</button>
+                                <button id="local-ctrl-video${id}">开关视频</button>
+                                <button id="local-ctrl-resume${id}">恢复</button>
+                                <button id="local-ctrl-play${id}">挂载</button>
+                                <button id="local-ctrl-stop${id}">卸载</button>
+                                <input id="local-ctrl-volume${id}" type="range" min="0" max="100" value="100" id="audioVolume1">
+                                <span id="local-ctrl-audio-state${id}"></span>
+                                <span id="local-ctrl-video-state${id}"></span>
+                              </div>
+                            </div>`
+                            )
+                        );
+                        const viewer = zg.createRemoteStreamView(stream);
+                        bindViewCtrl(viewer, id);
+                        viewer.play(id);
+                    } else {
+                        let videoTemp = $(`<video id=${streamList[i].streamID} autoplay muted playsinline controls></video>`)
+                        //queue.push(videoTemp)
+                        $('.remoteVideo').append(videoTemp);
+                        const video = $('.remoteVideo video:last')[0];
+                        console.warn('video', video, remoteStream);
+                        video.srcObject = remoteStream;
+                        video.muted = false;
+                    }
+
                     // videoTemp = null;
                 }).catch(err => {
                     console.error('err', err);
@@ -432,10 +459,14 @@ function initSDK() {
                             console.error(error);
                         }
 
-                        console.info(useLocalStreamList[k].streamID + 'was devared');
-
-
-                        $('.remoteVideo video:eq(' + k + ')').remove();
+                        console.info(useLocalStreamList[k].streamID + ' was removed');
+                        if (zg.getVersion() >= "2.17.0") {
+                            const a = document.querySelector(`#wrap${useLocalStreamList[k].streamID}`)
+                   
+                            $(`#wrap${useLocalStreamList[k].streamID}`).remove();
+                        } else {
+                            $('.remoteVideo video:eq(' + k + ')').remove();
+                        }
                         useLocalStreamList.splice(k--, 1);
                         break;
                     }
@@ -819,10 +850,19 @@ const startPreview = async (constraints = {}) => {
         if (_constraints.camera) {
             getVideoFrame(_constraints.camera);
         }
+
         localStreamMap[currentRoomID] = await zg.createStream(_constraints);
+
         const previewConsumed = new Date().getTime() - previewTime;
         console.warn('createStream success! 预览耗时 ' + previewConsumed);
+        if(zg.getVersion()>="2.17.0" && document.getElementById("local-view")) {
+            const stream = localStreamMap[currentRoomID] 
+            const viewer = zg.createLocalStreamView(stream);
+            bindViewCtrl(viewer);
+            viewer.play("local-view");
+        } 
         previewVideo.srcObject = localStreamMap[currentRoomID];
+        
         isPreviewed = true;
         $('.sound').hasClass('d-none') && $('.sound').removeClass('d-none');
         if (zg.createAudioEffectPlayer) {
@@ -963,7 +1003,60 @@ $('#enterRoom').click(async () => {
     }
 });
 
-
+$("#view-play-options").val(`
+{
+  "objectFit": "contain",
+  "mirror": false,
+  "enableAutoPlayDialog": true
+}
+`);
+function getViewOptions() {
+    let playOptions = undefined;
+    try {
+        playOptions = JSON.parse($("#view-play-options").val());
+    } catch (error) {
+        console.error("getViewOptions", error);
+    }
+    return playOptions;
+}
+function bindViewCtrl(view, id = "") {
+    let video = true;
+    let audio = true;
+    $("#local-ctrl-play" + id).off("click");
+    $("#local-ctrl-play" + id).on("click", () => {
+        view.play(id || "local-view", getViewOptions());
+    });
+    $("#local-ctrl-stop" + id).off("click");
+    $("#local-ctrl-stop" + id).on("click", () => {
+        view.stop();
+    });
+    $("#local-ctrl-video" + id).off("click");
+    $("#local-ctrl-video" + id).on("click", () => {
+        const res = view.setVideoMuted(!video);
+        if (res) {
+            video = !video;
+            $("#local-ctrl-video-state" + id).text(
+                `视频: ${video ? "关闭" : "开启"};`
+            );
+        }
+        console.warn("setVideoMuted", video ? "关闭" : "开启", res);
+    });
+    $("#local-ctrl-audio" + id).off("click");
+    $("#local-ctrl-audio" + id).on("click", () => {
+        const res = view.setAudioMuted(!audio);
+        if (res) {
+            audio = !audio;
+            $("#local-ctrl-audio-state" + id).text(
+                `音频：${audio ? "关闭" : "开启"};`
+            );
+        }
+        console.warn("setAudioMuted", audio ? "关闭" : "开启", res);
+    });
+    $("#local-ctrl-volume" + id).on("change", () => {
+        const res = view.setVolume($("#local-ctrl-volume" + id).val());
+        console.warn("setVolume", res);
+    });
+}
 
 export {
     zg,
@@ -996,6 +1089,8 @@ export {
     localStreamMap,
     getPreviewStream,
     sei,
+    getViewOptions,
+    bindViewCtrl
 };
 
 // $(window).on('unload', function() {

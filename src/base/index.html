@@ -490,6 +490,20 @@
         <div class="col-sm">
           <h5 class="sound d-none"><span class="soundText">当前音量：</span> <span id="soundLevel">0</span></h5>
           <label id="previewLabel" class="text-white"></label>
+          <div class="view-wrapper" style="width: 240px;border: 1px solid #dfdfdf; font-size: 12px;">
+            <div id="local-view" style="min-width: 240px;max-width: 240px; height: 240px;"></div>
+            <div id="local-action">
+              <button id="local-ctrl-audio">开关声音</button>
+              <button id="local-ctrl-video">开关视频</button>
+              <button id="local-ctrl-resume">恢复</button>
+              <button id="local-ctrl-play">挂载</button>
+              <button id="local-ctrl-stop">卸载</button>
+              <input id="local-ctrl-volume" type="range" min="0" max="100" value="100" id="audioVolume1">
+              <span id="local-ctrl-audio-state"></span>
+              <span id="local-ctrl-video-state"></span>
+            </div>
+          </div>
+          <textarea id="view-play-options" name="story" rows="4" cols="25"></textarea>
           <video id="previewVideo" controls autoplay muted playsinline></video>
           <video id="customVideo" crossOrigin="anonymous" muted playsinline autoplay controls
             src="https://zego-public.oss-cn-shanghai.aliyuncs.com/sdk-doc/assets/big_buck_bunny.mp4" loop></video>
