@@ -391,7 +391,7 @@ function initSDK() {
                 zg.startPlayingStream(streamList[i].streamID, playOption).then(stream => {
                     remoteStream = stream;
                     useLocalStreamList.push(streamList[i]);
-                    
+
 
                     if (zg.getVersion() >= "2.17.0") {
                         const id = streamList[i].streamID
@@ -414,7 +414,8 @@ function initSDK() {
                         );
                         const viewer = zg.createRemoteStreamView(stream);
                         bindViewCtrl(viewer, id);
-                        viewer.play(id);
+                        console.warn('enable-dialog',$("#enable-dialog").val() != "0");
+                        viewer.play(id, { enableAutoplayDialog: $("#enable-dialog").val() != "0" });
                     } else {
                         let videoTemp = $(`<video id=${streamList[i].streamID} autoplay muted playsinline controls></video>`)
                         //queue.push(videoTemp)
@@ -462,7 +463,7 @@ function initSDK() {
                         console.info(useLocalStreamList[k].streamID + ' was removed');
                         if (zg.getVersion() >= "2.17.0") {
                             const a = document.querySelector(`#wrap${useLocalStreamList[k].streamID}`)
-                   
+
                             $(`#wrap${useLocalStreamList[k].streamID}`).remove();
                         } else {
                             $('.remoteVideo video:eq(' + k + ')').remove();
@@ -855,14 +856,18 @@ const startPreview = async (constraints = {}) => {
 
         const previewConsumed = new Date().getTime() - previewTime;
         console.warn('createStream success! 预览耗时 ' + previewConsumed);
-        if(zg.getVersion()>="2.17.0" && document.getElementById("local-view")) {
-            const stream = localStreamMap[currentRoomID] 
+        if (zg.getVersion() >= "2.17.0" && document.getElementById("local-view")) {
+            const stream = localStreamMap[currentRoomID]
             const viewer = zg.createLocalStreamView(stream);
             bindViewCtrl(viewer);
-            viewer.play("local-view");
-        } 
+            console.warn('enable-dialog',$("#enable-dialog").val() != "0");
+            viewer.play("local-view", { enableAutoplayDialog: $("#enable-dialog").val() != "0" });
+            $("#previewVideo").hide()
+        } else {
+            $("#previewVideo").show()
+        }
         previewVideo.srcObject = localStreamMap[currentRoomID];
-        
+
         isPreviewed = true;
         $('.sound').hasClass('d-none') && $('.sound').removeClass('d-none');
         if (zg.createAudioEffectPlayer) {
@@ -1022,6 +1027,10 @@ function getViewOptions() {
 function bindViewCtrl(view, id = "") {
     let video = true;
     let audio = true;
+    $("#local-ctrl-resume" + id).off("click");
+    $("#local-ctrl-resume" + id).on("click", () => {
+        view.resume();
+    });
     $("#local-ctrl-play" + id).off("click");
     $("#local-ctrl-play" + id).on("click", () => {
         view.play(id || "local-view", getViewOptions());

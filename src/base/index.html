@@ -207,6 +207,16 @@
             </select>
           </div>
         </div> -->
+        <div class="col-sm">
+          <div class="input-group input-group-sm mb-3"><div class="input-group-prepend">
+            <label class="input-group-text" for="tcpOnly"><strong class="text-gray-dark">自动播放弹窗</strong></label>
+          </div>
+            <select class="custom-select " id="enable-dialog" value="1" style="width: 60%">
+              <option value="1">开启</option>
+              <option value="0">关闭</option>
+            </select>
+          </div>
+        </div>
       </div>
 
       <div class="row" style="margin-top:1%">
@@ -505,9 +515,9 @@
           </div>
           <textarea id="view-play-options" name="story" rows="4" cols="25"></textarea>
           <video id="previewVideo" controls autoplay muted playsinline></video>
-          <video id="customVideo" crossOrigin="anonymous" muted playsinline autoplay controls
+          <video id="customVideo" style="max-width: 180px" crossOrigin="anonymous" muted playsinline autoplay controls
             src="https://zego-public.oss-cn-shanghai.aliyuncs.com/sdk-doc/assets/big_buck_bunny.mp4" loop></video>
-          <video id="testVideo" autoplay muted playsinline></video>
+          <video id="testVideo" style="max-width: 180px"  autoplay muted playsinline></video>
         </div>
         <div class="col-sm remoteVideo">
           <!-- <video  autoplay muted playsinline></video> -->

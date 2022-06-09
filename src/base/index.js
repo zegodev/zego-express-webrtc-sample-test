@@ -48,7 +48,8 @@ $(async () => {
                 );
                 const viewer = zg.createRemoteStreamView(stream);
                 bindViewCtrl(viewer, id);
-                viewer.play(id);
+                console.warn('enable-dialog',$("#enable-dialog").val() != "0");
+                viewer.play(id, { enableAutoplayDialog: $("#enable-dialog").val() != "0" });
             } else {
                 let video;
                 const bro = getBrowser();
@@ -529,7 +530,8 @@ $(async () => {
                         );
                         const viewer = zg.createRemoteStreamView(remoteStream);
                         bindViewCtrl(viewer, id);
-                        viewer.play(id);
+                        console.warn('enable-dialog',$("#enable-dialog").val() != "0");
+                        viewer.play(id, { enableAutoplayDialog: $("#enable-dialog").val() != "0"});
                     } else {
                         let video;
                         const bro = getBrowser();
