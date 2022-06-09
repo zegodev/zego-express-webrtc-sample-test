@@ -178,8 +178,7 @@
         <div class="col-sm">
           <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
-              <label class="input-group-text" for="playStreamID"><strong
-                  class="text-gray-dark">拉流ID</strong></label>
+              <label class="input-group-text" for="playStreamID"><strong class="text-gray-dark">拉流ID</strong></label>
             </div>
             <input type="input" class="form-control d-inline" id="playStreamID" style="width: 75%; max-width: 200px"
               aria-describedby="emailHelp" placeholder="please streamID">
@@ -191,10 +190,10 @@
               <label class="input-group-text" for="audioBitRate"><strong class="text-gray-dark">音频码率</strong></label>
             </div>
             <input type="email" class="form-control d-inline" id="audioBitrate" aria-describedby="emailHelp"
-                placeholder="音频码率" value="">
+              placeholder="音频码率" value="">
           </div>
         </div>
-        
+
         <!-- <div class="col-sm">
           <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
@@ -207,6 +206,17 @@
             </select>
           </div>
         </div> -->
+        <div class="col-sm">
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="tcpOnly"><strong class="text-gray-dark">自动播放弹窗</strong></label>
+            </div>
+            <select class="custom-select " id="enable-dialog" value="1" style="width: 60%">
+              <option value="1">开启</option>
+              <option value="0">关闭</option>
+            </select>
+          </div>
+        </div>
       </div>
 
       <div class="row" style="margin-top:1%">
@@ -263,8 +273,8 @@
         <div class="col-sm">
           <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
-              <label class="input-group-text" for="retainPreview"><strong
-                  class="text-gray-dark">SEI type</strong></label>
+              <label class="input-group-text" for="retainPreview"><strong class="text-gray-dark">SEI
+                  type</strong></label>
             </div>
             <select class="custom-select" id="seiType" style="width: 50%">
               <option value="1">标准</option>
@@ -272,7 +282,7 @@
             </select>
           </div>
         </div>
-        
+
 
       </div>
 
@@ -285,7 +295,8 @@
             <input type="email" class="form-control d-inline" id="width" aria-describedby="emailHelp" placeholder=""
               value="">
             <div class="input-group-append">
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#constraintExtendModel" id="widthExtendButton">
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#constraintExtendModel"
+                id="widthExtendButton">
                 约束扩展
               </button>
             </div>
@@ -300,7 +311,8 @@
             <input type="email" class="form-control d-inline" id="height" aria-describedby="emailHelp" placeholder=""
               value="">
             <div class="input-group-append">
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#constraintExtendModel" id="heightExtendButton">
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#constraintExtendModel"
+                id="heightExtendButton">
                 约束扩展
               </button>
             </div>
@@ -315,7 +327,8 @@
             <input type="email" class="form-control d-inline" id="frameRate" aria-describedby="emailHelp" placeholder=""
               value="">
             <div class="input-group-append">
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#constraintExtendModel" id="frameRateExtendButton">
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#constraintExtendModel"
+                id="frameRateExtendButton">
                 约束扩展
               </button>
             </div>
@@ -333,7 +346,8 @@
       </div>
 
       <!-- ConstraintExtendModel -->
-      <div class="modal fade" id="constraintExtendModel" tabindex="-1" role="dialog" aria-labelledby="constraintExtendModelLabel" aria-hidden="true">
+      <div class="modal fade" id="constraintExtendModel" tabindex="-1" role="dialog"
+        aria-labelledby="constraintExtendModelLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
@@ -393,7 +407,7 @@
             </div>
             <input type="text" class="form-control d-inline" id="publish-stream" style="width: 75%;" placeholder="流ID ">
           </div>
-        </div>      
+        </div>
       </div>
       <div class="row">
         <span>userID: </span>
@@ -430,7 +444,8 @@
             </div>
             <!-- <input type="label" class="form-control d-inline" style="width: 180px"
               placeholder="userid"> -->
-            <input type="text" class="form-control d-inline" id="seiInfo" style="width: 75%;" placeholder="seiInfo" value="Hello, the world">
+            <input type="text" class="form-control d-inline" id="seiInfo" style="width: 75%;" placeholder="seiInfo"
+              value="Hello, the world">
           </div>
         </div>
       </div>
@@ -452,7 +467,8 @@
           <button type="button" id="useAudio" class="btn btn-secondary btn-sm">更改音频输入设备</button>
           <button type="button" id="toggleCamera" class="btn btn-primary btn-sm enableCamera">开关视频</button>
           <button type="button" id="toggleSpeaker" class="btn btn-primary btn-sm enableMicrophone">开关音频</button>
-          <button type="button" id="toggleVideoCapturing" class="btn btn-primary btn-sm" title="toggleCapturing">开关摄像头</button>
+          <button type="button" id="toggleVideoCapturing" class="btn btn-primary btn-sm"
+            title="toggleCapturing">开关摄像头</button>
           <button type="button" id="mutePlayStreamVideo" class="btn btn-primary btn-sm">停止/恢复拉视频流</button>
           <button type="button" id="mutePlayStreamAudio" class="btn btn-primary btn-sm">停止/恢复拉音频流</button>
           <button type="button" id="stopPlaySound" class="btn btn-primary btn-sm unenableSound">停止获取音浪</button>
@@ -472,8 +488,11 @@
           <button type="button" id="addTrack" class="btn btn-primary btn-sm">增加轨道</button>
           <button type="button" id="removeTrack" class="btn btn-primary btn-sm">删除轨道</button>
           <button type="button" id="publishImg" class="btn btn-primary btn-sm" title="uploadQuality">关闭视频推图片</button>
-       </div>
-
+          <button type="button" id="remove" class="btn btn-primary btn-sm">删除轨道</button>
+        </div>
+        <div>
+          <button type="button" id="resumeAutoplay" class="btn btn-primary btn-sm">恢复播放</button>
+        </div>
         <fieldset>
           <legend>beauty config</legend>
           <button type="button" id="openVideoEffect" class="btn btn-primary btn-sm" title="setBeauty">开启美颜</button>
@@ -505,9 +524,9 @@
           </div>
           <textarea id="view-play-options" name="story" rows="4" cols="25"></textarea>
           <video id="previewVideo" controls autoplay muted playsinline></video>
-          <video id="customVideo" crossOrigin="anonymous" muted playsinline autoplay controls
+          <video id="customVideo" style="max-width: 180px" crossOrigin="anonymous" muted playsinline autoplay controls
             src="https://zego-public.oss-cn-shanghai.aliyuncs.com/sdk-doc/assets/big_buck_bunny.mp4" loop></video>
-          <video id="testVideo" autoplay muted playsinline></video>
+          <video id="testVideo" style="max-width: 180px" autoplay muted playsinline></video>
         </div>
         <div class="col-sm remoteVideo">
           <!-- <video  autoplay muted playsinline></video> -->

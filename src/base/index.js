@@ -24,6 +24,7 @@ let videoType
 $(async () => {
     await checkAnRun();
 
+    $("#resumeAutoplay").hide()
     function play(streamID) {
         let remoteStream;
         remoteStreamID = streamID;
@@ -50,6 +51,15 @@ $(async () => {
                 bindViewCtrl(viewer, id);
                 console.warn('enable-dialog',$("#enable-dialog").val() != "0");
                 viewer.play(id, { enableAutoplayDialog: $("#enable-dialog").val() != "0" });
+                const handle = ()=>{
+                    viewer && viewer.resume()
+                    $("#resumeAutoplay").hide();
+                }
+                viewer.on("autoplayFailed",()=>{
+                    console.error('autoplayFailed2',id);
+                    $("#resumeAutoplay").show();
+                    $("#resumeAutoplay").on("click", handle)
+                })
             } else {
                 let video;
                 const bro = getBrowser();
@@ -532,6 +542,15 @@ $(async () => {
                         bindViewCtrl(viewer, id);
                         console.warn('enable-dialog',$("#enable-dialog").val() != "0");
                         viewer.play(id, { enableAutoplayDialog: $("#enable-dialog").val() != "0"});
+                        const handle = ()=>{
+                            viewer && viewer.resume()
+                            $("#resumeAutoplay").hide();
+                        }
+                        viewer.on("autoplayFailed",()=>{
+                            console.error('autoplayFailed1',id);
+                            $("#resumeAutoplay").show();
+                            $("#resumeAutoplay").on("click", handle)
+                        })
                     } else {
                         let video;
                         const bro = getBrowser();

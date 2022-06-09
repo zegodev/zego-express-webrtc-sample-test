@@ -1067,6 +1067,7 @@ function bindViewCtrl(view, id = "") {
     });
 }
 
+
 export {
     zg,
     appID,
