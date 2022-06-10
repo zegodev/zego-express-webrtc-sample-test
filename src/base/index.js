@@ -1,4 +1,9 @@
-import { checkAnRun, zg, useLocalStreamList, startPreview, enterRoom, previewVideo, login2, getToken, clear, logout, publish, publishStreamId, l3, enumDevices, userID, sei, } from '../common';
+import {
+    checkAnRun, zg, useLocalStreamList, startPreview, enterRoom,
+    previewVideo, login2, getToken, clear, logout,
+    publish, publishStreamId, l3, enumDevices, userID, sei,
+    bindViewCtrl
+} from '../common';
 import { getBrowser } from '../assets/utils';
 
 let playOption = {};
@@ -19,24 +24,57 @@ let videoType
 $(async () => {
     await checkAnRun();
 
+    $("#resumeAutoplay").hide()
     function play(streamID) {
         let remoteStream;
         remoteStreamID = streamID;
         const handlePlaySuccess = (streamItem) => {
-            let video;
-            const bro = getBrowser();
-            if (bro == 'Safari' && playOption.video === false) {
-                $('.remoteVideo').append($(`<audio id=${streamItem.streamID} autoplay muted playsinline controls></audio>`));
-                video = $('.remoteVideo audio:last')[0];
-                console.warn('audio', video, remoteStream);
+            if (zg.getVersion() > "2.17.0") {
+                $(".remoteVideo").append(
+                    $(`
+                    <div class="view-wrapper" id="wrap${id}" style="display:inline-block;width: 240px; border: 1px solid #dfdfdf; font-size: 12px;">
+                      <div id="${id}"  style="min-width: 240px;width: 240px; height: 180px;"></div>
+                      <div id="local-action">
+                        <button id="local-ctrl-audio${id}">开关声音</button>
+                        <button id="local-ctrl-video${id}">开关视频</button>
+                        <button id="local-ctrl-resume${id}">恢复</button>
+                        <button id="local-ctrl-play${id}">挂载</button>
+                        <button id="local-ctrl-stop${id}">卸载</button>
+                        <input id="local-ctrl-volume${id}" type="range" min="0" max="100" value="100" id="audioVolume1">
+                        <span id="local-ctrl-audio-state${id}"></span>
+                        <span id="local-ctrl-video-state${id}"></span>
+                      </div>
+                    </div>`
+                    )
+                );
+                const viewer = zg.createRemoteStreamView(stream);
+                bindViewCtrl(viewer, id);
+                console.warn('enable-dialog',$("#enable-dialog").val() != "0");
+                viewer.play(id, { enableAutoplayDialog: $("#enable-dialog").val() != "0" });
+                const handle = ()=>{
+                    viewer && viewer.resume()
+                    $("#resumeAutoplay").hide();
+                }
+                viewer.on("autoplayFailed",()=>{
+                    console.error('autoplayFailed2',id);
+                    $("#resumeAutoplay").show();
+                    $("#resumeAutoplay").on("click", handle)
+                })
             } else {
-                $('.remoteVideo').append($(`<video id=${streamItem.streamID} autoplay muted playsinline controls></video>`));
-                video = $('.remoteVideo video:last')[0];
-                console.warn('video', video, remoteStream);
+                let video;
+                const bro = getBrowser();
+                if (bro == 'Safari' && playOption.video === false) {
+                    $('.remoteVideo').append($(`<audio id=${streamItem.streamID} autoplay muted playsinline controls></audio>`));
+                    video = $('.remoteVideo audio:last')[0];
+                    console.warn('audio', video, remoteStream);
+                } else {
+                    $('.remoteVideo').append($(`<video id=${streamItem.streamID} autoplay muted playsinline controls></video>`));
+                    video = $('.remoteVideo video:last')[0];
+                    console.warn('video', video, remoteStream);
+                }
+                video.srcObject = remoteStream;
+                video.muted = false;
             }
-
-            video.srcObject = remoteStream;
-            video.muted = false;
         };
 
         playOption = {};
@@ -101,9 +139,9 @@ $(async () => {
         const videoQuality = $('#videoQuality').val();
         if (videoQuality == 4) {
             $('#width').val() && (constraints.width = parseInt($('#width').val()) || JSON.parse($('#width').val())),
-            $('#height').val() && (constraints.height = parseInt($('#height').val()) || JSON.parse($('#height').val())),
-            $('#frameRate').val() && (constraints.frameRate = parseInt($('#frameRate').val()) || JSON.parse($('#frameRate').val())),
-            $('#bitrate').val() && (constraints.bitrate = parseInt($('#bitrate').val()))
+                $('#height').val() && (constraints.height = parseInt($('#height').val()) || JSON.parse($('#height').val())),
+                $('#frameRate').val() && (constraints.frameRate = parseInt($('#frameRate').val()) || JSON.parse($('#frameRate').val())),
+                $('#bitrate').val() && (constraints.bitrate = parseInt($('#bitrate').val()))
         }
         $('#noiseSuppression').val() === '1' ? (constraints.ANS = true) : (constraints.ANS = false);
         $('#autoGainControl').val() === '1' ? (constraints.AGC = true) : (constraints.AGC = false);
@@ -230,13 +268,13 @@ $(async () => {
         resultDiv.innerHTML = value + ": " + JSON.stringify(res);
     })
 
-    $('#mutePlayStreamVideo').click(function() {
+    $('#mutePlayStreamVideo').click(function () {
         useLocalStreamList.forEach(item => {
             zg.mutePlayStreamVideo(item.streamID, !$(this).hasClass('disabled'));
         })
         $(this).toggleClass('disabled');
     })
-    $('#mutePlayStreamAudio').click(function() {
+    $('#mutePlayStreamAudio').click(function () {
         useLocalStreamList.forEach(item => {
             zg.mutePlayStreamAudio(item.streamID, !$(this).hasClass('disabled'));
         })
@@ -295,7 +333,7 @@ $(async () => {
     async function setBeautyEffect(enable) {
         if (enable === undefined) {
             enable = isBeauty
-        } 
+        }
 
         // 设置美颜之前保存摄像头视轨
         !cameraStreamVideoTrack && previewVideo.srcObject && (cameraStreamVideoTrack = previewVideo.srcObject.getVideoTracks()[0] && previewVideo.srcObject.getVideoTracks()[0]);
@@ -481,20 +519,53 @@ $(async () => {
                 let remoteStream;
                 remoteStreamID = streamList[i].streamID
                 const handlePlaySuccess = (streamItem) => {
-                    let video;
-                    const bro = getBrowser();
-                    if (bro == 'Safari' && playOption.video === false) {
-                        $('.remoteVideo').append($(`<audio id=${streamItem.streamID} autoplay muted playsinline controls></audio>`));
-                        video = $('.remoteVideo audio:last')[0];
-                        console.warn('audio', video, remoteStream);
+                    if (zg.getVersion() >= "2.17.0") {
+                        const id = streamItem.streamID
+                        $(".remoteVideo").append(
+                            $(`
+                            <div class="view-wrapper" id="wrap${id}" style="display:inline-block;width: 240px; border: 1px solid #dfdfdf; font-size: 12px;">
+                              <div id="${id}"  style="min-width: 240px;width: 240px; height: 180px;"></div>
+                              <div id="local-action">
+                                <button id="local-ctrl-audio${id}">开关声音</button>
+                                <button id="local-ctrl-video${id}">开关视频</button>
+                                <button id="local-ctrl-resume${id}">恢复</button>
+                                <button id="local-ctrl-play${id}">挂载</button>
+                                <button id="local-ctrl-stop${id}">卸载</button>
+                                <input id="local-ctrl-volume${id}" type="range" min="0" max="100" value="100" id="audioVolume1">
+                                <span id="local-ctrl-audio-state${id}"></span>
+                                <span id="local-ctrl-video-state${id}"></span>
+                              </div>
+                            </div>`
+                            )
+                        );
+                        const viewer = zg.createRemoteStreamView(remoteStream);
+                        bindViewCtrl(viewer, id);
+                        console.warn('enable-dialog',$("#enable-dialog").val() != "0");
+                        viewer.play(id, { enableAutoplayDialog: $("#enable-dialog").val() != "0"});
+                        const handle = ()=>{
+                            viewer && viewer.resume()
+                            $("#resumeAutoplay").hide();
+                        }
+                        viewer.on("autoplayFailed",()=>{
+                            console.error('autoplayFailed1',id);
+                            $("#resumeAutoplay").show();
+                            $("#resumeAutoplay").on("click", handle)
+                        })
                     } else {
-                        $('.remoteVideo').append($(`<video id=${streamItem.streamID} autoplay muted playsinline controls></video>`));
-                        video = $('.remoteVideo video:last')[0];
-                        console.warn('video', video, remoteStream);
+                        let video;
+                        const bro = getBrowser();
+                        if (bro == 'Safari' && playOption.video === false) {
+                            $('.remoteVideo').append($(`<audio id=${streamItem.streamID} autoplay muted playsinline controls></audio>`));
+                            video = $('.remoteVideo audio:last')[0];
+                            console.warn('audio', video, remoteStream);
+                        } else {
+                            $('.remoteVideo').append($(`<video id=${streamItem.streamID} autoplay muted playsinline controls></video>`));
+                            video = $('.remoteVideo video:last')[0];
+                            console.warn('video', video, remoteStream);
+                        }
+                        video.srcObject = remoteStream;
+                        video.muted = false;
                     }
-
-                    video.srcObject = remoteStream;
-                    video.muted = false;
                 };
 
                 playOption = {};
@@ -536,8 +607,12 @@ $(async () => {
 
                         console.info(useLocalStreamList[k].streamID + 'was devared');
 
-
-                        $('.remoteVideo video:eq(' + k + ')').remove();
+                        if (zg.getVersion() >= "2.17.0") {
+                            const a = document.querySelector(`#wrap${useLocalStreamList[k].streamID}`)
+                            $(`#wrap${useLocalStreamList[k].streamID}`).remove();
+                        } else {
+                            $('.remoteVideo video:eq(' + k + ')').remove();
+                        }
                         useLocalStreamList.splice(k--, 1);
                         break;
                     }
@@ -596,3 +671,4 @@ $(async () => {
     })
 
 });
+
