@@ -7,7 +7,8 @@
     "build": "webpack",
     "dev": "webpack-dev-server",
     "upload": "scp -r ./docs root@192.168.100.30:/opt/dev/express_webrtc/",
-    "deploy": "npm run build && npm run upload"
+    "deploy": "npm run build && npm run upload",
+    "upload:custom": "scp -r ./docs/ root@192.168.100.30:/opt/dev/express_webrtc/docs/2_17_0/"
   },
   "author": "choui",
   "license": "ISC",
