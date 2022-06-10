@@ -942,19 +942,6 @@ $('#enterRoom').click(async () => {
                 zg.destroyStream(localStreamMap[currentRoomID])
             }
             startPreview({})
-            // const previewTime = new Date().getTime();
-            // localStreamMap[currentRoomID] = await zg.createStream({
-            //     camera: {
-            //         audioInput: $('#audioList').val(),
-            //         videoInput: $('#videoList').val(),
-            //         video: $('#videoList').val() === '0' ? false : true,
-            //         audio: $('#audioList').val() === '0' ? false : true,
-            //         videoOptimizationMode: $('#videoOptimizationMode').val() ? $('#videoOptimizationMode').val() : "default"
-            //     },
-            // });
-            // const previewConsumed = new Date().getTime() - previewTime;
-            // console.warn('预览耗时 ' + previewConsumed);
-            // previewVideo.srcObject = localStreamMap[currentRoomID];
             isPreviewed = true;
             $('#videoList').val() === '0' && (previewVideo.controls = true);
         }

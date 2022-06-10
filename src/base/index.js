@@ -118,7 +118,7 @@ $(async () => {
 
             loginSuc = await enterRoom();
 
-            loginSuc && (await publish({ camera: constraints }));
+            loginSuc && (await publish({ camera: constraints }, true));
 
         } catch (error) {
             console.error(error);
