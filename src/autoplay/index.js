@@ -1,8 +1,8 @@
 
-import { checkAnRun, enterRoom, bindViewCtrl } from '../common';
-
+import { enterRoom, bindViewCtrl } from '../common';
+// import VConsole from 'vconsole';
+// new VConsole()
 $(async () => {
-    await checkAnRun();
     $('#changeUrl').click(async () => {
         if ($('#videoUrl').val()) {
             $('#externerVideo')[0].src = $('#videoUrl').val();
