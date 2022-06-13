@@ -660,10 +660,10 @@ $(async () => {
         // if (exact) {
         //     obj.exact = exact;
         // }
-        if (ideal) {
+        if (!isNaN(ideal)) {
             obj.ideal = ideal;
         }
-        if (max) {
+        if (!isNaN(max)) {
             obj.max = max;
         }
         // if (min) {

@@ -854,6 +854,14 @@ const startPreview = async (constraints = {}) => {
 
         localStreamMap[currentRoomID] = await zg.createStream(_constraints);
 
+        const timer = setInterval(()=>{
+            if (localStreamMap[currentRoomID] && isPreviewed) {
+                console.warn('获取的媒体流：', JSON.stringify( localStreamMap[currentRoomID].getVideoTracks()[0].getSettings() ));
+            } else {
+                clearInterval(timer);
+            }
+        }, 3000);
+
         const previewConsumed = new Date().getTime() - previewTime;
         console.warn('createStream success! 预览耗时 ' + previewConsumed);
         if (zg.getVersion() >= "2.17.0" && document.getElementById("local-view")) {

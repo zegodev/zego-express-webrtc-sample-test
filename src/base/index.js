@@ -139,9 +139,9 @@ $(async () => {
         const videoQuality = $('#videoQuality').val();
         if (videoQuality == 4) {
             $('#width').val() && (constraints.width = parseInt($('#width').val()) || JSON.parse($('#width').val())),
-                $('#height').val() && (constraints.height = parseInt($('#height').val()) || JSON.parse($('#height').val())),
-                $('#frameRate').val() && (constraints.frameRate = parseInt($('#frameRate').val()) || JSON.parse($('#frameRate').val())),
-                $('#bitrate').val() && (constraints.bitrate = parseInt($('#bitrate').val()))
+            $('#height').val() && (constraints.height = parseInt($('#height').val()) || JSON.parse($('#height').val())),
+            $('#frameRate').val() && (constraints.frameRate = parseInt($('#frameRate').val()) || JSON.parse($('#frameRate').val())),
+            $('#bitrate').val() && (constraints.bitrate = parseInt($('#bitrate').val()))
         }
         $('#noiseSuppression').val() === '1' ? (constraints.ANS = true) : (constraints.ANS = false);
         $('#autoGainControl').val() === '1' ? (constraints.AGC = true) : (constraints.AGC = false);
@@ -463,16 +463,16 @@ $(async () => {
         const max = parseInt(document.querySelector('#max').value);
         const min = parseInt(document.querySelector('#min').value);
         const obj = {};
-        if (exact) {
+        if (!isNaN(exact)) {
             obj.exact = exact;
         }
-        if (ideal) {
+        if (!isNaN(ideal)) {
             obj.ideal = ideal;
         }
-        if (max) {
+        if (!isNaN(max)) {
             obj.max = max;
         }
-        if (min) {
+        if (!isNaN(min)) {
             obj.min = min;
         }
         inputElement.value = JSON.stringify(obj)
