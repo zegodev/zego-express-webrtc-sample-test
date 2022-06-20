@@ -9,13 +9,14 @@ import { getBrowser } from '../assets/utils';
 let playOption = {};
 // --test begin
 let previewStream;
+let cameraStreamVideoTrack;
+let externalStream;
+let externalStreamVideoTrack;
+let published = false;
 const publishStreamID = 'web-' + new Date().getTime();
 let remoteStreamID = ""
 // ---test end
-let cameraStreamVideoTrack;
-let externalStreamVideoTrack;
 let screenStreamVideoTrack;
-let externalStream
 let screenStream
 let videoType
 // let loginTime
