@@ -38,6 +38,7 @@ $(async () => {
                                 <button id="local-ctrl-resume${id}">恢复</button>
                                 <button id="local-ctrl-play${id}">挂载</button>
                                 <button id="local-ctrl-stop${id}">卸载</button>
+                                <button id="local-ctrl-speaker${id}">设扬声器</button>
                                 <input id="local-ctrl-volume${id}" type="range" min="0" max="100" value="100" id="audioVolume1">
                                 <span id="local-ctrl-audio-state${id}"></span>
                                 <span id="local-ctrl-video-state${id}"></span>
@@ -46,32 +47,35 @@ $(async () => {
                             )
                         );
                         const viewer = zg.createRemoteStreamView(stream);
-                        viewer.on("autoplayFailed", ()=>{
+                        viewer.on("autoplayFailed", () => {
                             console.error('autoplayFailed 视图组件自动播放失败',);
                         })
                         bindViewCtrl(viewer, id);
                         console.warn('enable-dialog', $("#enable-dialog").val() != "0");
                         viewer.play(id, { enableAutoplayDialog: $("#enable-dialog").val() == "1" });
 
+                        // let videoTemp = $(`<video width="100%" height="100%" controls id=${streamList[i].streamID} x-webkit-airplay="allow" webkit-playsinline="" playsinline="" x5-video-player-type="h5-page" x5-video-orientation="portrait" preload="metadata" controlslist="nofullscreen nodownload noremote footbar" oncontextmenu="return false;" autoplay=""></video>`)
+                        // //queue.push(videoTemp)
+                        // $('.remoteVideo').append(videoTemp);
+                        // const video = $('.remoteVideo video:last')[0];
+                        // console.warn('video', video, remoteStream);
+                        // video.srcObject = remoteStream;
+                        // video.muted = false;
+                        // const play = function () {
+                        //     video.play()
+                        //     document.removeEventListener("touchstart", play, false);
+                        // };
+                        // video.play()
+                        // // document.addEventListener("WeixinJSBridgeReady", function () {
+                        // //     console.error('WeixinJSBridgeReady',);
+                        // //     play();
+                        // // }, false);
+                        // // document.addEventListener("touchstart", play, false);
 
-
-                        let videoTemp = $(`<video width="100%" height="100%" controls id=${streamList[i].streamID} x-webkit-airplay="allow" webkit-playsinline="" playsinline="" x5-video-player-type="h5-page" x5-video-orientation="portrait" preload="metadata" controlslist="nofullscreen nodownload noremote footbar" oncontextmenu="return false;" autoplay=""></video>`)
-                        //queue.push(videoTemp)
-                        $('.remoteVideo').append(videoTemp);
-                        const video = $('.remoteVideo video:last')[0];
-                        console.warn('video', video, remoteStream);
-                        video.srcObject = remoteStream;
-                        video.muted = false;
-                        const play = function () {
-                            video.play()
-                            document.removeEventListener("touchstart", play, false);
-                        };
-                        video.play()
-                        document.addEventListener("WeixinJSBridgeReady", function () {
-                            console.error('WeixinJSBridgeReady',);
-                            play();
-                        }, false);
-                        document.addEventListener("touchstart", play, false);
+                        // let videoTemp2 = $(`<video width="100%" height="100%" id="normal${streamList[i].streamID}" controls autoplay=""></video>`)
+                        // $('.remoteVideo').append(videoTemp2);
+                        // const video2 = $('.remoteVideo video:last')[0];
+                        // video2.srcObject = remoteStream
                     } else {
 
                         let videoTemp = $(`<video width="100%" height="100%" id=${streamList[i].streamID} x-webkit-airplay="allow" webkit-playsinline="" playsinline="" x5-video-player-type="h5-page" x5-video-orientation="portrait" preload="metadata" controlslist="nofullscreen nodownload noremote footbar" oncontextmenu="return false;" autoplay=""></video>`)
@@ -117,5 +121,7 @@ $(async () => {
     $("#roomId").val(322)
     enterRoom()
 
+    const video = document.getElementById("externerVideo")
+    video && video.play()
 
 });
