@@ -20,7 +20,7 @@ $(async () => {
             custom: {
                 source: media,
                 channelCount: channelCount,
-                videoOptimizationMode: $('#videoOptimizationMode').val()? $('#videoOptimizationMode').val() : "default"
+                videoOptimizationMode: $('#videoOptimizationMode').val() ? $('#videoOptimizationMode').val() : "default"
             }
         }
         $('#audioBitrate').val() && (constraints.audioBitrate = parseInt($('#audioBitrate').val()));
@@ -42,8 +42,10 @@ $(async () => {
         const channelCount = parseInt($('#channelCount').val());
 
         const constraints = {
-            source: $('#externerAudio')[0],
-            channelCount: channelCount,
+            custom: {
+                source: $('#externerAudio')[0],
+                channelCount: channelCount,
+            }
         }
 
         $('#audioBitrate').val() && (constraints.audioBitrate = parseInt($('#audioBitrate').val()));
@@ -51,9 +53,8 @@ $(async () => {
         try {
             loginSuc = await enterRoom();
             if (loginSuc) {
-                push({
-                    custom: constraints
-                });
+
+                doPreviewPublish(constraints, publishStreamId);
             }
         } catch (error) {
             console.error(error);
@@ -66,10 +67,11 @@ $(async () => {
         $('#externerVideo')[0].src = url;
     })
     async function doPreviewPublish(config, streamID) {
+        console.log('doPreviewPublish', config);
         zg.createStream(config).then(stream => {
-          previewVideo.srcObject = stream;
+            previewVideo.srcObject = stream;
 
-          zg.startPublishingStream(streamID ? streamID : idName, stream, { videoCodec: $('#videoCodeType').val(), extraInfo: JSON.stringify({ role: 2 }), isSEIStart: sei, })
+            zg.startPublishingStream(streamID ? streamID : idName, stream, { videoCodec: $('#videoCodeType').val(), extraInfo: JSON.stringify({ role: 2 }), isSEIStart: sei, })
 
         }).catch(err => {
             console.error(err)
@@ -99,7 +101,7 @@ $(async () => {
         return zg.createStream({
             custom: {
                 source: source,
-                videoOptimizationMode: $('#videoOptimizationMode').val()? $('#videoOptimizationMode').val() : "default"
+                videoOptimizationMode: $('#videoOptimizationMode').val() ? $('#videoOptimizationMode').val() : "default"
             }
         }).then(stream => {
             let video = document.createElement("video");
