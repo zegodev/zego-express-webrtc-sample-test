@@ -57,6 +57,16 @@
             </select>
           </div>
         </div>
+        <div class="col-sm">
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="speakerList"><strong
+                  class="text-gray-dark ">扬声器设备</strong></label>
+            </div>
+            <select class="custom-select" id="speakerList" style="width: 50%">
+            </select>
+          </div>
+        </div>
 
         <div class="col-sm">
           <div class="input-group input-group-sm mb-3">
@@ -517,6 +527,7 @@
               <button id="local-ctrl-resume">恢复</button>
               <button id="local-ctrl-play">挂载</button>
               <button id="local-ctrl-stop">卸载</button>
+              <button id="local-ctrl-speaker">设扬声器</button>
               <input id="local-ctrl-volume" type="range" min="0" max="100" value="100" id="audioVolume1">
               <span id="local-ctrl-audio-state"></span>
               <span id="local-ctrl-video-state"></span>

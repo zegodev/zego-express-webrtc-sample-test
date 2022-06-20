@@ -40,6 +40,7 @@ $(async () => {
                         <button id="local-ctrl-resume${id}">恢复</button>
                         <button id="local-ctrl-play${id}">挂载</button>
                         <button id="local-ctrl-stop${id}">卸载</button>
+                        <button id="local-ctrl-speaker${id}">设扬声器</button>
                         <input id="local-ctrl-volume${id}" type="range" min="0" max="100" value="100" id="audioVolume1">
                         <span id="local-ctrl-audio-state${id}"></span>
                         <span id="local-ctrl-video-state${id}"></span>
@@ -531,6 +532,7 @@ $(async () => {
                                 <button id="local-ctrl-resume${id}">恢复</button>
                                 <button id="local-ctrl-play${id}">挂载</button>
                                 <button id="local-ctrl-stop${id}">卸载</button>
+                                <button id="local-ctrl-speaker${id}">设扬声器</button>
                                 <input id="local-ctrl-volume${id}" type="range" min="0" max="100" value="100" id="audioVolume1">
                                 <span id="local-ctrl-audio-state${id}"></span>
                                 <span id="local-ctrl-video-state${id}"></span>

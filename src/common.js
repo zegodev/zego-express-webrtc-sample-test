@@ -258,12 +258,22 @@ async function enumDevices() {
             console.log('camera: ' + item.deviceName);
             return item;
         });
+    deviceInfo &&
+        deviceInfo.speakers.map((item, index) => {
+            if (!item.deviceName) {
+                item.deviceName = 'speaker' + index;
+            }
+            videoInputList.push(' <option value="' + item.deviceID + '">' + item.deviceName + '</option>');
+            console.log('speaker: ' + item.deviceName);
+            return item;
+        });
 
     audioInputList.push('<option value="0">禁止</option>');
     videoInputList.push('<option value="0">禁止</option>');
 
     $('#audioList').html(audioInputList.join(''));
     $('#videoList').html(videoInputList.join(''));
+    $('#speakerList').html(videoInputList.join(''));
 }
 
 function initSDK() {
@@ -414,7 +424,7 @@ function initSDK() {
                         );
                         const viewer = zg.createRemoteStreamView(stream);
                         bindViewCtrl(viewer, id);
-                        console.warn('enable-dialog',$("#enable-dialog").val() != "0");
+                        console.warn('enable-dialog', $("#enable-dialog").val() != "0");
                         viewer.play(id, { enableAutoplayDialog: $("#enable-dialog").val() != "0" });
                     } else {
                         let videoTemp = $(`<video id=${streamList[i].streamID} autoplay muted playsinline controls></video>`)
@@ -868,7 +878,7 @@ const startPreview = async (constraints = {}) => {
             const stream = localStreamMap[currentRoomID]
             const viewer = zg.createLocalStreamView(stream);
             bindViewCtrl(viewer);
-            console.warn('enable-dialog',$("#enable-dialog").val() != "0");
+            console.warn('enable-dialog', $("#enable-dialog").val() != "0");
             viewer.play("local-view", { enableAutoplayDialog: $("#enable-dialog").val() != "0" });
             $("#previewVideo").hide()
         } else {
@@ -1060,6 +1070,15 @@ function bindViewCtrl(view, id = "") {
         const res = view.setVolume($("#local-ctrl-volume" + id).val());
         console.warn("setVolume", res);
     });
+    $("#local-ctrl-speaker" + id).on("click", async () => {
+        try {
+            const res = await view.useAudioOutputDevice($('#speakerList').val());
+        } catch (error) {
+            alert(error)
+            throw error
+        }
+
+    })
 }
 
 
