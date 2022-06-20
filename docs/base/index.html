@@ -57,6 +57,16 @@
             </select>
           </div>
         </div>
+        <div class="col-sm">
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="speakerList"><strong
+                  class="text-gray-dark ">扬声器设备</strong></label>
+            </div>
+            <select class="custom-select" id="speakerList" style="width: 50%">
+            </select>
+          </div>
+        </div>
 
         <div class="col-sm">
           <div class="input-group input-group-sm mb-3">
@@ -178,7 +188,6 @@
         <div class="col-sm">
           <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
-<<<<<<< HEAD
               <label class="input-group-text" for="playStreamID"><strong class="text-gray-dark">拉流ID</strong></label>
             </div>
             <input type="input" class="form-control d-inline" id="playStreamID" style="width: 75%; max-width: 200px"
@@ -192,7 +201,11 @@
             </div>
             <input type="email" class="form-control d-inline" id="audioBitrate" aria-describedby="emailHelp"
               placeholder="音频码率" value="">
-=======
+          </div>
+        </div>
+        <div class="col-sm">
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
               <label class="input-group-text" for="enableDualStream"><strong
                   class="text-gray-dark enableDualStream">开启大小流</strong></label>
             </div>
@@ -214,7 +227,6 @@
               <option value="0">小流</option>
               <option value="1">大流</option>
             </select>
->>>>>>> eadbe593 (feat:大小流提测)
           </div>
         </div>
 
@@ -534,7 +546,6 @@
         <div class="col-sm">
           <h5 class="sound d-none"><span class="soundText">当前音量：</span> <span id="soundLevel">0</span></h5>
           <label id="previewLabel" class="text-white"></label>
-<<<<<<< HEAD
           <div class="view-wrapper" style="width: 240px;border: 1px solid #dfdfdf; font-size: 12px;">
             <div id="local-view" style="min-width: 240px;max-width: 240px; height: 240px;"></div>
             <div id="local-action">
@@ -543,6 +554,7 @@
               <button id="local-ctrl-resume">恢复</button>
               <button id="local-ctrl-play">挂载</button>
               <button id="local-ctrl-stop">卸载</button>
+              <button id="local-ctrl-speaker">设扬声器</button>
               <input id="local-ctrl-volume" type="range" min="0" max="100" value="100" id="audioVolume1">
               <span id="local-ctrl-audio-state"></span>
               <span id="local-ctrl-video-state"></span>
@@ -553,12 +565,6 @@
           <video id="customVideo" style="max-width: 180px" crossOrigin="anonymous" muted playsinline autoplay controls
             src="https://zego-public.oss-cn-shanghai.aliyuncs.com/sdk-doc/assets/big_buck_bunny.mp4" loop></video>
           <video id="testVideo" style="max-width: 180px" autoplay muted playsinline></video>
-=======
-          <video id="previewVideo" autoplay muted playsinline></video>
-          <video id="customVideo" crossOrigin="anonymous" muted playsinline autoplay controls
-            src="https://zego-public.oss-cn-shanghai.aliyuncs.com/sdk-doc/assets/big_buck_bunny.mp4" loop></video>
-          <video id="testVideo" autoplay muted playsinline></video>
->>>>>>> edb7c4ed (feat: 增加切换外部视轨功能)
         </div>
         <div class="col-sm remoteVideo">
           <!-- <video  autoplay muted playsinline></video> -->
