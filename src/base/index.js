@@ -25,6 +25,8 @@ $(async () => {
     await checkAnRun();
 
     $("#resumeAutoplay").hide()
+    // TODO: 测试临时设置
+    $("#playMode").val("all")
     function play(streamID) {
         let remoteStream;
         remoteStreamID = streamID;
