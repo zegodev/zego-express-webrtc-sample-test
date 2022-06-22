@@ -31,7 +31,7 @@ $(async () => {
                         $(".remoteVideo").append(
                             $(`
                             <div class="view-wrapper" id="wrap${id}" style="display:inline-block;width: 240px; border: 1px solid #dfdfdf; font-size: 12px;">
-                              <div id="${id}"  style="min-width: 240px;width: 240px; height: 180px;"></div>
+                              <div id="${id}"  style="min-width: 240px;width: 240px; height: 240px;"></div>
                               <div id="local-action">
                                 <button id="local-ctrl-audio${id}">开关声音</button>
                                 <button id="local-ctrl-video${id}">开关视频</button>

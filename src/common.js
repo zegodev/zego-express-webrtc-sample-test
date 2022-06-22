@@ -242,7 +242,8 @@ async function start() {
 
 async function enumDevices() {
     const audioInputList = [],
-        videoInputList = [];
+        videoInputList = [],
+        audioOutList = [];
     const deviceInfo = await zg.enumDevices();
 
     deviceInfo &&
@@ -269,7 +270,7 @@ async function enumDevices() {
             if (!item.deviceName) {
                 item.deviceName = 'speaker' + index;
             }
-            videoInputList.push(' <option value="' + item.deviceID + '">' + item.deviceName + '</option>');
+            audioOutList.push(' <option value="' + item.deviceID + '">' + item.deviceName + '</option>');
             console.log('speaker: ' + item.deviceName);
             return item;
         });
@@ -279,7 +280,7 @@ async function enumDevices() {
 
     $('#audioList').html(audioInputList.join(''));
     $('#videoList').html(videoInputList.join(''));
-    $('#speakerList').html(videoInputList.join(''));
+    $('#speakerList').html(audioOutList.join(''));
 }
 
 function initSDK() {
@@ -870,13 +871,13 @@ const startPreview = async (constraints = {}) => {
 
         localStreamMap[currentRoomID] = await zg.createStream(_constraints);
 
-        const timer = setInterval(()=>{
-            if (localStreamMap[currentRoomID] && isPreviewed) {
-                console.warn('获取的媒体流：', JSON.stringify( localStreamMap[currentRoomID].getVideoTracks()[0].getSettings() ));
-            } else {
-                clearInterval(timer);
-            }
-        }, 3000);
+        // const timer = setInterval(()=>{
+        //     if (localStreamMap[currentRoomID] && isPreviewed) {
+        //         console.warn('获取的媒体流：', JSON.stringify( localStreamMap[currentRoomID].getVideoTracks()[0].getSettings() ));
+        //     } else {
+        //         clearInterval(timer);
+        //     }
+        // }, 3000);
 
         const previewConsumed = new Date().getTime() - previewTime;
         console.warn('createStream success! 预览耗时 ' + previewConsumed);
