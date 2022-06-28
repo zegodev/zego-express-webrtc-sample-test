@@ -333,6 +333,12 @@ $(async () => {
         );
         console.log("togglePlayAudio", result);
     });
+
+    $('#toggleMicrophone').click(function () {
+        zg.muteMicrophone(!$(this).hasClass('disabled'));
+        $(this).toggleClass('disabled');
+    });
+
     let isBeauty = false
     async function setBeautyEffect(enable) {
         if (enable === undefined) {
