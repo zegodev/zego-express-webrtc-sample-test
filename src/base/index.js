@@ -27,6 +27,7 @@ $(async () => {
     $("#resumeAutoplay").hide()
     // TODO: 测试临时设置
     $("#playMode").val("all")
+    $("#enableDualStream").val(0)
     function play(streamID) {
         let remoteStream;
         remoteStreamID = streamID;
