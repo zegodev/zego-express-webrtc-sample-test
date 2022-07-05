@@ -242,7 +242,8 @@ async function start() {
 
 async function enumDevices() {
     const audioInputList = [],
-        videoInputList = [];
+        videoInputList = [],
+        audioOutList = [];
     const deviceInfo = await zg.enumDevices();
 
     deviceInfo &&
@@ -269,7 +270,7 @@ async function enumDevices() {
             if (!item.deviceName) {
                 item.deviceName = 'speaker' + index;
             }
-            videoInputList.push(' <option value="' + item.deviceID + '">' + item.deviceName + '</option>');
+            audioOutList.push(' <option value="' + item.deviceID + '">' + item.deviceName + '</option>');
             console.log('speaker: ' + item.deviceName);
             return item;
         });
@@ -279,7 +280,7 @@ async function enumDevices() {
 
     $('#audioList').html(audioInputList.join(''));
     $('#videoList').html(videoInputList.join(''));
-    $('#speakerList').html(videoInputList.join(''));
+    $('#speakerList').html(audioOutList.join(''));
 }
 
 function initSDK() {
@@ -414,7 +415,7 @@ function initSDK() {
                         $(".remoteVideo").append(
                             $(`
                             <div class="view-wrapper" id="wrap${id}" style="display:inline-block;width: 240px; border: 1px solid #dfdfdf; font-size: 12px;">
-                              <div id="${id}"  style="min-width: 240px;width: 240px; height: 180px;"></div>
+                              <div id="${id}"  style="min-width: 240px;width: 240px; height: 240px;"></div>
                               <div id="local-action">
                                 <button id="local-ctrl-audio${id}">开关声音</button>
                                 <button id="local-ctrl-video${id}">开关视频</button>
@@ -870,13 +871,13 @@ const startPreview = async (constraints = {}) => {
 
         localStreamMap[currentRoomID] = await zg.createStream(_constraints);
 
-        const timer = setInterval(()=>{
-            if (localStreamMap[currentRoomID] && isPreviewed && localStreamMap[currentRoomID].getVideoTracks()[0]) {
-                console.warn('获取的媒体流：', JSON.stringify( localStreamMap[currentRoomID].getVideoTracks()[0].getSettings() ));
-            } else {
-                clearInterval(timer);
-            }
-        }, 3000);
+        // const timer = setInterval(()=>{
+        //     if (localStreamMap[currentRoomID] && isPreviewed) {
+        //         console.warn('获取的媒体流：', JSON.stringify( localStreamMap[currentRoomID].getVideoTracks()[0].getSettings() ));
+        //     } else {
+        //         clearInterval(timer);
+        //     }
+        // }, 3000);
 
         const previewConsumed = new Date().getTime() - previewTime;
         console.warn('createStream success! 预览耗时 ' + previewConsumed);
@@ -900,20 +901,20 @@ const startPreview = async (constraints = {}) => {
                 localStreamMap[currentRoomID]
             )
         }
-        return {
-            playType
-        }
-        isNew && (publishStreamId = 'webrtc' + new Date().getTime());
-        if($("#videoCodec").val()) publishOption.videoCodec = $("#videoCodec").val();
-        if ($('#roomId').val()) publishOption.roomID = $('#roomId').val();
 
         if ($("#enableDualStream").val() == "1") {
           //debugger;
-          zg.enableDualStream(localStream);
+          zg.zegoWebRTC.enableDualStream(localStreamMap[currentRoomID]);
         }
 
-        const result = zg.startPublishingStream(publishStreamId, localStream, publishOption);
-        console.log('publish stream' + publishStreamId, result);
+        return {
+            playType
+        }
+        // isNew && (publishStreamId = 'webrtc' + new Date().getTime());
+        // if($("#videoCodec").val()) publishOption.videoCodec = $("#videoCodec").val();
+        // if ($('#roomId').val()) publishOption.roomID = $('#roomId').val();
+        // const result = zg.startPublishingStream(publishStreamId, localStream, publishOption);
+        // console.log('publish stream' + publishStreamId, result);
     } catch (err) {
         if (err.name) {
             console.error('createStream', err.name, err.message);
@@ -1034,11 +1035,12 @@ $("#view-play-options").val(`
 {
   "objectFit": "contain",
   "mirror": false,
-  "enableAutoPlayDialog": true
+  "muted": false
 }
 `);
 function getViewOptions() {
     let playOptions = undefined;
+    if(!$("#view-play-options")) return
     try {
         playOptions = JSON.parse($("#view-play-options").val());
     } catch (error) {
