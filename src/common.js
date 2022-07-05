@@ -1040,10 +1040,11 @@ $("#view-play-options").val(`
 `);
 function getViewOptions() {
     let playOptions = undefined;
+    if(!$("#view-play-options")) return
     try {
         playOptions = JSON.parse($("#view-play-options").val());
     } catch (error) {
-        console.error("getViewOptions", error);
+        console.warn("getViewOptions", error);
     }
     return playOptions;
 }
