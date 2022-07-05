@@ -53,7 +53,7 @@ $(async () => {
             useLocalStreamList.push({streamID});
             let videoTemp = $(`<video id=${streamID} autoplay muted playsinline controls></video>`)
             //queue.push(videoTemp)
-            
+
             $(`.${playVideos}`).append(videoTemp);
             const video = $(`.${playVideos} video:last`)[0];
             console.warn('video', video, remoteStream);
@@ -148,8 +148,8 @@ $(async () => {
     zg.off('roomStreamUpdate');
     zg.on('roomStreamUpdate', async (roomID, updateType, streamList, extendedData) => {
         console.warn('roomStreamUpdate 1 roomID ', roomID, streamList, extendedData);
-        
-        
+
+
         // let queue = []
         if (updateType == 'ADD') {
             let playVideos;
@@ -193,7 +193,7 @@ $(async () => {
                     useLocalStreamList.push(streamList[i]);
                     let videoTemp = $(`<video id=${streamList[i].streamID} autoplay muted playsinline controls></video>`)
                     //queue.push(videoTemp)
-                    
+
                     $(`.${playVideos}`).append(videoTemp);
                     const video = $(`.${playVideos} video:last`)[0];
                     console.warn('video', video, remoteStream);
@@ -205,7 +205,7 @@ $(async () => {
                 });
 
             }
-         
+
         } else if (updateType == 'DELETE') {
             for (let k = 0; k < useLocalStreamList.length; k++) {
                 for (let j = 0; j < streamList.length; j++) {
@@ -255,7 +255,7 @@ $(async () => {
                 console.warn('推流节点耗时 ' + publishRetryConsumed)
                 delete window.publishTimes[result.streamID];;
             }
-            
+
         } else if (result.state == 'PUBLISH_REQUESTING') {
             console.info(' publish  retry');
             if (result.errorCode !== 0 && !window.publishTimes[result.streamID]) {
@@ -330,7 +330,7 @@ $(async () => {
     });
 
     $('#BroadcastMessage').click(async () => {
-        
+
         const roomId= $('#selectRoom').val() ;
         const msg = $('#msgContent').val();
         if(!msg) {
@@ -346,7 +346,7 @@ $(async () => {
     });
 
     $('#sendCustomrMsg').click(async () => {
-        
+
         const roomId= $('#selectRoom').val() ;
         const msg = $('#msgContent').val();
         if(!msg) {
@@ -369,7 +369,7 @@ $(async () => {
     });
 
     $('#BarrageMessage').click(async () => {
-        
+
         const roomId= $('#selectRoom').val() ;
         const msg = $('#msgContent').val();
         if(!msg) {
@@ -398,7 +398,7 @@ $(async () => {
         }
     });
 
-    
+
     $('#enableMulti').click(function() {
         const enable = zg.enableMultiRoom(true);
         if (enable) {
@@ -419,7 +419,7 @@ $(async () => {
         }
         roomMaxUser[roomId] = parseInt(maxCount);
     });
-    
+
 
     $('#createTokenRoom1').click(async function() {
         const roomId = $('#roomId1').val();
@@ -436,7 +436,7 @@ $(async () => {
         try {
             //  console.error(userID, roomId)
              room1Token = await getToken(userID, roomId, expireTime);
-            
+
         } catch (error) {
             console.error(error)
         }
@@ -458,7 +458,7 @@ $(async () => {
             }
             handleRoomList('ADD', roomId)
         } catch (error) {
-            
+
         }
     });
 
@@ -485,13 +485,15 @@ $(async () => {
             return false;
         }
 
-        zg.destroyStream(localStream1);
+        localStream1 && zg.destroyStream(localStream1);
         localStream1 = null;
         const previewVideo1 = $('#room1PreviewVideo1')[0];
         previewVideo1 && (previewVideo1.srcObject = null);
 
         const previewVideo2 = $('#room1PreviewVideo2')[0];
         previewVideo2 && (previewVideo2.srcObject = null);
+
+        $('.remoteVideo1').empty();
 
         zg.logoutRoom(roomId);
         handleRoomList('DELETE', roomId)
@@ -517,7 +519,7 @@ $(async () => {
         publishTimes[streamId] = new Date().getTime();
         publishRooms[streamId] = roomId;
         zg.startPublishingStream(streamId, localStream1, { roomID: roomId });
-        
+
     });
 
     $('#publishRoom1Stream2').click(async function() {
@@ -534,7 +536,7 @@ $(async () => {
         if (!localStream1) {
             localStream1 = await zg.createStream();
         }
-        
+
         let previewVideo1 = $('#room1PreviewVideo2')[0];
         previewVideo1.srcObject = localStream1;
 
@@ -546,7 +548,7 @@ $(async () => {
 
 
     $('#stopPublishRoom1Stream1').click(async function() {
-        
+
         const streamId = $('#roomId1_streamId1').val();
         if (!streamId) {
             alert('streamId is empty');
@@ -559,7 +561,7 @@ $(async () => {
     });
 
     $('#stopPublishRoom1Stream2').click(async function() {
-        
+
         const streamId = $('#roomId1_streamId2').val();
         if (!streamId) {
             alert('streamId is empty');
@@ -577,7 +579,7 @@ $(async () => {
             alert('streamId is empty');
             return false;
         }
-  
+
         play('remoteVideo1', streamId);
     });
 
@@ -587,7 +589,7 @@ $(async () => {
             alert('streamId is empty');
             return false;
         }
-  
+
         stopPlay(streamId);
     });
 
@@ -606,7 +608,7 @@ $(async () => {
         try {
             //  console.error(userID, roomId)
              room2Token = await getToken(userID, roomId, expireTime);
-            
+
         } catch (error) {
             console.error(error)
         }
@@ -628,7 +630,7 @@ $(async () => {
             }
             handleRoomList('ADD', roomId)
         } catch (error) {
-            
+
         }
     });
 
@@ -655,13 +657,15 @@ $(async () => {
             return false;
         }
 
-        zg.destroyStream(localStream2)
+        localStream2 && zg.destroyStream(localStream2)
         localStream2 = null;
         const previewVideo1 = $('#room2PreviewVideo1')[0];
         previewVideo1 && (previewVideo1.srcObject = null);
 
         const previewVideo2 = $('#room2PreviewVideo2')[0];
         previewVideo2 && (previewVideo2.srcObject = null);
+
+        $('.remoteVideo2').empty();
 
         zg.logoutRoom(roomId);
         handleRoomList('DELETE', roomId)
@@ -690,7 +694,7 @@ $(async () => {
         publishRooms[streamId] = roomId;
 
         zg.startPublishingStream(streamId, localStream2, { roomID: roomId});
-        
+
     });
 
     $('#publishRoom2Stream2').click(async function() {
@@ -718,7 +722,7 @@ $(async () => {
     });
 
     $('#stopPublishRoom2Stream1').click(async function() {
-        
+
         const streamId = $('#roomId2_streamId1').val();
         if (!streamId) {
             alert('streamId is empty');
@@ -731,7 +735,7 @@ $(async () => {
     });
 
     $('#stopPublishRoom2Stream2').click(async function() {
-        
+
         const streamId = $('#roomId2_streamId2').val();
         if (!streamId) {
             alert('streamId is empty');
@@ -760,7 +764,7 @@ $(async () => {
             alert('streamId is empty');
             return false;
         }
-  
+
         stopPlay(streamId);
     });
 
@@ -779,7 +783,7 @@ $(async () => {
         try {
             //  console.error(userID, roomId)
              room3Token = await getToken(userID, roomId, expireTime);
-            
+
         } catch (error) {
             console.error(error)
         }
@@ -801,7 +805,7 @@ $(async () => {
             }
             handleRoomList('ADD', roomId)
         } catch (error) {
-            
+
         }
     });
 
@@ -828,13 +832,16 @@ $(async () => {
             return false;
         }
 
-        zg.destroyStream(localStream3)
+        localStream3 && zg.destroyStream(localStream3)
         localStream3 = null;
         const previewVideo1 = $('#room3PreviewVideo1')[0];
         previewVideo1 && (previewVideo1.srcObject = null);
 
         const previewVideo2 = $('#room3PreviewVideo2')[0];
         previewVideo2 && (previewVideo2.srcObject = null);
+
+        $('.remoteVideo3').empty();
+
         zg.logoutRoom(roomId);
         handleRoomList('DELETE', roomId)
 
@@ -861,7 +868,7 @@ $(async () => {
         publishRooms[streamId] = roomId;
 
         zg.startPublishingStream(streamId, localStream3, {roomID: roomId });
-        
+
     });
 
     $('#publishRoom3Stream2').click(async function() {
@@ -888,7 +895,7 @@ $(async () => {
     });
 
     $('#stopPublishRoom3Stream1').click(async function() {
-        
+
         const streamId = $('#roomId3_streamId1').val();
         if (!streamId) {
             alert('streamId is empty');
@@ -901,7 +908,7 @@ $(async () => {
     });
 
     $('#stopPublishRoom3Stream2').click(async function() {
-        
+
         const streamId = $('#roomId3_streamId2').val();
         if (!streamId) {
             alert('streamId is empty');
@@ -929,7 +936,7 @@ $(async () => {
             alert('streamId is empty');
             return false;
         }
-  
+
         stopPlay(streamId);
     });
 });

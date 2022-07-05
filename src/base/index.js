@@ -224,9 +224,9 @@ $(async () => {
     });
     $('#switchConstraints').click(() => {
         const constraints = {};
-        const w = $('#width').val() ? parseInt($('#width').val()) : 0;
-        const h = $('#height').val() ? parseInt($('#height').val()) : 0;
-        const f = $('#frameRate').val() ? parseInt($('#frameRate').val()) : 0;
+        const w = $('#width').val() ? (parseInt($('#width').val()) ? parseInt($('#width').val()) : JSON.parse($('#width').val())): 0;
+        const h = $('#height').val() ? (parseInt($('#height').val()) ? parseInt($('#height').val()):JSON.parse($('#height').val())) : 0;
+        const f = $('#frameRate').val() ? (parseInt($('#frameRate').val()) ? parseInt($('#frameRate').val()):JSON.parse($('#frameRate').val())) : 0;
         const b = $('#bitrate').val() ? parseInt($('#bitrate').val()) : 0;
         const videoQuality = $('#videoQuality').val();
 
@@ -381,31 +381,6 @@ $(async () => {
             })
             .catch(err => console.error(err));
     });
-    $('#replaceExternalVideo').click(async function () {
-        if (!previewVideo.srcObject) {
-            alert('流不存在');
-            return;
-        }
-        // 优先保存摄像头视轨
-        !cameraStreamVideoTrack && previewVideo.srcObject && (cameraStreamVideoTrack = previewVideo.srcObject.getVideoTracks()[0] && previewVideo.srcObject.getVideoTracks()[0]);
-        if (!externalStream) {
-            externalStream = await zg.createStream({
-                custom: {
-                    source: $('#customVideo')[0],
-                    videoOptimizationMode: $('#videoOptimizationMode').val() ? $('#videoOptimizationMode').val() : "default"
-                }
-            });
-            externalStreamVideoTrack = externalStream.getVideoTracks()[0];
-            console.log('externalStreamVideoTrack', externalStreamVideoTrack);
-        }
-
-        zg.replaceTrack(previewVideo.srcObject, externalStreamVideoTrack)
-            .then(res => {
-                console.warn('replace custom track success');
-                videoType = 'external';
-            })
-            .catch(err => console.error(err));
-    });
     $('#replaceScreenVideo').click(async function () {
         if (!previewVideo.srcObject) {
             alert('流不存在');
@@ -504,6 +479,7 @@ $(async () => {
     })
 
     $('#replaceExternalVideo').click(async function () {
+      console.error("1111111");
       if (!previewVideo.srcObject) {
           alert('流不存在');
           return;

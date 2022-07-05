@@ -871,7 +871,7 @@ const startPreview = async (constraints = {}) => {
         localStreamMap[currentRoomID] = await zg.createStream(_constraints);
 
         const timer = setInterval(()=>{
-            if (localStreamMap[currentRoomID] && isPreviewed) {
+            if (localStreamMap[currentRoomID] && isPreviewed && localStreamMap[currentRoomID].getVideoTracks()[0]) {
                 console.warn('获取的媒体流：', JSON.stringify( localStreamMap[currentRoomID].getVideoTracks()[0].getSettings() ));
             } else {
                 clearInterval(timer);
@@ -1042,7 +1042,7 @@ function getViewOptions() {
     try {
         playOptions = JSON.parse($("#view-play-options").val());
     } catch (error) {
-        console.error("getViewOptions", error);
+        // console.error("getViewOptions", error);
     }
     return playOptions;
 }
