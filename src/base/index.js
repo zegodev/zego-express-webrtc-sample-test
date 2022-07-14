@@ -352,7 +352,7 @@ $(async () => {
             whitenIntensity: parseInt($("#range-light").val()),
             rosyIntensity: parseInt($("#range-red").val()),
             smoothIntensity: parseInt($("#range-blur").val()),
-            lowlightEnhancement: $("#range-lowlight")[0].checked
+            // lowlightEnhancement: $("#range-lowlight")[0].checked
         }
         const res = await zg.setEffectsBeauty(
             $("#previewVideo")[0].srcObject,
@@ -365,7 +365,11 @@ $(async () => {
     $("#range-light").on("change", () => { setBeautyEffect(isBeauty) })
     $("#range-red").on("change", () => { setBeautyEffect(isBeauty) })
     $("#range-blur").on("change", () => { setBeautyEffect(isBeauty) })
-    $("#range-lowlight").on("change", () => { setBeautyEffect(isBeauty) })
+    $("#range-lowlight").on("change", () => {
+        const mode = $("#range-lowlight")[0].checked ? 1 : 0;
+        zg.setLowlightEnhancement($("#previewVideo")[0].srcObject, mode);
+        console.warn("setLowlightEnhancement", mode);
+    })
 
     $("#openVideoEffect").on("click", () => {
         setBeautyEffect(true);
