@@ -53,14 +53,14 @@ $(async () => {
                 );
                 const viewer = zg.createRemoteStreamView(stream);
                 bindViewCtrl(viewer, id);
-                console.warn('enable-dialog',$("#enable-dialog").val() != "0");
+                console.warn('enable-dialog', $("#enable-dialog").val() != "0");
                 viewer.play(id, { enableAutoplayDialog: $("#enable-dialog").val() != "0" });
-                const handle = ()=>{
+                const handle = () => {
                     viewer && viewer.resume()
                     $("#resumeAutoplay").hide();
                 }
-                viewer.on("autoplayFailed",()=>{
-                    console.error('autoplayFailed2',id);
+                viewer.on("autoplayFailed", () => {
+                    console.error('autoplayFailed2', id);
                     $("#resumeAutoplay").show();
                     $("#resumeAutoplay").on("click", handle)
                 })
@@ -143,9 +143,9 @@ $(async () => {
         const videoQuality = $('#videoQuality').val();
         if (videoQuality == 4) {
             $('#width').val() && (constraints.width = parseInt($('#width').val()) || JSON.parse($('#width').val())),
-            $('#height').val() && (constraints.height = parseInt($('#height').val()) || JSON.parse($('#height').val())),
-            $('#frameRate').val() && (constraints.frameRate = parseInt($('#frameRate').val()) || JSON.parse($('#frameRate').val())),
-            $('#bitrate').val() && (constraints.bitrate = parseInt($('#bitrate').val()))
+                $('#height').val() && (constraints.height = parseInt($('#height').val()) || JSON.parse($('#height').val())),
+                $('#frameRate').val() && (constraints.frameRate = parseInt($('#frameRate').val()) || JSON.parse($('#frameRate').val())),
+                $('#bitrate').val() && (constraints.bitrate = parseInt($('#bitrate').val()))
         }
         $('#noiseSuppression').val() === '1' ? (constraints.ANS = true) : (constraints.ANS = false);
         $('#autoGainControl').val() === '1' ? (constraints.AGC = true) : (constraints.AGC = false);
@@ -351,7 +351,8 @@ $(async () => {
             sharpenIntensity: parseInt($("#range-sharp").val()),
             whitenIntensity: parseInt($("#range-light").val()),
             rosyIntensity: parseInt($("#range-red").val()),
-            smoothIntensity: parseInt($("#range-blur").val())
+            smoothIntensity: parseInt($("#range-blur").val()),
+            lowlightEnhancement: $("#range-lowlight")[0].checked
         }
         const res = await zg.setEffectsBeauty(
             $("#previewVideo")[0].srcObject,
@@ -364,6 +365,8 @@ $(async () => {
     $("#range-light").on("change", () => { setBeautyEffect(isBeauty) })
     $("#range-red").on("change", () => { setBeautyEffect(isBeauty) })
     $("#range-blur").on("change", () => { setBeautyEffect(isBeauty) })
+    $("#range-lowlight").on("change", () => { setBeautyEffect(isBeauty) })
+
     $("#openVideoEffect").on("click", () => {
         setBeautyEffect(true);
         console.warn("openVideoEffect");
@@ -552,14 +555,14 @@ $(async () => {
                         );
                         const viewer = zg.createRemoteStreamView(remoteStream);
                         bindViewCtrl(viewer, id);
-                        console.warn('enable-dialog',$("#enable-dialog").val() != "0");
-                        viewer.play(id, { enableAutoplayDialog: $("#enable-dialog").val() != "0"});
-                        const handle = ()=>{
+                        console.warn('enable-dialog', $("#enable-dialog").val() != "0");
+                        viewer.play(id, { enableAutoplayDialog: $("#enable-dialog").val() != "0" });
+                        const handle = () => {
                             viewer && viewer.resume()
                             $("#resumeAutoplay").hide();
                         }
-                        viewer.on("autoplayFailed",()=>{
-                            console.error('autoplayFailed1',id);
+                        viewer.on("autoplayFailed", () => {
+                            console.error('autoplayFailed1', id);
                             $("#resumeAutoplay").show();
                             $("#resumeAutoplay").on("click", handle)
                         })
