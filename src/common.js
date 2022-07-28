@@ -33,6 +33,7 @@ let l3;
 let roomList = [];
 let playQualityList = {};
 let accessDomain;
+let customDomain;
 let isAccess;
 let auth;
 let ver;
@@ -53,14 +54,14 @@ let isSoftCoding = true;
 // 测试用代码，开发者请忽略
 // Test code, developers please ignore
 
-({ appID, server, cgiToken, userID, l3, accessDomain, isAccess, auth, ver, sei, seiUUID } = getCgi(appID, server, cgiToken));
+({ appID, server, cgiToken, userID, l3, accessDomain, customDomain, isAccess, auth, ver, sei, seiUUID } = getCgi(appID, server, cgiToken));
 
 if (userID == "") {
     userID = 'sample' + new Date().getTime();
     // $("#custom-userid").text(userID)
 }
 
-console.warn('accessDomain', accessDomain)
+console.warn('accessDomain', accessDomain, customDomain)
 // if (!accessDomain) {
 //     accessDomain = ['access-wss-beta.zego.im']
 // }
@@ -104,7 +105,7 @@ let browser = {
 
 
 // eslint-disable-next-line prefer-const
-zg = new ZegoExpressEngine(appID, server, { accessDomains: accessDomain });
+zg = new ZegoExpressEngine(appID, server, { accessDomains: accessDomain, customDomain });
 
 
 console.error('isAccessd', isAccess)
@@ -114,7 +115,7 @@ if (isAccess === false) {
 }
 
 if (isSoftCoding !== undefined) {
-  zg.zegoWebRTC.setSoftCoding(isSoftCoding);
+  zg.zegoWebRTC.enableVideoHardwareEncoder(isSoftCoding);
 }
 
 window.zg = zg;

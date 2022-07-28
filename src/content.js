@@ -33,6 +33,7 @@ export function getCgi(appId, serverUrl, cgi) {
     let l3 = false;
     let isPeer = false;
     let accessDomain = '';
+    let customDomain = '';
     let isAccess = true;
     let auth = false;
     let ver = '00';
@@ -101,6 +102,10 @@ export function getCgi(appId, serverUrl, cgi) {
                 ver = value;
             }
 
+            if (key == 'customDomain') {
+                customDomain = value;
+            }
+
             if (key == 'isAccess') {
                 isAccess = decodeURIComponent(value) == 'false' ? false : true;
                 console.error('isAccess', isAccess)
@@ -117,7 +122,7 @@ export function getCgi(appId, serverUrl, cgi) {
             }
         });
     }
-    return { appID, server, cgiToken, userID, l3, isPeer, accessDomain, isAccess, auth, ver, sei, seiUUID, signal, isDatachannel, isSoftCoding  };
+    return { appID, server, cgiToken, userID, l3, isPeer, accessDomain, customDomain, isAccess, auth, ver, sei, seiUUID, signal, isDatachannel, isSoftCoding  };
     // 测试用代码 end
     // Test code end
 }
