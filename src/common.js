@@ -115,7 +115,7 @@ if (isAccess === false) {
 }
 
 if (isSoftCoding !== undefined) {
-  zg.zegoWebRTC.enableVideoHardwareEncoder(isSoftCoding);
+  zg.zegoWebRTC.enableVideoHardwareEncoder(!isSoftCoding);
 }
 
 window.zg = zg;

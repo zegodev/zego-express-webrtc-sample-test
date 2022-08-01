@@ -17,7 +17,8 @@ const publishStreamID = 'web-' + new Date().getTime();
 let remoteStreamID = ""
 // ---test end
 let screenStreamVideoTrack;
-let screenStream
+let screenStream;
+let playstreamlist;
 let videoType
 // let loginTime
 
@@ -31,8 +32,9 @@ $(async () => {
     function play(streamID) {
         let remoteStream;
         remoteStreamID = streamID;
-        const handlePlaySuccess = (streamItem) => {
+        const handlePlaySuccess = (streamItem, stream) => {
             if (zg.getVersion() > "2.17.0") {
+                const id = streamItem.streamID;
                 $(".remoteVideo").append(
                     $(`
                     <div class="view-wrapper" id="wrap${id}" style="display:inline-block;width: 240px; border: 1px solid #dfdfdf; font-size: 12px;">
@@ -101,7 +103,7 @@ $(async () => {
         zg.startPlayingStream(streamID, playOption).then(stream => {
             remoteStream = stream;
             useLocalStreamList.push({ streamID });
-            handlePlaySuccess({ streamID });
+            handlePlaySuccess({ streamID }, stream);
         }).catch(error => {
             console.error(error);
 
@@ -187,7 +189,7 @@ $(async () => {
             alert('streamId is empty');
             return false;
         }
-        const playstreamlist = playStreamIDs.split(';');
+        playstreamlist = playStreamIDs.split(';');
         playstreamlist.forEach(stream => {
             play(stream);
         })
@@ -527,6 +529,11 @@ $(async () => {
             for (let i = 0; i < streamList.length; i++) {
                 console.info(streamList[i].streamID + ' was added');
 
+                if (playstreamlist && playstreamlist.find(streamid => streamid === streamList[i].streamID)) {
+                    console.warn('流已手动拉', streamList[i].streamID);
+                    continue;
+                }
+
                 const streamItem = useLocalStreamList.find(stream => stream.streamID === streamList[i].streamID);
 
                 if (streamItem) {
@@ -625,6 +632,8 @@ $(async () => {
                             console.error(error);
                         }
 
+                        playstreamlist = playstreamlist && playstreamlist.filter(item => item !== streamList[j].streamID);
+                        console.warn('playstreamlist', playstreamlist)
                         console.info(useLocalStreamList[k].streamID + 'was devared');
 
                         if (zg.getVersion() >= "2.17.0") {
@@ -654,6 +663,7 @@ $(async () => {
                 zg.destroyStream(externalStream)
                 externalStream = null
             }
+            playstreamlist = null;
             clear()
         }
     })
