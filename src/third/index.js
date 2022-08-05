@@ -70,8 +70,12 @@ $(async () => {
         console.log('doPreviewPublish', config);
         zg.createStream(config).then(stream => {
             previewVideo.srcObject = stream;
-
-            zg.startPublishingStream(streamID ? streamID : idName, stream, { videoCodec: $('#videoCodeType').val(), extraInfo: JSON.stringify({ role: 2 }), isSEIStart: sei, })
+            
+            zg.startPublishingStream(streamID ? streamID : idName, stream, { 
+                videoCodec: $('#videoCodeType').val(), extraInfo: JSON.stringify({ role: 2 }), 
+                isSEIStart: sei, 
+                extraInfo: `{"range_audio_team_id":"t11","range_audio_mode":1}`
+            })
 
         }).catch(err => {
             console.error(err)
