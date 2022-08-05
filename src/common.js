@@ -408,6 +408,7 @@ function initSDK() {
                 playOption.isSEIStart = sei;
                 zg.startPlayingStream(streamList[i].streamID, playOption).then(stream => {
                     remoteStream = stream;
+                    // console.error('useLocalStreamList.push')
                     useLocalStreamList.push(streamList[i]);
 
 
@@ -559,8 +560,19 @@ function initSDK() {
         const micList = deviceInfo.microphones;
         const currentRoomID = $('#roomId').val() || undefined;
         if (localStreamMap[currentRoomID]) {
-            zg.useVideoDevice(localStreamMap[currentRoomID], cameras[0].deviceID);
-            zg.useAudioDevice(localStreamMap[currentRoomID], micList[0].deviceID);
+            localStreamMap[currentRoomID].getTracks().forEach(item => {
+                console.warn(item, item.getSettings())
+                if (item.kind === 'video' && item.getSettings().deviceId) {
+                    const cameraExist = cameras.find(camera => camera.deviceID === item.getSettings().deviceId);
+                    !cameraExist && zg.useVideoDevice(localStreamMap[currentRoomID], cameras[0].deviceID);
+                } 
+                if (item.kind === 'audio' && item.getSettings().deviceId) {
+                    const micExist = micList.find(mic => mic.deviceID === item.getSettings().deviceId);
+                    !micExist && zg.useAudioDevice(localStreamMap[currentRoomID], micList[0].deviceID);
+                } 
+            })
+            // zg.useVideoDevice(localStreamMap[currentRoomID], cameras[0].deviceID);
+            // zg.useAudioDevice(localStreamMap[currentRoomID], micList[0].deviceID);
         }
     });
     zg.on('videoDeviceStateChanged', (updateType, device) => {

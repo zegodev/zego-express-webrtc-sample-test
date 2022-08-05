@@ -102,6 +102,7 @@ $(async () => {
 
         zg.startPlayingStream(streamID, playOption).then(stream => {
             remoteStream = stream;
+            // console.error('push', streamID)
             useLocalStreamList.push({ streamID });
             handlePlaySuccess({ streamID }, stream);
         }).catch(error => {
@@ -206,10 +207,10 @@ $(async () => {
                 constraints.channelCount = channelCount;
                 const videoQuality = $('#videoQuality').val();
                 if (videoQuality == 4) {
-                    $('#width').val() && (constraints.width = parseInt($('#width').val())),
-                        $('#height').val() && (constraints.height = parseInt($('#height').val())),
-                        $('#frameRate').val() && (constraints.frameRate = parseInt($('#frameRate').val())),
-                        $('#bitrate').val() && (constraints.bitrate = parseInt($('#bitrate').val()))
+                    $('#width').val() && (constraints.width = parseInt($('#width').val()) || JSON.parse($('#width').val())),
+                    $('#height').val() && (constraints.height = parseInt($('#height').val()) || JSON.parse($('#height').val())),
+                    $('#frameRate').val() && (constraints.frameRate = parseInt($('#frameRate').val()) || JSON.parse($('#frameRate').val())),
+                    $('#bitrate').val() && (constraints.bitrate = parseInt($('#bitrate').val()))
                 }
                 $('#noiseSuppression').val() === '1' ? (constraints.ANS = true) : (constraints.ANS = false);
                 $('#autoGainControl').val() === '1' ? (constraints.AGC = true) : (constraints.AGC = false);
@@ -615,6 +616,7 @@ $(async () => {
 
                 zg.startPlayingStream(streamList[i].streamID, playOption).then(stream => {
                     remoteStream = stream;
+                    console.warn('push', streamList[i])
                     useLocalStreamList.push(streamList[i]);
                     handlePlaySuccess(streamList[i]);
                 }).catch(error => {
@@ -623,30 +625,38 @@ $(async () => {
                 })
             }
         } else if (updateType == 'DELETE') {
-            for (let k = 0; k < useLocalStreamList.length; k++) {
+            console.warn('useLocalStreamList', useLocalStreamList)
+            // for (let k = 0; k < useLocalStreamList.length; k++) {
                 for (let j = 0; j < streamList.length; j++) {
-                    if (useLocalStreamList[k].streamID === streamList[j].streamID) {
+                    // if (useLocalStreamList[k].streamID === streamList[j].streamID) {
+                        const k = useLocalStreamList.findIndex(item => item.streamID === streamList[j].streamID);
                         try {
-                            zg.stopPlayingStream(useLocalStreamList[k].streamID);
+                            zg.stopPlayingStream(streamList[j].streamID);
                         } catch (error) {
                             console.error(error);
                         }
 
                         playstreamlist = playstreamlist && playstreamlist.filter(item => item !== streamList[j].streamID);
-                        console.warn('playstreamlist', playstreamlist)
-                        console.info(useLocalStreamList[k].streamID + 'was devared');
+                        console.warn('playstreamlist', playstreamlist, k)
+                        if (k >= 0) {
+                            console.info(useLocalStreamList[k].streamID + 'was devared');
 
-                        if (zg.getVersion() >= "2.17.0") {
-                            const a = document.querySelector(`#wrap${useLocalStreamList[k].streamID}`)
-                            $(`#wrap${useLocalStreamList[k].streamID}`).remove();
-                        } else {
-                            $('.remoteVideo video:eq(' + k + ')').remove();
+                            if (zg.getVersion() >= "2.17.0") {
+                                const a = document.querySelector(`#wrap${useLocalStreamList[k].streamID}`)
+                                $(`#wrap${useLocalStreamList[k].streamID}`).remove();
+                            } else {
+                                $('.remoteVideo video:eq(' + k + ')').remove();
+                            }
+                            useLocalStreamList.splice(k, 1);
+                            // useLocalStreamList = useLocalStreamList.filter(item => item.streamID !== streamList[j].streamID)
+                            console.warn('useLocalStreamList after', useLocalStreamList)
+
                         }
-                        useLocalStreamList.splice(k--, 1);
-                        break;
-                    }
+                        
+                        // break;
+                    // }
                 }
-            }
+            // }
         }
     });
     zg.on("roomStateUpdate", (roomID, state) => {
