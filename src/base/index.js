@@ -363,6 +363,35 @@ $(async () => {
         isBeauty = enable
         console.warn("setBeautyEffect", res, beautyConfig);
     }
+
+    let aidenise = false; // 是否开启了ai降噪
+    $("#switchAiDenoise").on("click", async () => {
+        const localPublishStream = $("#previewVideo")[0].srcObject;
+        if (aidenise) {
+          if (!localPublishStream) {
+            alert('流不存在！');
+            return;
+          }
+          const switchAiDenoiseBtn = document.getElementById('switchAiDenoise');
+          if (switchAiDenoiseBtn) {
+            switchAiDenoiseBtn.innerText = '开启ai降噪';
+          }
+          aidenise = false;
+          await zg.enableAiDenoise(localPublishStream, false);
+        } else {
+          if (!localPublishStream) {
+            alert('流不存在！');
+            return;
+          }
+          const switchAiDenoiseBtn = document.getElementById('switchAiDenoise');
+          if (switchAiDenoiseBtn) {
+            switchAiDenoiseBtn.innerText = '关闭ai降噪';
+          }
+          aidenise = true;
+          await zg.enableAiDenoise(localPublishStream, true);
+        }
+      });
+
     $("#range-sharp").on("change", () => { setBeautyEffect(isBeauty) })
     $("#range-light").on("change", () => { setBeautyEffect(isBeauty) })
     $("#range-red").on("change", () => { setBeautyEffect(isBeauty) })
