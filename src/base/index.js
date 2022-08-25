@@ -423,6 +423,25 @@ $(async () => {
             .catch(err => console.error(err));
     });
 
+
+    // --------------test tracer
+    $('#fetchStreamList').click(async function () {
+        zg.zegoWebRTC.stateCenter.roomList[0].streamHandler.fetchStreamList();
+    });
+    $('#publishRetry').click(async function () {
+        const publish1 = Object.keys(zg.zegoWebRTC.streamCenter.publisherList)[0];
+        if (publish1) {
+            zg.zegoWebRTC.streamCenter.publisherList[publish1].publisher.onRecvCloseSession(1,1,{"reason":11,"err_info":"{\"action\":5,\"err\":3008}"})
+        }
+    });
+    $('#playRetry').click(async function () {
+        const play1 = Object.keys(zg.zegoWebRTC.streamCenter.playerList)[0];
+        if (play1) {
+            zg.zegoWebRTC.streamCenter.playerList[play1].player.onRecvCloseSession(1,1,{"reason":11,"err_info":"{\"action\":5,\"err\":3008}"})
+        }
+    });
+    // --------------test tracer
+
     (document.querySelector("#addTrack")).addEventListener(
         "click",
         async e => {
