@@ -440,6 +440,13 @@ $(async () => {
             zg.zegoWebRTC.streamCenter.playerList[play1].player.onRecvCloseSession(1,1,{"reason":11,"err_info":"{\"action\":5,\"err\":3008}"})
         }
     });
+    $('#roomRetry').click(async function () {
+        const room = zg.zegoWebRTM.stateCenter.roomModulesList[0]
+        if (room) {
+            zg.zegoWebRTM.stateCenter.roomModulesList[0].roomHandler.closeHandler({code:1006})
+        }
+    });
+    
     // --------------test tracer
 
     (document.querySelector("#addTrack")).addEventListener(
