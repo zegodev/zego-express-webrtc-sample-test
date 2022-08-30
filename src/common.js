@@ -154,8 +154,6 @@ async function checkAnRun(checkScreen) {
         console.error('checkSystemRequirements', err);
         return false;
     }
-
-
 }
 
 async function start() {

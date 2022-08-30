@@ -23,13 +23,14 @@ $(async () => {
         startPreview()
     })
     $('#startPublish').on("click", () => {
-        startPublish()
+        startPublish();
+        localPublishStream =  getPreviewStream();
     })
     $("#stopPublish").on("click", () => {
         stopPublish()
     })
 
-    $('#MixAudio').click(() => {
+    $('#MixAudio').click(async () => {
         const result = zg.startMixingAudio(getPreviewStream(), [
             $('#extenerVideo1')[0],
             $('#extenerVideo2')[0],
@@ -227,4 +228,21 @@ $(async () => {
     $("#effectId").change(() => {
         effectId = $("#effectId").val()
     })
+
+    let aidenoise = false;
+    $('#switchAiDenoise').click(async () => {
+        const localstream = previewVideo.srcObject;
+        if (!localstream) {
+            alert('流不存在！');
+            return;
+        }
+        if (!aidenoise) {
+            aidenoise = true;
+            document.getElementById('switchAiDenoise').innerText = '关闭AI降噪';
+        } else {
+            aidenoise = false;
+            document.getElementById('switchAiDenoise').innerText = '开启AI降噪';
+        }
+        await zg.zegoWebRTC.enableAiDenoise(localstream, aidenoise);
+    });
 });
