@@ -13,14 +13,26 @@ $(async () => {
                 try {
                     remoteStream = await zg.startPlayingStream(streamList[i].streamID, {
                         video: false,
+                        audio: true
                     });
                     useLocalStreamList.push(streamList[i]);
 
-                    $('.remoteVideo').append($(`<audio id=${streamList[i].streamID} autoplay muted playsinline controls></audio>`));
+                    $('.remoteVideo').append($(`<audio id=${streamList[i].streamID} autoplay muted playsinline></audio>`));
+                    // $('.remoteVideo').append($(`<video id=${streamList[i].streamID + "11"} autoplay muted playsinline controls></video>`));
                     const audio = $('.remoteVideo audio:last')[0];
-                    console.warn('audio', audio, remoteStream);
+                    console.warn('拉流 audio', streamList[i].streamID, remoteStream);
+                    audio.muted = true
                     audio.srcObject = remoteStream;
-                    audio.muted = false;
+                    audio.load()
+                    audio.oncanplay = () => {
+                        audio.muted = false
+                        try {
+                            audio.play()
+                        } catch (error) {
+                            // 界面提示自动播放失败，建议是弹出提示按钮，在按钮点击事件中进行恢复播放。
+                            throw error
+                        }
+                    }
                 } catch (error) {
                     console.error(error);
                     continue;

@@ -114,7 +114,7 @@ if (isAccess === false) {
     zg.zegoWebRTC.stateCenter.useNetAgent = false;
 }
 
-if (isSoftCoding !== undefined) {
+if (isSoftCoding !== undefined && zg.getVersion()>='2.18.0') {
   zg.zegoWebRTC.enableVideoHardwareEncoder(!isSoftCoding);
 }
 
@@ -127,6 +127,7 @@ if (zg.getVersion() > "2.15.0") {
 }
 async function checkAnRun(checkScreen) {
     console.log('sdk version is', zg.getVersion());
+    $("body").append(`<span>${zg.getVersion()}</span>`)
     try {
         const result = await zg.checkSystemRequirements();
 
