@@ -17,24 +17,32 @@ $(async () => {
                     });
                     useLocalStreamList.push(streamList[i]);
 
-                    $('.remoteVideo').append($(`<audio id=${streamList[i].streamID} autoplay muted playsinline></audio>`));
+                    $('.remoteVideo').append($(`<audio id=${streamList[i].streamID} autoplay controls muted playsinline></audio>`));
                     // $('.remoteVideo').append($(`<video id=${streamList[i].streamID + "11"} autoplay muted playsinline controls></video>`));
                     const audio = $('.remoteVideo audio:last')[0];
                     console.warn('拉流 audio', streamList[i].streamID, remoteStream);
                     audio.muted = true
                     audio.srcObject = remoteStream;
-                    audio.load()
-                    audio.oncanplay = () => {
-                        audio.muted = false
+                    // 方式一：
+                    audio.oncanplay = async () => {
                         try {
-                            audio.play()
+                            audio.muted = false;
+                            await audio.play()
                         } catch (error) {
+                            console.error("自动播放失败了！！！" + error)
                             // 界面提示自动播放失败，建议是弹出提示按钮，在按钮点击事件中进行恢复播放。
-                            throw error
                         }
                     }
+                    // // 方式二：
+                    // audio.oncanplay = () => {
+                    //     audio.muted = false;
+                    //     audio.play().catch((error) => {
+                    //         console.error("自动播放失败了！！！" + error)
+                    //         // 界面提示自动播放失败，建议是弹出提示按钮，在按钮点击事件中进行恢复播放。
+                    //     })
+                    // }
                 } catch (error) {
-                    console.error(error);
+                    console.error("未知错误" + error);
                     continue;
                 }
 
