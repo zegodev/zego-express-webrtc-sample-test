@@ -13,7 +13,6 @@ let cameraStreamVideoTrack;
 let externalStream;
 let externalStreamVideoTrack;
 let published = false;
-const publishStreamID = 'web-' + new Date().getTime();
 let remoteStreamID = ""
 // ---test end
 let screenStreamVideoTrack;
@@ -112,11 +111,11 @@ $(async () => {
 
     // --- test begin
     $('#publish').click(() => {
-        const publishStreamID = new Date().getTime() + '';
+        const publishStreamID = publishStreamId || 'web-' + new Date().getTime();
         const stream = $('#publish-stream').val();
         // !cameraStreamVideoTrack && previewVideo.srcObject && (cameraStreamVideoTrack = previewStream.getVideoTracks()[0] && previewStream.getVideoTracks()[0].clone());
         window.publishTime = new Date().getTime();
-        const result = zg.startPublishingStream(stream || publishStreamID, previewStream ? previewStream : previewVideo.srcObject, { roomID: $('#roomId').val() });
+        const result = zg.startPublishingStream(stream || publishStreamID, previewStream ? previewStream : previewVideo.srcObject, { roomID: $('#roomId').val(), isSEIStart: sei });
         published = true;
         console.log('publish stream' + publishStreamID, result);
     });
@@ -145,9 +144,9 @@ $(async () => {
         const videoQuality = $('#videoQuality').val();
         if (videoQuality == 4) {
             $('#width').val() && (constraints.width = parseInt($('#width').val()) || JSON.parse($('#width').val())),
-                $('#height').val() && (constraints.height = parseInt($('#height').val()) || JSON.parse($('#height').val())),
-                $('#frameRate').val() && (constraints.frameRate = parseInt($('#frameRate').val()) || JSON.parse($('#frameRate').val())),
-                $('#bitrate').val() && (constraints.bitrate = parseInt($('#bitrate').val()))
+            $('#height').val() && (constraints.height = parseInt($('#height').val()) || JSON.parse($('#height').val())),
+            $('#frameRate').val() && (constraints.frameRate = parseInt($('#frameRate').val()) || JSON.parse($('#frameRate').val())),
+            $('#bitrate').val() && (constraints.bitrate = parseInt($('#bitrate').val()))
         }
         $('#noiseSuppression').val() === '1' ? (constraints.ANS = true) : (constraints.ANS = false);
         $('#autoGainControl').val() === '1' ? (constraints.AGC = true) : (constraints.AGC = false);
@@ -206,10 +205,10 @@ $(async () => {
                 constraints.channelCount = channelCount;
                 const videoQuality = $('#videoQuality').val();
                 if (videoQuality == 4) {
-                    $('#width').val() && (constraints.width = parseInt($('#width').val())),
-                        $('#height').val() && (constraints.height = parseInt($('#height').val())),
-                        $('#frameRate').val() && (constraints.frameRate = parseInt($('#frameRate').val())),
-                        $('#bitrate').val() && (constraints.bitrate = parseInt($('#bitrate').val()))
+                    $('#width').val() && (constraints.width = parseInt($('#width').val()) || JSON.parse($('#width').val())),
+                    $('#height').val() && (constraints.height = parseInt($('#height').val()) || JSON.parse($('#height').val())),
+                    $('#frameRate').val() && (constraints.frameRate = parseInt($('#frameRate').val()) || JSON.parse($('#frameRate').val())),
+                    $('#bitrate').val() && (constraints.bitrate = parseInt($('#bitrate').val()))
                 }
                 $('#noiseSuppression').val() === '1' ? (constraints.ANS = true) : (constraints.ANS = false);
                 $('#autoGainControl').val() === '1' ? (constraints.AGC = true) : (constraints.AGC = false);
