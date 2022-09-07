@@ -524,3 +524,7 @@ $(async () => {
         
     // })
 });
+window.addEventListener('unhandledrejection', function(event){
+  // console.log(err)
+  event.preventDefault();
+})
