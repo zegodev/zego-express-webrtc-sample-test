@@ -356,12 +356,12 @@ function initSDK() {
             }
             const browser = getBrowser();
             console.warn('browser', browser);
-            if (browser === 'Safari') {
-                const videos = $('.remoteVideo video');
-                for (let i = 0; i < videos.length; i++) {
-                    videos[i].srcObject = videos[i].srcObject;
-                }
-            }
+            // if (browser === 'Safari') {
+            //     const videos = $('.remoteVideo video');
+            //     for (let i = 0; i < videos.length; i++) {
+            //         videos[i].srcObject = videos[i].srcObject;
+            //     }
+            // }
         } else if (result.state == 'PLAY_REQUESTING') {
             console.info(' play  retry');
             if (result.errorCode !== 0 && !window.playTimes[result.streamID]) {
