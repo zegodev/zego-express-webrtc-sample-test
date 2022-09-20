@@ -20,7 +20,9 @@ $(async () => {
             custom: {
                 source: media,
                 channelCount: channelCount,
-                videoOptimizationMode: $('#videoOptimizationMode').val() ? $('#videoOptimizationMode').val() : "default"
+                videoOptimizationMode: $('#videoOptimizationMode').val() ? $('#videoOptimizationMode').val() : "default",
+                minBitrate: $('#minbitrate').val() && parseInt($('#minbitrate').val()),
+                keyFrameInterval: $('#gop').val() && parseInt($('#gop').val())
             }
         }
         $('#audioBitrate').val() && (constraints.audioBitrate = parseInt($('#audioBitrate').val()));
@@ -105,7 +107,9 @@ $(async () => {
         return zg.createStream({
             custom: {
                 source: source,
-                videoOptimizationMode: $('#videoOptimizationMode').val() ? $('#videoOptimizationMode').val() : "default"
+                videoOptimizationMode: $('#videoOptimizationMode').val() ? $('#videoOptimizationMode').val() : "default",
+                minBitrate: $('#minbitrate').val() && parseInt($('#minbitrate').val()),
+                keyFrameInterval: $('#gop').val() && parseInt($('#gop').val())
             }
         }).then(stream => {
             let video = document.createElement("video");

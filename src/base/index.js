@@ -214,7 +214,9 @@ $(async () => {
                 $('#autoGainControl').val() === '1' ? (constraints.AGC = true) : (constraints.AGC = false);
                 $('#echoCancellation').val() === '1' ? (constraints.AEC = true) : (constraints.AEC = false);
                 $('#audioBitrate').val() && (constraints.audioBitrate = parseInt($('#audioBitrate').val()));
-
+                // 最小码率
+                $('#minbitrate').val() && (constraints.minBitrate = parseInt($('#minbitrate').val()))
+                $('#gop').val() && (constraints.keyFrameInterval = parseInt($('#gop').val()))
                 constraints.videoQuality = parseInt(videoQuality);
                 console.warn('constraints', constraints);
                 startPreview({ camera: constraints })
