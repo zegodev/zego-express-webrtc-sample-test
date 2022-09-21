@@ -853,6 +853,9 @@ const startPreview = async (constraints = {}) => {
             audio: $('#audioList').val() === '0' ? false : true,
             videoOptimizationMode: $('#videoOptimizationMode').val() ? $('#videoOptimizationMode').val() : "default",
             startBitrate: "target",
+            minBitrate: $('#minbitrate').val() && parseInt($('#minbitrate').val()),
+            keyFrameInterval: $('#gop').val() && parseInt($('#gop').val())
+            
             // channelCount: constraints && constraints.camera && constraints.camera.channelCount,
         },
     };
