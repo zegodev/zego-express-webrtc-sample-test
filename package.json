@@ -9,7 +9,7 @@
     "upload": "scp -r ./docs root@192.168.100.30:/opt/dev/express_webrtc/",
     "deploy": "npm run build && npm run upload",
     "upload:custom": "scp -r ./docs/ root@192.168.100.30:/opt/dev/express_webrtc/docs/2_18_0/",
-    "upload:tracer": "scp -r ./docs/ root@192.168.100.30:/opt/dev/express_webrtc/docs/tracer"
+    "upload:tracer": "scp -r ./docs root@192.168.100.30:/opt/dev/express_webrtc/docs/tracer"
   },
   "author": "choui",
   "license": "ISC",
