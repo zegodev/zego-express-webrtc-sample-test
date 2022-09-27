@@ -65,7 +65,9 @@ async function updateMix() {
             },
         });
     }
-
+    await zg.setMixerTaskConfig({
+        backgroundColor: 0xff0000
+    });
     
     const res = await zg.startMixerTask({
         taskID,
@@ -185,6 +187,7 @@ $(async () => {
             }
             taskID2 = 'task-' + new Date().getTime();
             mixStreamID2 = 'mixwebrtc-' + new Date().getTime();
+            
             const res = await zg.startMixerTask({
                 taskID: taskID2,
                 inputList: streamList,

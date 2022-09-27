@@ -37,6 +37,7 @@ let customDomain;
 let isAccess;
 let auth;
 let ver;
+let isPeer;
 
 window.publishTimes = {};
 window.playTimes = {};
@@ -54,7 +55,7 @@ let isSoftCoding = true;
 // 测试用代码，开发者请忽略
 // Test code, developers please ignore
 
-({ appID, server, cgiToken, userID, l3, accessDomain, customDomain, isAccess, auth, ver, sei, seiUUID } = getCgi(appID, server, cgiToken));
+({ appID, server, cgiToken, userID, l3, accessDomain, customDomain, isAccess, auth, ver, sei, seiUUID, isPeer } = getCgi(appID, server, cgiToken));
 
 if (userID == "") {
     userID = 'sample' + new Date().getTime();
@@ -112,6 +113,10 @@ console.error('isAccessd', isAccess)
 if (isAccess === false) {
     zg.zegoWebRTM.stateCenter.useNetAgent = false;
     zg.zegoWebRTC.stateCenter.useNetAgent = false;
+}
+
+if (typeof isPeer === 'boolean') {
+    zg.zegoWebRTC.streamCenter.isPeer = isPeer
 }
 
 if (isSoftCoding !== undefined) {
