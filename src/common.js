@@ -169,7 +169,7 @@ async function start() {
     zg.setLogConfig({
         logLevel: 'debug',
         remoteLogLevel: 'info',
-        logURL: '',
+        logURL: 'wss://weblogger1739272706-api.zego.im/log',
     });
 
     zg.setDebugVerbose(false);

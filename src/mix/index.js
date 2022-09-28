@@ -66,7 +66,7 @@ async function updateMix() {
         });
     }
     await zg.setMixerTaskConfig({
-        backgroundColor: 0xff0000
+        backgroundColor: 0x000000
     });
     
     const res = await zg.startMixerTask({
