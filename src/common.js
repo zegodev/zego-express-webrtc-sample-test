@@ -114,12 +114,12 @@ if (isAccess === false) {
     zg.zegoWebRTC.stateCenter.useNetAgent = false;
 }
 
-if (isSoftCoding !== undefined && zg.getVersion()>='2.18.0') {
-  zg.zegoWebRTC.enableVideoHardwareEncoder(!isSoftCoding);
-}
-if (isSoftCoding !== undefined && zg.getVersion()>='2.17.2') {
-  zg.enableVideoHardwareEncoder(!isSoftCoding);
-}
+// if (isSoftCoding !== undefined && zg.getVersion()>='2.18.0') {
+//   zg.zegoWebRTC?.enableVideoHardwareEncoder(!isSoftCoding);
+// }
+// if (isSoftCoding !== undefined && zg.getVersion()==='2.17.2') {
+//   zg?.enableVideoHardwareEncoder(!isSoftCoding);
+// }
 
 window.zg = zg;
 window.useLocalStreamList = useLocalStreamList;
