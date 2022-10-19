@@ -4,6 +4,7 @@ import {
     publish, publishStreamId, l3, enumDevices, userID, sei,
     bindViewCtrl
 } from '../common';
+import { ZegoCDNPlayer } from "zego_express_web_cdn_player";
 import { getBrowser } from '../assets/utils';
 
 let playOption = {};
@@ -577,11 +578,15 @@ $(async () => {
                     let video;
                     const bro = getBrowser();
                     if (bro == 'Safari' && playOption.video === false) {
-                        $('.remoteVideo').append($(`<audio id=${streamItem.streamID} autoplay muted playsinline controls></audio>`));
+                        if([0,2].includes(playOption.resourceMode)) {
+                            $('.remoteVideo').append($(`<audio id=${streamItem.streamID} autoplay muted playsinline controls></audio>`));
+                        }
                         video = $('.remoteVideo audio:last')[0];
                         console.warn('audio', video, remoteStream);
                     } else {
-                        $('.remoteVideo').append($(`<video id=${streamItem.streamID} autoplay muted playsinline controls></video>`));
+                        if([0,2].includes(playOption.resourceMode)) {
+                            $('.remoteVideo').append($(`<video id=${streamItem.streamID} autoplay muted playsinline controls></video>`));
+                        }
                         video = $('.remoteVideo video:last')[0];
                         console.warn('video', video, remoteStream);
                     }
@@ -618,8 +623,8 @@ $(async () => {
                   video = $('.remoteVideo video:last')[0];
                   video.muted = false;
                   playOption.CDNVideo = video;
+                  playOption.CDNPlayer = new ZegoCDNPlayer()
                 }
-
 
 
                 zg.startPlayingStream(streamList[i].streamID, playOption).then(stream => {
@@ -710,6 +715,10 @@ $(async () => {
                 console.error('publish error ' + result.errorCode + ' ' + result.extendedData);
             }
         }
+    })
+    zg.on('playerStateUpdate', result => {
+        console.warn('playerStateUpdate: ', result.streamID, result.state, result);
+        
     })
 
 });
