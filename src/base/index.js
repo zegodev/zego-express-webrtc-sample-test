@@ -144,15 +144,18 @@ $(async () => {
         const videoQuality = $('#videoQuality').val();
         if (videoQuality == 4) {
             $('#width').val() && (constraints.width = parseInt($('#width').val()) || JSON.parse($('#width').val())),
-            $('#height').val() && (constraints.height = parseInt($('#height').val()) || JSON.parse($('#height').val())),
-            $('#frameRate').val() && (constraints.frameRate = parseInt($('#frameRate').val()) || JSON.parse($('#frameRate').val())),
-            $('#bitrate').val() && (constraints.bitrate = parseInt($('#bitrate').val()))
+                $('#height').val() && (constraints.height = parseInt($('#height').val()) || JSON.parse($('#height').val())),
+                $('#frameRate').val() && (constraints.frameRate = parseInt($('#frameRate').val()) || JSON.parse($('#frameRate').val())),
+                $('#bitrate').val() && (constraints.bitrate = parseInt($('#bitrate').val()))
         }
         $('#noiseSuppression').val() === '1' ? (constraints.ANS = true) : (constraints.ANS = false);
         $('#autoGainControl').val() === '1' ? (constraints.AGC = true) : (constraints.AGC = false);
         $('#echoCancellation').val() === '1' ? (constraints.AEC = true) : (constraints.AEC = false);
         $('#audioBitrate').val() && (constraints.audioBitrate = parseInt($('#audioBitrate').val()));
 
+        // 最小码率
+        $('#minbitrate').val() && (constraints.minBitrate = parseInt($('#minbitrate').val()))
+        $('#gop').val() && (constraints.keyFrameInterval = parseInt($('#gop').val()))
         constraints.videoQuality = parseInt(videoQuality);
         console.warn('constraints', constraints);
         try {
@@ -206,15 +209,18 @@ $(async () => {
                 const videoQuality = $('#videoQuality').val();
                 if (videoQuality == 4) {
                     $('#width').val() && (constraints.width = parseInt($('#width').val()) || JSON.parse($('#width').val())),
-                    $('#height').val() && (constraints.height = parseInt($('#height').val()) || JSON.parse($('#height').val())),
-                    $('#frameRate').val() && (constraints.frameRate = parseInt($('#frameRate').val()) || JSON.parse($('#frameRate').val())),
-                    $('#bitrate').val() && (constraints.bitrate = parseInt($('#bitrate').val()))
+                        $('#height').val() && (constraints.height = parseInt($('#height').val()) || JSON.parse($('#height').val())),
+                        $('#frameRate').val() && (constraints.frameRate = parseInt($('#frameRate').val()) || JSON.parse($('#frameRate').val())),
+                        $('#bitrate').val() && (constraints.bitrate = parseInt($('#bitrate').val()))
                 }
                 $('#noiseSuppression').val() === '1' ? (constraints.ANS = true) : (constraints.ANS = false);
                 $('#autoGainControl').val() === '1' ? (constraints.AGC = true) : (constraints.AGC = false);
                 $('#echoCancellation').val() === '1' ? (constraints.AEC = true) : (constraints.AEC = false);
                 $('#audioBitrate').val() && (constraints.audioBitrate = parseInt($('#audioBitrate').val()));
 
+                // 最小码率
+                $('#minbitrate').val() && (constraints.minBitrate = parseInt($('#minbitrate').val()))
+                $('#gop').val() && (constraints.keyFrameInterval = parseInt($('#gop').val()))
                 constraints.videoQuality = parseInt(videoQuality);
                 console.warn('constraints', constraints);
                 startPreview({ camera: constraints })
@@ -367,29 +373,29 @@ $(async () => {
     $("#switchAiDenoise").on("click", async () => {
         const localPublishStream = $("#previewVideo")[0].srcObject;
         if (aidenise) {
-          if (!localPublishStream) {
-            alert('流不存在！');
-            return;
-          }
-          const switchAiDenoiseBtn = document.getElementById('switchAiDenoise');
-          if (switchAiDenoiseBtn) {
-            switchAiDenoiseBtn.innerText = '开启ai降噪';
-          }
-          aidenise = false;
-          await zg.enableAiDenoise(localPublishStream, false);
+            if (!localPublishStream) {
+                alert('流不存在！');
+                return;
+            }
+            const switchAiDenoiseBtn = document.getElementById('switchAiDenoise');
+            if (switchAiDenoiseBtn) {
+                switchAiDenoiseBtn.innerText = '开启ai降噪';
+            }
+            aidenise = false;
+            await zg.enableAiDenoise(localPublishStream, false);
         } else {
-          if (!localPublishStream) {
-            alert('流不存在！');
-            return;
-          }
-          const switchAiDenoiseBtn = document.getElementById('switchAiDenoise');
-          if (switchAiDenoiseBtn) {
-            switchAiDenoiseBtn.innerText = '关闭ai降噪';
-          }
-          aidenise = true;
-          await zg.enableAiDenoise(localPublishStream, true);
+            if (!localPublishStream) {
+                alert('流不存在！');
+                return;
+            }
+            const switchAiDenoiseBtn = document.getElementById('switchAiDenoise');
+            if (switchAiDenoiseBtn) {
+                switchAiDenoiseBtn.innerText = '关闭ai降噪';
+            }
+            aidenise = true;
+            await zg.enableAiDenoise(localPublishStream, true);
         }
-      });
+    });
 
     $("#range-sharp").on("change", () => { setBeautyEffect(isBeauty) })
     $("#range-light").on("change", () => { setBeautyEffect(isBeauty) })

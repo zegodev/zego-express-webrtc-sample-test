@@ -419,7 +419,9 @@ $(async () => {
                     width: getScreenWidth(),
                     height:  getScreenHeight(),
                     startBitrate: "target",
-                    videoOptimizationMode: $('#videoOptimizationMode').val()? $('#videoOptimizationMode').val() : "default"
+                    videoOptimizationMode: $('#videoOptimizationMode').val()? $('#videoOptimizationMode').val() : "default",
+                    minBitrate: $('#minbitrate').val() && parseInt($('#minbitrate').val()),
+                    keyFrameInterval: $('#gop').val() && parseInt($('#gop').val())
                 },
             });
             screenStreamId = publishStreamId + 'screen' + screenCount++;

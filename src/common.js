@@ -50,7 +50,7 @@ let sendSEIFPS = 0;
 let sendSEITimer;
 let _seiUUID = '4fb6482e-9c68-66';
 let isDatachannel = false;
-let isSoftCoding = true;
+let isSoftCoding = false;
 // 测试用代码，开发者请忽略
 // Test code, developers please ignore
 
@@ -114,9 +114,12 @@ if (isAccess === false) {
     zg.zegoWebRTC.stateCenter.useNetAgent = false;
 }
 
-if (isSoftCoding !== undefined && zg.getVersion()>='2.18.0') {
-  zg.zegoWebRTC.enableVideoHardwareEncoder(!isSoftCoding);
-}
+// if (isSoftCoding !== undefined && zg.getVersion()>='2.18.0') {
+//   zg.zegoWebRTC?.enableVideoHardwareEncoder(!isSoftCoding);
+// }
+// if (isSoftCoding !== undefined && zg.getVersion()==='2.17.2') {
+//   zg?.enableVideoHardwareEncoder(!isSoftCoding);
+// }
 
 window.zg = zg;
 window.useLocalStreamList = useLocalStreamList;
@@ -850,6 +853,9 @@ const startPreview = async (constraints = {}) => {
             audio: $('#audioList').val() === '0' ? false : true,
             videoOptimizationMode: $('#videoOptimizationMode').val() ? $('#videoOptimizationMode').val() : "default",
             startBitrate: "target",
+            minBitrate: $('#minbitrate').val() && parseInt($('#minbitrate').val()),
+            keyFrameInterval: $('#gop').val() && parseInt($('#gop').val())
+            
             // channelCount: constraints && constraints.camera && constraints.camera.channelCount,
         },
     };
