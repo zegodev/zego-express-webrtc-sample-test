@@ -4,7 +4,7 @@ import {
     publish, publishStreamId, l3, enumDevices, userID, sei,
     bindViewCtrl
 } from '../common';
-import { ZegoCDNPlayer } from "zego_express_web_cdn_player";
+import { ZegoCDNPlayer } from "zego-express-web-cdn-player";
 import { getBrowser } from '../assets/utils';
 
 let playOption = {};
