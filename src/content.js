@@ -31,7 +31,7 @@ export function getCgi(appId, serverUrl, cgi) {
     let cgiToken = cgi;
     let userID = "";
     let l3 = false;
-    let isPeer = false;
+    let isPeer = true;
     let accessDomain = '';
     let customDomain = '';
     let isAccess = true;
