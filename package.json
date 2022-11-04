@@ -9,7 +9,8 @@
     "upload": "scp -r ./docs root@192.168.100.30:/opt/dev/express_webrtc/",
     "deploy": "npm run build && npm run upload",
     "upload:custom": "scp -r ./docs root@192.168.100.30:/opt/dev/express_webrtc/docs/2_18_0_l3cdn/",
-    "upload:media": "scp -r ./docs root@192.168.100.30:/opt/dev/express_webrtc/docs/server/"
+    "upload:media": "scp -r ./docs root@192.168.100.30:/opt/dev/express_webrtc/docs/server/",
+    "upload:ttl": "scp -r ./docs root@192.168.100.30:/opt/dev/express_webrtc/docs/ttl/"
   },
   "author": "choui",
   "license": "ISC",
