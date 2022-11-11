@@ -120,6 +120,9 @@ $(async () => {
         console.log('publish stream' + publishStreamID, result);
     });
 
+    $('#dispatchGwNodes').click(() => {
+        zg.zegoWebRTC.stateCenter.testWebRTC.testDispatchGwNodes()
+    })
     $('#useVideo').click(() => {
         zg.useVideoDevice(previewVideo.srcObject, $('#videoList').val());
     });
