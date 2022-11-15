@@ -14,7 +14,7 @@ $("#custom-userid").text(userID)
 let publishStreamId = 'webrtc' + new Date().getTime();
 let zg;
 let appID = 1739272706; // 请从官网控制台获取对应的appID
-let server = 'wss://webliveroom1739272706-api.zego.im/ws';  // 请从官网控制台获取对应的server地址，否则可能登录失败
+let server = 'wss://webliveroom1739272706-api.test.zego.im/ws';  // 请从官网控制台获取对应的server地址，否则可能登录失败
 
 let cgiToken = '';
 //const appSign = '';
@@ -52,10 +52,10 @@ let sendSEITimer;
 let _seiUUID = '4fb6482e-9c68-66';
 let isDatachannel = false;
 let isSoftCoding = false;
+let scenario;
 // 测试用代码，开发者请忽略
 // Test code, developers please ignore
-
-({ appID, server, cgiToken, userID, l3, accessDomain, customDomain, isAccess, auth, ver, sei, seiUUID, isPeer } = getCgi(appID, server, cgiToken));
+({ appID, server, cgiToken, userID, l3, accessDomain, customDomain, isAccess, auth, ver, sei, seiUUID, isPeer, scenario } = getCgi(appID, server, cgiToken));
 
 if (userID == "") {
     userID = 'sample' + new Date().getTime();
@@ -105,7 +105,7 @@ let browser = {
 
 
 // eslint-disable-next-line prefer-const
-zg = new ZegoExpressEngine(appID, server, { accessDomains: accessDomain, customDomain });
+zg = new ZegoExpressEngine(appID, server, { accessDomains: accessDomain, customDomain, scenario });
 
 
 console.error('isAccessd', isAccess)
@@ -539,7 +539,7 @@ function initSDK() {
         console.log(
             `publish#${streamID} videoFPS: ${streamQuality.video.videoFPS} videoBitrate: ${streamQuality.video.videoBitrate} audioBitrate: ${streamQuality.audio.audioBitrate} audioFPS: ${streamQuality.audio.audioFPS}`,
         );
-        console.log(`publish#${streamID}`, streamQuality);
+        console.error(`publish#${streamID}`, streamQuality);
     });
 
     zg.on('remoteCameraStatusUpdate', (streamID, status) => {
@@ -880,7 +880,7 @@ const startPreview = async (constraints = {}) => {
         }
 
         localStreamMap[currentRoomID] = await zg.createStream(_constraints);
-
+        window.publishStream = localStreamMap[currentRoomID]
         // const timer = setInterval(()=>{
         //     if (localStreamMap[currentRoomID] && isPreviewed) {
         //         console.warn('获取的媒体流：', JSON.stringify( localStreamMap[currentRoomID].getVideoTracks()[0].getSettings() ));
@@ -1143,7 +1143,8 @@ export {
     getPreviewStream,
     sei,
     getViewOptions,
-    bindViewCtrl
+    bindViewCtrl,
+    scenario
 };
 
 // $(window).on('unload', function() {
