@@ -22,6 +22,10 @@ let screenStream;
 let playstreamlist;
 let videoType
 // let loginTime
+window.addEventListener('unhandledrejection', function (event) {
+    // console.log(err)
+    event.preventDefault();
+})
 
 $(async () => {
     await checkAnRun();
@@ -230,9 +234,9 @@ $(async () => {
     });
     $('#switchConstraints').click(() => {
         const constraints = {};
-        const w = $('#width').val() ? (parseInt($('#width').val()) ? parseInt($('#width').val()) : JSON.parse($('#width').val())): 0;
-        const h = $('#height').val() ? (parseInt($('#height').val()) ? parseInt($('#height').val()):JSON.parse($('#height').val())) : 0;
-        const f = $('#frameRate').val() ? (parseInt($('#frameRate').val()) ? parseInt($('#frameRate').val()):JSON.parse($('#frameRate').val())) : 0;
+        const w = $('#width').val() ? (parseInt($('#width').val()) ? parseInt($('#width').val()) : JSON.parse($('#width').val())) : 0;
+        const h = $('#height').val() ? (parseInt($('#height').val()) ? parseInt($('#height').val()) : JSON.parse($('#height').val())) : 0;
+        const f = $('#frameRate').val() ? (parseInt($('#frameRate').val()) ? parseInt($('#frameRate').val()) : JSON.parse($('#frameRate').val())) : 0;
         const b = $('#bitrate').val() ? parseInt($('#bitrate').val()) : 0;
         const videoQuality = $('#videoQuality').val();
 
@@ -369,29 +373,29 @@ $(async () => {
     $("#switchAiDenoise").on("click", async () => {
         const localPublishStream = $("#previewVideo")[0].srcObject;
         if (aidenise) {
-          if (!localPublishStream) {
-            alert('流不存在！');
-            return;
-          }
-          const switchAiDenoiseBtn = document.getElementById('switchAiDenoise');
-          if (switchAiDenoiseBtn) {
-            switchAiDenoiseBtn.innerText = '开启ai降噪';
-          }
-          aidenise = false;
-          await zg.enableAiDenoise(localPublishStream, false);
+            if (!localPublishStream) {
+                alert('流不存在！');
+                return;
+            }
+            const switchAiDenoiseBtn = document.getElementById('switchAiDenoise');
+            if (switchAiDenoiseBtn) {
+                switchAiDenoiseBtn.innerText = '开启ai降噪';
+            }
+            aidenise = false;
+            await zg.enableAiDenoise(localPublishStream, false);
         } else {
-          if (!localPublishStream) {
-            alert('流不存在！');
-            return;
-          }
-          const switchAiDenoiseBtn = document.getElementById('switchAiDenoise');
-          if (switchAiDenoiseBtn) {
-            switchAiDenoiseBtn.innerText = '关闭ai降噪';
-          }
-          aidenise = true;
-          await zg.enableAiDenoise(localPublishStream, true);
+            if (!localPublishStream) {
+                alert('流不存在！');
+                return;
+            }
+            const switchAiDenoiseBtn = document.getElementById('switchAiDenoise');
+            if (switchAiDenoiseBtn) {
+                switchAiDenoiseBtn.innerText = '关闭ai降噪';
+            }
+            aidenise = true;
+            await zg.enableAiDenoise(localPublishStream, true);
         }
-      });
+    });
 
     $("#range-sharp").on("change", () => { setBeautyEffect(isBeauty) })
     $("#range-light").on("change", () => { setBeautyEffect(isBeauty) })
@@ -527,30 +531,30 @@ $(async () => {
     // })
 
     $('#replaceExternalVideo').click(async function () {
-      console.error("1111111");
-      if (!previewVideo.srcObject) {
-          alert('流不存在');
-          return;
-      }
-      // 优先保存摄像头视轨
-      !cameraStreamVideoTrack && previewVideo.srcObject && (cameraStreamVideoTrack = previewVideo.srcObject.getVideoTracks()[0] && previewVideo.srcObject.getVideoTracks()[0]);
-      if (!externalStream) {
-          externalStream = await zg.createStream({
-              custom: {
-                  source: $('#customVideo')[0],
-                  videoOptimizationMode: $('#videoOptimizationMode').val() ? $('#videoOptimizationMode').val() : "default"
-              }
-          });
-          externalStreamVideoTrack = externalStream.getVideoTracks()[0];
-          console.log('externalStreamVideoTrack', externalStreamVideoTrack);
-      }
+        console.error("1111111");
+        if (!previewVideo.srcObject) {
+            alert('流不存在');
+            return;
+        }
+        // 优先保存摄像头视轨
+        !cameraStreamVideoTrack && previewVideo.srcObject && (cameraStreamVideoTrack = previewVideo.srcObject.getVideoTracks()[0] && previewVideo.srcObject.getVideoTracks()[0]);
+        if (!externalStream) {
+            externalStream = await zg.createStream({
+                custom: {
+                    source: $('#customVideo')[0],
+                    videoOptimizationMode: $('#videoOptimizationMode').val() ? $('#videoOptimizationMode').val() : "default"
+                }
+            });
+            externalStreamVideoTrack = externalStream.getVideoTracks()[0];
+            console.log('externalStreamVideoTrack', externalStreamVideoTrack);
+        }
 
-      zg.replaceTrack(previewVideo.srcObject, externalStreamVideoTrack)
-          .then(res => {
-              console.warn('replace custom track success');
-              // videoType = 'external';
-          })
-          .catch(err => console.error(err));
+        zg.replaceTrack(previewVideo.srcObject, externalStreamVideoTrack)
+            .then(res => {
+                console.warn('replace custom track success');
+                // videoType = 'external';
+            })
+            .catch(err => console.error(err));
     });
     zg.off('roomStreamUpdate');
     zg.on('roomStreamUpdate', async (roomID, updateType, streamList, extendedData) => {
@@ -574,25 +578,25 @@ $(async () => {
                 let remoteStream;
                 remoteStreamID = streamList[i].streamID
                 const handlePlaySuccess = (streamItem) => {
-                  if (streamItem) {
-                    let video;
-                    const bro = getBrowser();
-                    if (bro == 'Safari' && playOption.video === false) {
-                        if([0,2].includes(playOption.resourceMode)) {
-                            $('.remoteVideo').append($(`<audio id=${streamItem.streamID} autoplay muted playsinline controls></audio>`));
+                    if (streamItem) {
+                        let video;
+                        const bro = getBrowser();
+                        if (bro == 'Safari' && playOption.video === false) {
+                            if ([0, 2].includes(playOption.resourceMode)) {
+                                $('.remoteVideo').append($(`<audio id=${streamItem.streamID} autoplay muted playsinline controls></audio>`));
+                            }
+                            video = $('.remoteVideo audio:last')[0];
+                            console.warn('audio', video, remoteStream);
+                        } else {
+                            if ([0, 2].includes(playOption.resourceMode)) {
+                                $('.remoteVideo').append($(`<video id=${streamItem.streamID} autoplay muted playsinline controls></video>`));
+                            }
+                            video = $('.remoteVideo video:last')[0];
+                            console.warn('video', video, remoteStream);
                         }
-                        video = $('.remoteVideo audio:last')[0];
-                        console.warn('audio', video, remoteStream);
-                    } else {
-                        if([0,2].includes(playOption.resourceMode)) {
-                            $('.remoteVideo').append($(`<video id=${streamItem.streamID} autoplay muted playsinline controls></video>`));
-                        }
-                        video = $('.remoteVideo video:last')[0];
-                        console.warn('video', video, remoteStream);
+                        video.srcObject = remoteStream;
+                        video.muted = false;
                     }
-                    video.srcObject = remoteStream;
-                    video.muted = false;
-                  }
 
 
                 };
@@ -617,22 +621,22 @@ $(async () => {
                 playOption.isSEIStart = sei;
                 playOption.streamType = $('#streamType').val() == "0" ? 0 : $('#streamType').val() == "1" ? 1 : 2;
 
-                if ([1,3].includes(playOption.resourceMode)) {
-                  let video;
-                  $('.remoteVideo').append($(`<video id=${streamList[i].streamID} autoplay muted playsinline controls></video>`));
-                  video = $('.remoteVideo video:last')[0];
-                  video.muted = false;
-                  playOption.CDNVideo = video;
-                  playOption.CDNPlayer = new ZegoCDNPlayer()
+                if ([1, 3].includes(playOption.resourceMode)) {
+                    let video;
+                    $('.remoteVideo').append($(`<video id=${streamList[i].streamID} autoplay muted playsinline controls></video>`));
+                    video = $('.remoteVideo video:last')[0];
+                    video.muted = false;
+                    playOption.CDNVideo = video;
+                    playOption.CDNPlayer = new ZegoCDNPlayer()
                 }
 
 
                 zg.startPlayingStream(streamList[i].streamID, playOption).then(stream => {
                     if (stream) {
-                      remoteStream = stream;
-                      handlePlaySuccess(streamList[i]);
+                        remoteStream = stream;
+                        handlePlaySuccess(streamList[i]);
                     } else {
-                      handlePlaySuccess();
+                        handlePlaySuccess();
                     }
 
                     useLocalStreamList.push(streamList[i]);
@@ -718,7 +722,7 @@ $(async () => {
     })
     zg.on('playerStateUpdate', result => {
         console.warn('playerStateUpdate: ', result.streamID, result.state, result);
-        
+
     })
 
 });
