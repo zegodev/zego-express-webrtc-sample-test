@@ -14,7 +14,7 @@ $("#custom-userid").text(userID)
 let publishStreamId = 'webrtc' + new Date().getTime();
 let zg;
 let appID = 1739272706; // 请从官网控制台获取对应的appID
-let server = 'wss://webliveroom1739272706-api.test.zego.im/ws';  // 请从官网控制台获取对应的server地址，否则可能登录失败
+let server = 'wss://webliveroom1739272706-api.zego.im/ws';  // 请从官网控制台获取对应的server地址，否则可能登录失败
 
 let cgiToken = '';
 //const appSign = '';
@@ -118,9 +118,13 @@ if (typeof isPeer === 'boolean') {
     zg.zegoWebRTC.streamCenter.isPeer = isPeer
 }
 
-// if (isSoftCoding !== undefined && zg.getVersion()>='2.18.0') {
-//   zg.zegoWebRTC?.enableVideoHardwareEncoder(!isSoftCoding);
+// if (isSoftCoding !== undefined) {
+//   zg.zegoWebRTC.enableVideoHardwareEncoder(!isSoftCoding);
 // }
+
+if (isSoftCoding !== undefined && zg.getVersion()>='2.18.0') {
+  zg.zegoWebRTC.enableVideoHardwareEncoder(!isSoftCoding);
+}
 // if (isSoftCoding !== undefined && zg.getVersion()==='2.17.2') {
 //   zg?.enableVideoHardwareEncoder(!isSoftCoding);
 // }
@@ -170,7 +174,7 @@ async function start() {
     zg.setLogConfig({
         logLevel: 'debug',
         remoteLogLevel: 'info',
-        logURL: '',
+        logURL: 'wss://weblogger1739272706-api.zego.im/log',
     });
 
     zg.setDebugVerbose(false);
@@ -414,6 +418,7 @@ function initSDK() {
                 playOption.isSEIStart = sei;
                 zg.startPlayingStream(streamList[i].streamID, playOption).then(stream => {
                     remoteStream = stream;
+                    // console.error('useLocalStreamList.push')
                     useLocalStreamList.push(streamList[i]);
 
 
@@ -539,7 +544,7 @@ function initSDK() {
         console.log(
             `publish#${streamID} videoFPS: ${streamQuality.video.videoFPS} videoBitrate: ${streamQuality.video.videoBitrate} audioBitrate: ${streamQuality.audio.audioBitrate} audioFPS: ${streamQuality.audio.audioFPS}`,
         );
-        console.error(`publish#${streamID}`, streamQuality);
+        // console.error(`publish#${streamID}`, streamQuality);
     });
 
     zg.on('remoteCameraStatusUpdate', (streamID, status) => {
@@ -565,8 +570,19 @@ function initSDK() {
         const micList = deviceInfo.microphones;
         const currentRoomID = $('#roomId').val() || undefined;
         if (localStreamMap[currentRoomID]) {
-            zg.useVideoDevice(localStreamMap[currentRoomID], cameras[0].deviceID);
-            zg.useAudioDevice(localStreamMap[currentRoomID], micList[0].deviceID);
+            localStreamMap[currentRoomID].getTracks().forEach(item => {
+                console.warn(item, item.getSettings())
+                if (item.kind === 'video' && item.getSettings().deviceId) {
+                    const cameraExist = cameras.find(camera => camera.deviceID === item.getSettings().deviceId);
+                    !cameraExist && zg.useVideoDevice(localStreamMap[currentRoomID], cameras[0].deviceID);
+                } 
+                if (item.kind === 'audio' && item.getSettings().deviceId) {
+                    const micExist = micList.find(mic => mic.deviceID === item.getSettings().deviceId);
+                    !micExist && zg.useAudioDevice(localStreamMap[currentRoomID], micList[0].deviceID);
+                } 
+            })
+            // zg.useVideoDevice(localStreamMap[currentRoomID], cameras[0].deviceID);
+            // zg.useAudioDevice(localStreamMap[currentRoomID], micList[0].deviceID);
         }
     });
     zg.on('videoDeviceStateChanged', (updateType, device) => {
@@ -858,8 +874,8 @@ const startPreview = async (constraints = {}) => {
             videoOptimizationMode: $('#videoOptimizationMode').val() ? $('#videoOptimizationMode').val() : "default",
             startBitrate: "target",
             minBitrate: $('#minbitrate').val() && parseInt($('#minbitrate').val()),
-            keyFrameInterval: $('#gop').val() && parseInt($('#gop').val())
-            
+            keyFrameInterval: $('#gop').val() && parseInt($('#gop').val()),
+            facingMode: "user"
             // channelCount: constraints && constraints.camera && constraints.camera.channelCount,
         },
     };

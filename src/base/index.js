@@ -101,6 +101,7 @@ $(async () => {
 
         zg.startPlayingStream(streamID, playOption).then(stream => {
             remoteStream = stream;
+            // console.error('push', streamID)
             useLocalStreamList.push({ streamID });
             handlePlaySuccess({ streamID }, stream);
         }).catch(error => {
@@ -212,9 +213,9 @@ $(async () => {
                 const videoQuality = $('#videoQuality').val();
                 if (videoQuality == 4) {
                     $('#width').val() && (constraints.width = parseInt($('#width').val()) || JSON.parse($('#width').val())),
-                        $('#height').val() && (constraints.height = parseInt($('#height').val()) || JSON.parse($('#height').val())),
-                        $('#frameRate').val() && (constraints.frameRate = parseInt($('#frameRate').val()) || JSON.parse($('#frameRate').val())),
-                        $('#bitrate').val() && (constraints.bitrate = parseInt($('#bitrate').val()))
+                    $('#height').val() && (constraints.height = parseInt($('#height').val()) || JSON.parse($('#height').val())),
+                    $('#frameRate').val() && (constraints.frameRate = parseInt($('#frameRate').val()) || JSON.parse($('#frameRate').val())),
+                    $('#bitrate').val() && (constraints.bitrate = parseInt($('#bitrate').val()))
                 }
                 $('#noiseSuppression').val() === '1' ? (constraints.ANS = true) : (constraints.ANS = false);
                 $('#autoGainControl').val() === '1' ? (constraints.AGC = true) : (constraints.AGC = false);
@@ -459,6 +460,32 @@ $(async () => {
             .catch(err => console.error(err));
     });
 
+
+    // --------------test tracer
+    $('#fetchStreamList').click(async function () {
+        zg.zegoWebRTC.stateCenter.roomList[0].streamHandler.fetchStreamList();
+    });
+    $('#publishRetry').click(async function () {
+        const publish1 = Object.keys(zg.zegoWebRTC.streamCenter.publisherList)[0];
+        if (publish1) {
+            zg.zegoWebRTC.streamCenter.publisherList[publish1].publisher.onRecvCloseSession(1,1,{"reason":11,"err_info":"{\"action\":5,\"err\":3008}"})
+        }
+    });
+    $('#playRetry').click(async function () {
+        const play1 = Object.keys(zg.zegoWebRTC.streamCenter.playerList)[0];
+        if (play1) {
+            zg.zegoWebRTC.streamCenter.playerList[play1].player.onRecvCloseSession(1,1,{"reason":11,"err_info":"{\"action\":5,\"err\":3008}"})
+        }
+    });
+    $('#roomRetry').click(async function () {
+        const room = zg.zegoWebRTM.stateCenter.roomModulesList[0]
+        if (room) {
+            zg.zegoWebRTM.stateCenter.roomModulesList[0].roomHandler.closeHandler({code:1006})
+        }
+    });
+    
+    // --------------test tracer
+
     (document.querySelector("#addTrack")).addEventListener(
         "click",
         async e => {
@@ -652,6 +679,7 @@ $(async () => {
 
                 zg.startPlayingStream(streamList[i].streamID, playOption).then(stream => {
                     remoteStream = stream;
+                    console.warn('push', streamList[i])
                     useLocalStreamList.push(streamList[i]);
                     handlePlaySuccess(streamList[i]);
                 }).catch(error => {
@@ -660,30 +688,38 @@ $(async () => {
                 })
             }
         } else if (updateType == 'DELETE') {
-            for (let k = 0; k < useLocalStreamList.length; k++) {
+            console.warn('useLocalStreamList', useLocalStreamList)
+            // for (let k = 0; k < useLocalStreamList.length; k++) {
                 for (let j = 0; j < streamList.length; j++) {
-                    if (useLocalStreamList[k].streamID === streamList[j].streamID) {
+                    // if (useLocalStreamList[k].streamID === streamList[j].streamID) {
+                        const k = useLocalStreamList.findIndex(item => item.streamID === streamList[j].streamID);
                         try {
-                            zg.stopPlayingStream(useLocalStreamList[k].streamID);
+                            zg.stopPlayingStream(streamList[j].streamID);
                         } catch (error) {
                             console.error(error);
                         }
 
                         playstreamlist = playstreamlist && playstreamlist.filter(item => item !== streamList[j].streamID);
-                        console.warn('playstreamlist', playstreamlist)
-                        console.info(useLocalStreamList[k].streamID + 'was devared');
+                        console.warn('playstreamlist', playstreamlist, k)
+                        if (k >= 0) {
+                            console.info(useLocalStreamList[k].streamID + 'was devared');
 
-                        if (zg.getVersion() >= "2.17.0") {
-                            const a = document.querySelector(`#wrap${useLocalStreamList[k].streamID}`)
-                            $(`#wrap${useLocalStreamList[k].streamID}`).remove();
-                        } else {
-                            $('.remoteVideo video:eq(' + k + ')').remove();
+                            if (zg.getVersion() >= "2.17.0") {
+                                const a = document.querySelector(`#wrap${useLocalStreamList[k].streamID}`)
+                                $(`#wrap${useLocalStreamList[k].streamID}`).remove();
+                            } else {
+                                $('.remoteVideo video:eq(' + k + ')').remove();
+                            }
+                            useLocalStreamList.splice(k, 1);
+                            // useLocalStreamList = useLocalStreamList.filter(item => item.streamID !== streamList[j].streamID)
+                            console.warn('useLocalStreamList after', useLocalStreamList)
+
                         }
-                        useLocalStreamList.splice(k--, 1);
-                        break;
-                    }
+                        
+                        // break;
+                    // }
                 }
-            }
+            // }
         }
     });
     zg.on("roomStateUpdate", (roomID, state) => {

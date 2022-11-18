@@ -120,7 +120,7 @@ $(async () => {
 
     const stopScreen = () => {
         if (screendStream) {
-            zg.destroyStream(screendStream);
+            // zg.destroyStream(screendStream);
             screendStream = null;
             screenStreamVideoTrack && screenStreamVideoTrack.stop();
             screenStreamVideoTrack = null;

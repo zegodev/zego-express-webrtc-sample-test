@@ -538,7 +538,8 @@
           <!-- <button type="button" id="playVideo" class="btn btn-primary btn-sm">播放视频</button> -->
           <button type="button" id="reAcquireDevice" class="btn btn-primary btn-sm">重新获取设备</button>
           <button type="button" id="leaveRoom" class="btn btn-secondary btn-sm leaveRoom">退出</button>
-          <button type="button" id="custom-resetToken" ˝ class="btn btn-primary btn-sm"> 更新token </button>
+          <button type="button" id="custom-resetToken" class="btn btn-primary btn-sm"> 更新token </button>
+          <button type="button" id="dispatchGwNodes" class="btn btn-primary btn-sm">流媒体调度</button>
           <button type="button" id="togglePlayVideo" class="btn btn-primary btn-sm" title="muteMic">开闭拉流画面</button>
           <button type="button" id="togglePlayAudio" class="btn btn-primary btn-sm" title="muteMic">开闭拉流声音</button>
           <button type="button" id="replaceCamera" class="btn btn-primary btn-sm">切换为摄像头</button>
@@ -549,6 +550,7 @@
           <button type="button" id="remove" class="btn btn-primary btn-sm">删除轨道</button>
           <button type="button" id="switchAiDenoise" class="btn btn-primary btn-sm">开启AI降噪</button>
         </div>
+        
         <div>
           <button type="button" id="resumeAutoplay" class="btn btn-primary btn-sm">恢复播放</button>
         </div>
@@ -564,6 +566,15 @@
         </fieldset>
       </div>
 
+      <div class="row">
+        <div class="col-sm">
+          <button type="button" id="fetchStreamList" class="btn btn-primary btn-sm">拉取流列表</button>
+          <button type="button" id="roomRetry" class="btn btn-primary btn-sm">房间重试</button>
+          <button type="button" id="publishRetry" class="btn btn-primary btn-sm">推流重试</button>
+          <button type="button" id="playRetry" class="btn btn-primary btn-sm">拉流重试</button>
+        </div>
+      </div>
+      
       <div class="row videoRow">
         <div class="col-sm">
           <h5 class="sound d-none"><span class="soundText">当前音量：</span> <span id="soundLevel">0</span></h5>
