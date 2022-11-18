@@ -14,7 +14,7 @@ $("#custom-userid").text(userID)
 let publishStreamId = 'webrtc' + new Date().getTime();
 let zg;
 let appID = 1739272706; // 请从官网控制台获取对应的appID
-let server = 'wss://webliveroom1739272706-api.test.zego.im/ws';  // 请从官网控制台获取对应的server地址，否则可能登录失败
+let server = 'wss://webliveroom1739272706-api.zego.im/ws';  // 请从官网控制台获取对应的server地址，否则可能登录失败
 
 let cgiToken = '';
 //const appSign = '';
