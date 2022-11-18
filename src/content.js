@@ -42,6 +42,7 @@ export function getCgi(appId, serverUrl, cgi) {
     let signal = "";
     let isDatachannel = false;
     let isSoftCoding = true;
+    let scenario = 3
     if (location.search) {
         const arrConfig = location.search.substr(1).split('&');
 
@@ -120,9 +121,12 @@ export function getCgi(appId, serverUrl, cgi) {
             if (key == "isSoftCoding") {
               isSoftCoding = decodeURIComponent(value) == "false" ? false : true;
             }
+            if (key == "scenario") {
+                scenario = Number(value);
+            }
         });
     }
-    return { appID, server, cgiToken, userID, l3, isPeer, accessDomain, customDomain, isAccess, auth, ver, sei, seiUUID, signal, isDatachannel, isSoftCoding  };
+    return { appID, server, cgiToken, userID, l3, isPeer, accessDomain, customDomain, isAccess, auth, ver, sei, seiUUID, signal, isDatachannel, isSoftCoding, scenario };
     // 测试用代码 end
     // Test code end
 }

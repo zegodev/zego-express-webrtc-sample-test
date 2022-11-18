@@ -2,7 +2,7 @@ import '../common';
 import 'popper.js';
 import './css/chat.css';
 import './font_Icon/iconfont.css';
-import { checkAnRun, zg, userID, logout, loginRoom, login, login2, getToken } from '../common';
+import { checkAnRun, zg, userID, logout, loginRoom, login, login2, getToken, scenario } from '../common';
 
 
 let msgCount = 0;
@@ -23,9 +23,13 @@ let roomMaxUser = {
 let publishTimes = {};
 let loginTimes = {};
 let publishRooms = {};
+let publishStream = {}
+let oldScenario = scenario;
 
 $(async () => {
     await checkAnRun();
+
+    $('#roomScenario').val(scenario)
 
     function handleRoomList (updateType, roomID) {
         if (updateType === 'ADD') {
@@ -223,6 +227,7 @@ $(async () => {
                         useLocalStreamList.splice(k--, 1);
                         break;
                     }
+                    publishStream[roomID] && (delete publishStream[roomID][streamList[j].streamID])
                 }
             }
         }
@@ -494,11 +499,87 @@ $(async () => {
         previewVideo2 && (previewVideo2.srcObject = null);
 
         $('.remoteVideo1').empty();
-
         zg.logoutRoom(roomId);
         handleRoomList('DELETE', roomId)
     });
-
+    function getVideoConfig() {
+        const config = {}
+        let videoQuality = $("#videoQuality").val();
+        if(videoQuality) {
+            videoQuality = Number(videoQuality)
+            config.videoQuality = videoQuality
+        }
+        if(videoQuality == 4) {
+            const width = $('#width').val()
+            const height = $('#height').val()
+            const frameRate = $('#frameRate').val()
+            const bitrate = $('#bitrate').val()
+            width && (config.width = parseInt(width) || JSON.parse(width))
+            height && (config.height = parseInt(height) || JSON.parse(height))
+            frameRate && (config.frameRate = parseInt(frameRate) || JSON.parse(frameRate))
+            bitrate && (config.bitrate = parseInt(bitrate) || JSON.parse(bitrate))
+        }
+        return config
+    }
+    function getAudioConfig() {
+        const config = {}
+        $('#noiseSuppression').val() === '1' ? (config.ANS = true) : (config.ANS = false);
+        $('#autoGainControl').val() === '1' ? (config.AGC = true) : (config.AGC = false);
+        $('#echoCancellation').val() === '1' ? (config.AEC = true) : (config.AEC = false);
+        return config
+    }
+    function getStreamConfig() {
+        const config = {...getVideoConfig(), ...getAudioConfig()}
+        $('#audioBitrate').val() && (config.audioBitrate = parseInt($('#audioBitrate').val()));
+        return config
+    }
+    $('#setVideoConfig').click(function() {
+        const streamID = $("#publishingID").val()
+        const roomID = $("#publishingRoomID").val()
+        if(!roomID || !publishStream[roomID]) {
+            return alert('please enter the right room ID')
+        }
+        if(!streamID) {
+            return alert('please enter stream ID')
+        }
+        const stream = publishStream[roomID][streamID]
+        const config = getStreamConfig()
+        config.maxBitrate = config.bitrate
+        zg.setVideoConfig(stream, config)
+    })
+    $('#setAudioConfig').click(function() {
+        const streamID = $("#publishingID").val()
+        const roomID = $("#publishingRoomID").val()
+        if(!roomID || !publishStream[roomID]) {
+            return alert('please enter the right room ID')
+        }
+        if(!streamID) {
+            return alert('please enter stream ID')
+        }
+        const stream = publishStream[roomID][streamID]
+        zg.setAudioConfig(stream, getAudioConfig())
+    })
+    $('#roomScenario').change(function(e) {
+        const scenario = e.currentTarget.value;
+        if(scenario) {
+            const result = zg.setRoomScenario(Number(scenario))
+            if(result) {
+                // 重置参数
+                $('#width').val('')
+                $('#height').val('')
+                $('#frameRate').val('')
+                $('#bitrate').val('')
+                $('#noiseSuppression').val('1')
+                $('#autoGainControl').val('1')
+                $('#echoCancellation').val('1')
+                $('#audioBitrate').val('')
+                $("#videoQuality").val('')
+                oldScenario = scenario
+            } else {
+                $('#roomScenario').val(oldScenario)
+            }
+        }
+    })
     $('#publishRoom1Stream1').click(async function() {
         const streamId = $('#roomId1_streamId1').val();
         if (!streamId) {
@@ -511,7 +592,7 @@ $(async () => {
             return false;
         }
         if (!localStream1) {
-            localStream1 = await zg.createStream();
+            localStream1 = await zg.createStream({camera: getStreamConfig()});
         }
         let previewVideo1 = $('#room1PreviewVideo1')[0];
         previewVideo1.srcObject = localStream1;
@@ -519,6 +600,10 @@ $(async () => {
         publishTimes[streamId] = new Date().getTime();
         publishRooms[streamId] = roomId;
         zg.startPublishingStream(streamId, localStream1, { roomID: roomId });
+        if(!publishStream[roomId]) {
+            publishStream[roomId] = {}
+        }
+        publishStream[roomId][streamId] = localStream1
 
     });
 
@@ -534,7 +619,7 @@ $(async () => {
             return false;
         }
         if (!localStream1) {
-            localStream1 = await zg.createStream();
+            localStream1 = await zg.createStream({camera: getStreamConfig()});
         }
 
         let previewVideo1 = $('#room1PreviewVideo2')[0];
@@ -544,6 +629,10 @@ $(async () => {
         publishRooms[streamId] = roomId;
 
         zg.startPublishingStream(streamId, localStream1, { roomID: roomId });
+        if(!publishStream[roomId]) {
+            publishStream[roomId] = {}
+        }
+        publishStream[roomId][streamId] = localStream1
     });
 
 
@@ -684,7 +773,7 @@ $(async () => {
             return false;
         }
         if (!localStream2) {
-            localStream2 = await zg.createStream();
+            localStream2 = await zg.createStream({camera: getStreamConfig()});
         }
 
         let previewVideo1 = $('#room2PreviewVideo1')[0];
@@ -694,6 +783,10 @@ $(async () => {
         publishRooms[streamId] = roomId;
 
         zg.startPublishingStream(streamId, localStream2, { roomID: roomId});
+        if(!publishStream[roomId]) {
+            publishStream[roomId] = {}
+        }
+        publishStream[roomId][streamId] = localStream2
 
     });
 
@@ -709,7 +802,7 @@ $(async () => {
             return false;
         }
         if (!localStream2) {
-            localStream2 = await zg.createStream();
+            localStream2 = await zg.createStream({camera: getStreamConfig()});
         }
 
         let previewVideo1 = $('#room2PreviewVideo2')[0];
@@ -719,6 +812,10 @@ $(async () => {
         publishRooms[streamId] = roomId;
 
         zg.startPublishingStream(streamId, localStream2, { roomID: roomId });
+        if(!publishStream[roomId]) {
+            publishStream[roomId] = {}
+        }
+        publishStream[roomId][streamId] = localStream2
     });
 
     $('#stopPublishRoom2Stream1').click(async function() {
@@ -854,7 +951,7 @@ $(async () => {
             return false;
         }
         if (!localStream3) {
-            localStream3 = await zg.createStream();
+            localStream3 = await zg.createStream({camera: getStreamConfig()});
         }
         const roomId = $('#roomId3').val();
         if (!roomId) {
@@ -868,6 +965,10 @@ $(async () => {
         publishRooms[streamId] = roomId;
 
         zg.startPublishingStream(streamId, localStream3, {roomID: roomId });
+        if(!publishStream[roomId]) {
+            publishStream[roomId] = {}
+        }
+        publishStream[roomId][streamId] = localStream3
 
     });
 
@@ -878,7 +979,7 @@ $(async () => {
             return false;
         }
         if (!localStream3) {
-            localStream3 = await zg.createStream();
+            localStream3 = await zg.createStream({camera: getStreamConfig()});
         }
         const roomId = $('#roomId3').val();
         if (!roomId) {
@@ -892,6 +993,10 @@ $(async () => {
         publishRooms[streamId] = roomId;
 
         zg.startPublishingStream(streamId, localStream3, { roomID: roomId });
+        if(!publishStream[roomId]) {
+            publishStream[roomId] = {}
+        }
+        publishStream[roomId][streamId] = localStream3
     });
 
     $('#stopPublishRoom3Stream1').click(async function() {
