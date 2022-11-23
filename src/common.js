@@ -875,7 +875,7 @@ const startPreview = async (constraints = {}) => {
             startBitrate: "target",
             minBitrate: $('#minbitrate').val() && parseInt($('#minbitrate').val()),
             keyFrameInterval: $('#gop').val() && parseInt($('#gop').val()),
-            facingMode: "user"
+            // facingMode: "user"
             // channelCount: constraints && constraints.camera && constraints.camera.channelCount,
         },
     };
