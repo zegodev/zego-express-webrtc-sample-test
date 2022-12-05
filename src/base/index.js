@@ -493,7 +493,7 @@ $(async () => {
             if (cameraStreamVideoTrack) cameraStreamVideoTrack.stop()
             cameraStreamVideoTrack = stream.getVideoTracks()[0]
             //@ts-ignore
-            const result = await zg.zegoWebRTC.addTrack(
+            const result = await zg.addTrack(
                 previewVideo.srcObject,
                 cameraStreamVideoTrack
             );
@@ -506,7 +506,7 @@ $(async () => {
         "#removeTrack"
     )).addEventListener("click", async e => {
         //@ts-ignore
-        const result = await zg.zegoWebRTC.removeTrack(
+        const result = await zg.removeTrack(
             //@ts-ignore
             previewVideo.srcObject,
             //@ts-ignore
