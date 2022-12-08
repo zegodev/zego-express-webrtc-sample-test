@@ -10,6 +10,7 @@ let playOption = {};
 // --test begin
 let previewStream;
 let cameraStreamVideoTrack;
+let micAudioTrack;
 let externalStream;
 let externalStreamVideoTrack;
 let published = false;
@@ -213,9 +214,9 @@ $(async () => {
                 const videoQuality = $('#videoQuality').val();
                 if (videoQuality == 4) {
                     $('#width').val() && (constraints.width = parseInt($('#width').val()) || JSON.parse($('#width').val())),
-                    $('#height').val() && (constraints.height = parseInt($('#height').val()) || JSON.parse($('#height').val())),
-                    $('#frameRate').val() && (constraints.frameRate = parseInt($('#frameRate').val()) || JSON.parse($('#frameRate').val())),
-                    $('#bitrate').val() && (constraints.bitrate = parseInt($('#bitrate').val()))
+                        $('#height').val() && (constraints.height = parseInt($('#height').val()) || JSON.parse($('#height').val())),
+                        $('#frameRate').val() && (constraints.frameRate = parseInt($('#frameRate').val()) || JSON.parse($('#frameRate').val())),
+                        $('#bitrate').val() && (constraints.bitrate = parseInt($('#bitrate').val()))
                 }
                 $('#noiseSuppression').val() === '1' ? (constraints.ANS = true) : (constraints.ANS = false);
                 $('#autoGainControl').val() === '1' ? (constraints.AGC = true) : (constraints.AGC = false);
@@ -468,28 +469,28 @@ $(async () => {
     $('#publishRetry').click(async function () {
         const publish1 = Object.keys(zg.zegoWebRTC.streamCenter.publisherList)[0];
         if (publish1) {
-            zg.zegoWebRTC.streamCenter.publisherList[publish1].publisher.onRecvCloseSession(1,1,{"reason":11,"err_info":"{\"action\":5,\"err\":3008}"})
+            zg.zegoWebRTC.streamCenter.publisherList[publish1].publisher.onRecvCloseSession(1, 1, { "reason": 11, "err_info": "{\"action\":5,\"err\":3008}" })
         }
     });
     $('#playRetry').click(async function () {
         const play1 = Object.keys(zg.zegoWebRTC.streamCenter.playerList)[0];
         if (play1) {
-            zg.zegoWebRTC.streamCenter.playerList[play1].player.onRecvCloseSession(1,1,{"reason":11,"err_info":"{\"action\":5,\"err\":3008}"})
+            zg.zegoWebRTC.streamCenter.playerList[play1].player.onRecvCloseSession(1, 1, { "reason": 11, "err_info": "{\"action\":5,\"err\":3008}" })
         }
     });
     $('#roomRetry').click(async function () {
         const room = zg.zegoWebRTM.stateCenter.roomModulesList[0]
         if (room) {
-            zg.zegoWebRTM.stateCenter.roomModulesList[0].roomHandler.closeHandler({code:1006})
+            zg.zegoWebRTM.stateCenter.roomModulesList[0].roomHandler.closeHandler({ code: 1006 })
         }
     });
-    
+
     // --------------test tracer
 
-    (document.querySelector("#addTrack")).addEventListener(
+    (document.querySelector("#addVideoTrack")).addEventListener(
         "click",
         async e => {
-            const stream = await zg.createStream();
+            const stream = await zg.createStream({ camera: { video: true, audio: false } });
             if (cameraStreamVideoTrack) cameraStreamVideoTrack.stop()
             cameraStreamVideoTrack = stream.getVideoTracks()[0]
             //@ts-ignore
@@ -497,22 +498,48 @@ $(async () => {
                 previewVideo.srcObject,
                 cameraStreamVideoTrack
             );
-
-            console.error(result);
+            console.error("addVideoTrack", result);
         }
     );
 
     (document.querySelector(
-        "#removeTrack"
+        "#removeVideoTrack"
     )).addEventListener("click", async e => {
-        //@ts-ignore
+        const track = cameraStreamVideoTrack || previewVideo.srcObject.getVideoTracks()[0]
         const result = await zg.removeTrack(
-            //@ts-ignore
             previewVideo.srcObject,
-            //@ts-ignore
-            previewVideo.srcObject.getVideoTracks()[0]
+            track
         );
-        console.error(result);
+        cameraStreamVideoTrack && cameraStreamVideoTrack.stop()
+        console.error("removeVideoTrack", result);
+    });
+
+    (document.querySelector("#addAudioTrack")).addEventListener(
+        "click",
+        async e => {
+            const stream = await zg.createStream({ camera: { video: false, audio: true } });
+            if (micAudioTrack) micAudioTrack.stop()
+            micAudioTrack = stream.getAudioTracks()[0]
+            //@ts-ignore
+            const result = await zg.addTrack(
+                previewVideo.srcObject,
+                micAudioTrack
+            );
+            console.error("addAudioTrack", result);
+        }
+    );
+
+    (document.querySelector(
+        "#removeAudioTrack"
+    )).addEventListener("click", async e => {
+        const track = micAudioTrack || previewVideo.srcObject.getAudioTracks()[0]
+        const result = await zg.removeTrack(
+            previewVideo.srcObject,
+            track
+        );
+        if (micAudioTrack) micAudioTrack.stop()
+        // track.stop();
+        console.error("removeAudioTrack", result);
     });
 
     function setExtendModelData(inputElement) {
@@ -690,35 +717,35 @@ $(async () => {
         } else if (updateType == 'DELETE') {
             console.warn('useLocalStreamList', useLocalStreamList)
             // for (let k = 0; k < useLocalStreamList.length; k++) {
-                for (let j = 0; j < streamList.length; j++) {
-                    // if (useLocalStreamList[k].streamID === streamList[j].streamID) {
-                        const k = useLocalStreamList.findIndex(item => item.streamID === streamList[j].streamID);
-                        try {
-                            zg.stopPlayingStream(streamList[j].streamID);
-                        } catch (error) {
-                            console.error(error);
-                        }
-
-                        playstreamlist = playstreamlist && playstreamlist.filter(item => item !== streamList[j].streamID);
-                        console.warn('playstreamlist', playstreamlist, k)
-                        if (k >= 0) {
-                            console.info(useLocalStreamList[k].streamID + 'was devared');
-
-                            if (zg.getVersion() >= "2.17.0") {
-                                const a = document.querySelector(`#wrap${useLocalStreamList[k].streamID}`)
-                                $(`#wrap${useLocalStreamList[k].streamID}`).remove();
-                            } else {
-                                $('.remoteVideo video:eq(' + k + ')').remove();
-                            }
-                            useLocalStreamList.splice(k, 1);
-                            // useLocalStreamList = useLocalStreamList.filter(item => item.streamID !== streamList[j].streamID)
-                            console.warn('useLocalStreamList after', useLocalStreamList)
-
-                        }
-                        
-                        // break;
-                    // }
+            for (let j = 0; j < streamList.length; j++) {
+                // if (useLocalStreamList[k].streamID === streamList[j].streamID) {
+                const k = useLocalStreamList.findIndex(item => item.streamID === streamList[j].streamID);
+                try {
+                    zg.stopPlayingStream(streamList[j].streamID);
+                } catch (error) {
+                    console.error(error);
                 }
+
+                playstreamlist = playstreamlist && playstreamlist.filter(item => item !== streamList[j].streamID);
+                console.warn('playstreamlist', playstreamlist, k)
+                if (k >= 0) {
+                    console.info(useLocalStreamList[k].streamID + 'was devared');
+
+                    if (zg.getVersion() >= "2.17.0") {
+                        const a = document.querySelector(`#wrap${useLocalStreamList[k].streamID}`)
+                        $(`#wrap${useLocalStreamList[k].streamID}`).remove();
+                    } else {
+                        $('.remoteVideo video:eq(' + k + ')').remove();
+                    }
+                    useLocalStreamList.splice(k, 1);
+                    // useLocalStreamList = useLocalStreamList.filter(item => item.streamID !== streamList[j].streamID)
+                    console.warn('useLocalStreamList after', useLocalStreamList)
+
+                }
+
+                // break;
+                // }
+            }
             // }
         }
     });
