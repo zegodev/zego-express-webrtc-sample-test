@@ -509,8 +509,10 @@ $(async () => {
         "click",
         async e => {
             const stream = await zg.createStream({ camera: { video: true, audio: false } });
-            if (cameraStreamVideoTrack) cameraStreamVideoTrack.stop()
-            cameraStreamVideoTrack = stream.getVideoTracks()[0]
+            
+            if (!cameraStreamVideoTrack) {
+                cameraStreamVideoTrack = stream.getVideoTracks()[0]
+            }
             //@ts-ignore
             const result = await zg.addTrack(
                 previewVideo.srcObject,
@@ -536,8 +538,9 @@ $(async () => {
         "click",
         async e => {
             const stream = await zg.createStream({ camera: { video: false, audio: true } });
-            if (micAudioTrack) micAudioTrack.stop()
-            micAudioTrack = stream.getAudioTracks()[0]
+            if (!micAudioTrack) {
+                micAudioTrack = stream.getAudioTracks()[0]
+            }
             //@ts-ignore
             const result = await zg.addTrack(
                 previewVideo.srcObject,
