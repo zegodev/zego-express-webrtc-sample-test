@@ -13,6 +13,7 @@ let cameraStreamVideoTrack;
 let micAudioTrack;
 let externalStream;
 let externalStreamVideoTrack;
+let externalStreamAudioTrack;
 let published = false;
 let remoteStreamID = ""
 // ---test end
@@ -438,6 +439,23 @@ $(async () => {
             })
             .catch(err => console.error(err));
     });
+    
+    $('#replaceMic').click(async function () {
+        if (!previewVideo.srcObject) {
+            alert('先创建流');
+            return;
+        }
+
+        // 设置美颜之前保存摄像头视轨
+        !micAudioTrack && previewVideo.srcObject && (micAudioTrack = previewVideo.srcObject.getAudioTracks()[0]);
+
+        zg.replaceTrack(previewVideo.srcObject, micAudioTrack)
+            .then(res => {
+                console.warn('replaceTrack success');
+                videoType = 'mic';
+            })
+            .catch(err => console.error(err));
+    });
     $('#replaceScreenVideo').click(async function () {
         if (!previewVideo.srcObject) {
             alert('流不存在');
@@ -607,6 +625,32 @@ $(async () => {
         }
 
         zg.replaceTrack(previewVideo.srcObject, externalStreamVideoTrack)
+            .then(res => {
+                console.warn('replace custom track success');
+                // videoType = 'external';
+            })
+            .catch(err => console.error(err));
+    });
+    $('#replaceExternalAudio').click(async function () {
+        console.error("1111111");
+        if (!previewVideo.srcObject) {
+            alert('流不存在');
+            return;
+        }
+        // 优先保存麦克风音轨
+        !micAudioTrack && previewVideo.srcObject && (micAudioTrack = previewVideo.srcObject.getAudioTracks()[0] && previewVideo.srcObject.getAudioTracks()[0]);
+        if (!externalStream) {
+            externalStream = await zg.createStream({
+                custom: {
+                    source: $('#customVideo')[0],
+                    videoOptimizationMode: $('#videoOptimizationMode').val() ? $('#videoOptimizationMode').val() : "default"
+                }
+            });
+            externalStreamAudioTrack = externalStream.getAudioTracks()[0];
+            console.log('externalStreamAudioTrack', externalStreamAudioTrack);
+        }
+
+        zg.replaceTrack(previewVideo.srcObject, externalStreamAudioTrack)
             .then(res => {
                 console.warn('replace custom track success');
                 // videoType = 'external';
@@ -814,6 +858,14 @@ $(async () => {
             audioCumulativeBreakRate: audio.audioCumulativeBreakRate,
             audioCumulativeBlankTime: audio.audioCumulativeBlankTime
         });
+    })
+    zg.on("roomStateUpdate", (id, state) => {
+        if (state === "DISCONNECTED") {
+            cameraStreamVideoTrack && cameraStreamVideoTrack.stop()
+            cameraStreamVideoTrack = null
+            micAudioTrack && micAudioTrack.stop()
+            micAudioTrack = null
+        }
     })
 });
 
