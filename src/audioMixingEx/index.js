@@ -272,12 +272,15 @@ $(async () => {
     (document.querySelector(
         "#removeVideoTrack"
     )).addEventListener("click", async e => {
-        const track = cameraStreamVideoTrack || previewVideo.srcObject.getVideoTracks()[0]
+        const track = previewVideo.srcObject.getVideoTracks()[0]
         const result = await zg.removeTrack(
             previewVideo.srcObject,
             track
         );
-        cameraStreamVideoTrack && cameraStreamVideoTrack.stop()
+        if (cameraStreamVideoTrack) {
+            cameraStreamVideoTrack.stop();
+            cameraStreamVideoTrack = null
+        }
         console.error("removeVideoTrack", result);
     });
     (document.querySelector("#addAudioTrack")).addEventListener(
@@ -298,12 +301,15 @@ $(async () => {
     (document.querySelector(
         "#removeAudioTrack"
     )).addEventListener("click", async e => {
-        const track = micAudioTrack || previewVideo.srcObject.getAudioTracks()[0]
+        const track = previewVideo.srcObject.getAudioTracks()[0]
         const result = await zg.removeTrack(
             previewVideo.srcObject,
             track
         );
-        if (micAudioTrack) micAudioTrack.stop()
+        if (micAudioTrack) {
+            micAudioTrack.stop();
+            micAudioTrack = null
+        }
         // track.stop();
         console.error("removeAudioTrack", result);
     });

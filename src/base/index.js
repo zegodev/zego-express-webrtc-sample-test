@@ -525,12 +525,15 @@ $(async () => {
     (document.querySelector(
         "#removeVideoTrack"
     )).addEventListener("click", async e => {
-        const track = cameraStreamVideoTrack || previewVideo.srcObject.getVideoTracks()[0]
+        const track = previewVideo.srcObject.getVideoTracks()[0]
         const result = await zg.removeTrack(
             previewVideo.srcObject,
             track
         );
-        cameraStreamVideoTrack && cameraStreamVideoTrack.stop()
+        if (cameraStreamVideoTrack) {
+            cameraStreamVideoTrack.stop();
+            cameraStreamVideoTrack = null
+        }
         console.error("removeVideoTrack", result);
     });
 
@@ -553,12 +556,15 @@ $(async () => {
     (document.querySelector(
         "#removeAudioTrack"
     )).addEventListener("click", async e => {
-        const track = micAudioTrack || previewVideo.srcObject.getAudioTracks()[0]
+        const track = previewVideo.srcObject.getAudioTracks()[0]
         const result = await zg.removeTrack(
             previewVideo.srcObject,
             track
         );
-        if (micAudioTrack) micAudioTrack.stop()
+        if (micAudioTrack) {
+            micAudioTrack.stop();
+            micAudioTrack = null
+        }
         // track.stop();
         console.error("removeAudioTrack", result);
     });
@@ -623,10 +629,10 @@ $(async () => {
                     videoOptimizationMode: $('#videoOptimizationMode').val() ? $('#videoOptimizationMode').val() : "default"
                 }
             });
-            externalStreamVideoTrack = externalStream.getVideoTracks()[0];
-            console.log('externalStreamVideoTrack', externalStreamVideoTrack);
         }
 
+        externalStreamVideoTrack = externalStream.getVideoTracks()[0];
+        console.log('externalStreamVideoTrack', externalStreamVideoTrack);
         zg.replaceTrack(previewVideo.srcObject, externalStreamVideoTrack)
             .then(res => {
                 console.warn('replace custom track success');
@@ -635,7 +641,6 @@ $(async () => {
             .catch(err => console.error(err));
     });
     $('#replaceExternalAudio').click(async function () {
-        console.error("1111111");
         if (!previewVideo.srcObject) {
             alert('流不存在');
             return;
@@ -649,10 +654,9 @@ $(async () => {
                     videoOptimizationMode: $('#videoOptimizationMode').val() ? $('#videoOptimizationMode').val() : "default"
                 }
             });
-            externalStreamAudioTrack = externalStream.getAudioTracks()[0];
-            console.log('externalStreamAudioTrack', externalStreamAudioTrack);
         }
-
+        externalStreamAudioTrack = externalStream.getAudioTracks()[0];
+        console.log('externalStreamAudioTrack', externalStreamAudioTrack);
         zg.replaceTrack(previewVideo.srcObject, externalStreamAudioTrack)
             .then(res => {
                 console.warn('replace custom track success');
