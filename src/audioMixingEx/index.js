@@ -257,8 +257,14 @@ $(async () => {
     (document.querySelector("#addVideoTrack")).addEventListener(
         "click",
         async e => {
-            const stream = await zg.createStream({ camera: { video: true, audio: false } });
             if (!cameraStreamVideoTrack) {
+                const stream = await zg.createStream({
+                    camera: {
+                        audioInput: $('#audioList').val(),
+                        videoInput: $('#videoList').val(),
+                        video: true, audio: false
+                    }
+                });
                 cameraStreamVideoTrack = stream.getVideoTracks()[0]
             }
             //@ts-ignore
@@ -286,8 +292,10 @@ $(async () => {
     (document.querySelector("#addAudioTrack")).addEventListener(
         "click",
         async e => {
-            const stream = await zg.createStream({ camera: { video: false, audio: true } });
             if (!micAudioTrack) {
+                const stream = await zg.createStream({ camera: {
+                    audioInput: $('#audioList').val(),
+                    videoInput: $('#videoList').val(), video: false, audio: true } });
                 micAudioTrack = stream.getAudioTracks()[0]
             }
             //@ts-ignore
