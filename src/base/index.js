@@ -430,7 +430,8 @@ $(async () => {
         }
 
         // 设置美颜之前保存摄像头视轨
-        !cameraStreamVideoTrack && previewVideo.srcObject && (cameraStreamVideoTrack = previewVideo.srcObject.getVideoTracks()[0]);
+        const originTrack = previewVideo.srcObject.getVideoTracks()[0];
+        !cameraStreamVideoTrack && originTrack && (cameraStreamVideoTrack = originTrack);
 
         zg.replaceTrack(previewVideo.srcObject, cameraStreamVideoTrack)
             .then(res => {
@@ -439,7 +440,7 @@ $(async () => {
             })
             .catch(err => console.error(err));
     });
-    
+
     $('#replaceMic').click(async function () {
         if (!previewVideo.srcObject) {
             alert('先创建流');
@@ -447,7 +448,8 @@ $(async () => {
         }
 
         // 设置美颜之前保存摄像头视轨
-        !micAudioTrack && previewVideo.srcObject && (micAudioTrack = previewVideo.srcObject.getAudioTracks()[0]);
+        const originTrack = previewVideo.srcObject.getAudioTracks()[0];
+        !micAudioTrack && originTrack.label !== "MediaStreamAudioDestinationNode" && (micAudioTrack = originTrack);
 
         zg.replaceTrack(previewVideo.srcObject, micAudioTrack)
             .then(res => {
@@ -508,11 +510,14 @@ $(async () => {
     (document.querySelector("#addVideoTrack")).addEventListener(
         "click",
         async e => {
-            
+
             if (!cameraStreamVideoTrack) {
-                const stream = await zg.createStream({ camera: { 
-                    audioInput: $('#audioList').val(),
-                    videoInput: $('#videoList').val(),video: true, audio: false } });
+                const stream = await zg.createStream({
+                    camera: {
+                        audioInput: $('#audioList').val(),
+                        videoInput: $('#videoList').val(), video: true, audio: false
+                    }
+                });
                 cameraStreamVideoTrack = stream.getVideoTracks()[0]
             }
             //@ts-ignore
@@ -520,7 +525,7 @@ $(async () => {
                 previewVideo.srcObject,
                 cameraStreamVideoTrack
             );
-            console.error("addVideoTrack", result);
+            console.error("addVideoTrack", cameraStreamVideoTrack.label, result);
         }
     );
 
@@ -533,7 +538,7 @@ $(async () => {
             track
         );
         if (cameraStreamVideoTrack) {
-            if(!result.errorCode&&result.codecameraStreamVideoTrack!==track) {
+            if (!result.errorCode && result.codecameraStreamVideoTrack !== track) {
                 track.stop();
             }
             cameraStreamVideoTrack.stop();
@@ -546,9 +551,12 @@ $(async () => {
         "click",
         async e => {
             if (!micAudioTrack) {
-                const stream = await zg.createStream({ camera: {
-                    audioInput: $('#audioList').val(),
-                    videoInput: $('#videoList').val(), video: false, audio: true } });
+                const stream = await zg.createStream({
+                    camera: {
+                        audioInput: $('#audioList').val(),
+                        videoInput: $('#videoList').val(), video: false, audio: true
+                    }
+                });
                 micAudioTrack = stream.getAudioTracks()[0]
             }
             //@ts-ignore
@@ -556,7 +564,7 @@ $(async () => {
                 previewVideo.srcObject,
                 micAudioTrack
             );
-            console.error("addAudioTrack", result);
+            console.error("addAudioTrack", micAudioTrack.label, result);
         }
     );
 
@@ -569,7 +577,7 @@ $(async () => {
             track
         );
         if (micAudioTrack) {
-            if(!result.errorCode&&micAudioTrack!==track) {
+            if (!result.errorCode && micAudioTrack !== track) {
                 track.stop();
             }
             micAudioTrack.stop();
@@ -656,7 +664,8 @@ $(async () => {
             return;
         }
         // 优先保存麦克风音轨
-        !micAudioTrack && previewVideo.srcObject && (micAudioTrack = previewVideo.srcObject.getAudioTracks()[0] && previewVideo.srcObject.getAudioTracks()[0]);
+        const originTrack = previewVideo.srcObject.getAudioTracks()[0];
+        !micAudioTrack && originTrack.label !== "MediaStreamAudioDestinationNode" && (micAudioTrack = originTrack);
         if (!externalStream) {
             externalStream = await zg.createStream({
                 custom: {
