@@ -1,5 +1,8 @@
 import { checkAnRun, zg, publishStreamId, logout, getEffectPlayer, logouted, stopPublish, startPreview, startPublish, getPreviewStream } from '../common';
 
+let cameraStreamVideoTrack;
+let micAudioTrack;
+
 $(async () => {
     let isMixingAudio = false;
     let isMixingBuffer = false;
@@ -24,7 +27,7 @@ $(async () => {
     })
     $('#startPublish').on("click", () => {
         startPublish();
-        localPublishStream =  getPreviewStream();
+        localPublishStream = getPreviewStream();
     })
     $("#stopPublish").on("click", () => {
         stopPublish()
@@ -98,6 +101,10 @@ $(async () => {
         isMixingAudio = false;
         isMixingBuffer = false;
         logout();
+        cameraStreamVideoTrack && cameraStreamVideoTrack.stop()
+        cameraStreamVideoTrack = null
+        micAudioTrack && micAudioTrack.stop()
+        micAudioTrack = null
     });
 
     $('#preloadEffect').click(async () => {
@@ -244,5 +251,80 @@ $(async () => {
             document.getElementById('switchAiDenoise').innerText = '开启AI降噪';
         }
         await zg.zegoWebRTC.enableAiDenoise(localstream, aidenoise);
+    });
+
+    // 增刪視軌
+    (document.querySelector("#addVideoTrack")).addEventListener(
+        "click",
+        async e => {
+            if (!cameraStreamVideoTrack) {
+                const stream = await zg.createStream({
+                    camera: {
+                        audioInput: $('#audioList').val(),
+                        videoInput: $('#videoList').val(),
+                        video: true, audio: false
+                    }
+                });
+                cameraStreamVideoTrack = stream.getVideoTracks()[0]
+            }
+            //@ts-ignore
+            const result = await zg.addTrack(
+                previewVideo.srcObject,
+                cameraStreamVideoTrack
+            );
+            console.error("addVideoTrack", result);
+        }
+    );
+    (document.querySelector(
+        "#removeVideoTrack"
+    )).addEventListener("click", async e => {
+        const track = previewVideo.srcObject.getVideoTracks()[0]
+        const result = await zg.removeTrack(
+            previewVideo.srcObject,
+            track
+        );
+        if (cameraStreamVideoTrack) {
+            if(!result.errorCode&&cameraStreamVideoTrack!==track) {
+                track.stop();
+            }
+            cameraStreamVideoTrack.stop();
+            cameraStreamVideoTrack = null
+        }
+        console.error("removeVideoTrack", result);
+    });
+    (document.querySelector("#addAudioTrack")).addEventListener(
+        "click",
+        async e => {
+            if (!micAudioTrack) {
+                const stream = await zg.createStream({ camera: {
+                    audioInput: $('#audioList').val(),
+                    videoInput: $('#videoList').val(), video: false, audio: true } });
+                micAudioTrack = stream.getAudioTracks()[0]
+            }
+            //@ts-ignore
+            const result = await zg.addTrack(
+                previewVideo.srcObject,
+                micAudioTrack
+            );
+            console.error("addAudioTrack", result);
+        }
+    );
+    (document.querySelector(
+        "#removeAudioTrack"
+    )).addEventListener("click", async e => {
+        const track = previewVideo.srcObject.getAudioTracks()[0]
+        const result = await zg.removeTrack(
+            previewVideo.srcObject,
+            track
+        );
+        if (micAudioTrack) {
+            if(!result.errorCode&&micAudioTrack!==track) {
+                track.stop();
+            }
+            micAudioTrack.stop();
+            micAudioTrack = null
+        }
+        // track.stop();
+        console.error("removeAudioTrack", result);
     });
 });

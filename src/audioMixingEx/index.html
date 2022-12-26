@@ -36,8 +36,8 @@
 
             <h6 class="border-bottom border-gray pb-2 mb-0 mixAudio">Express 混音</h6>
 
-            <div>room:<span id="roomState"></span>   publish:<span id="streamState"></span></div>
-       
+            <div>room:<span id="roomState"></span> publish:<span id="streamState"></span></div>
+
             <div class="row" style="margin-top:1%">
 
                 <div class="col-sm">
@@ -113,13 +113,22 @@
                 <button type="button" id="stopEffect" class="btn btn-primary btn-sm" disabled>停止音效</button>
                 <button type="button" id="unloadEffect" class="btn btn-primary btn-sm" disabled>释放音效</button>
                 <button type="button" id="mixingBuffer" class="btn btn-primary btn-sm">mixingBuffer实时混音</button>
-            <button type="button" id="stopMixingBuffer" class="btn btn-primary btn-sm">stopMixingBuffer停止实时混音</button>
+                <button type="button" id="stopMixingBuffer"
+                    class="btn btn-primary btn-sm">stopMixingBuffer停止实时混音</button>
                 <input type="range" id="progress" min="0" max="100" value="0">
                 <button type="button" id="seekTo" class="btn btn-primary btn-sm ">设置进度</button>
                 音效文件： <input type="text" id="musicPath"
                     value="https://zego-public.oss-cn-shanghai.aliyuncs.com/webplatform/websdk/bike.mp3">
                 <button type="button" id="playEffectWithPath" class="btn btn-primary btn-sm">加载并播放音效</button>
 
+            </div>
+            <div class="row">
+
+                <button type="button" id="addVideoTrack" class="btn btn-primary btn-sm">增加视频轨道</button>
+                <button type="button" id="removeVideoTrack" class="btn btn-primary btn-sm">删除视频轨道</button>
+
+                <button type="button" id="addAudioTrack" class="btn btn-primary btn-sm">增加音频轨道</button>
+                <button type="button" id="removeAudioTrack" class="btn btn-primary btn-sm">删除音频轨道</button>
             </div>
             <div class="row videoRow">
                 <div class="col-sm">

@@ -10,8 +10,10 @@ let playOption = {};
 // --test begin
 let previewStream;
 let cameraStreamVideoTrack;
+let micAudioTrack;
 let externalStream;
 let externalStreamVideoTrack;
+let externalStreamAudioTrack;
 let published = false;
 let remoteStreamID = ""
 // ---test end
@@ -213,9 +215,9 @@ $(async () => {
                 const videoQuality = $('#videoQuality').val();
                 if (videoQuality == 4) {
                     $('#width').val() && (constraints.width = parseInt($('#width').val()) || JSON.parse($('#width').val())),
-                    $('#height').val() && (constraints.height = parseInt($('#height').val()) || JSON.parse($('#height').val())),
-                    $('#frameRate').val() && (constraints.frameRate = parseInt($('#frameRate').val()) || JSON.parse($('#frameRate').val())),
-                    $('#bitrate').val() && (constraints.bitrate = parseInt($('#bitrate').val()))
+                        $('#height').val() && (constraints.height = parseInt($('#height').val()) || JSON.parse($('#height').val())),
+                        $('#frameRate').val() && (constraints.frameRate = parseInt($('#frameRate').val()) || JSON.parse($('#frameRate').val())),
+                        $('#bitrate').val() && (constraints.bitrate = parseInt($('#bitrate').val()))
                 }
                 $('#noiseSuppression').val() === '1' ? (constraints.ANS = true) : (constraints.ANS = false);
                 $('#autoGainControl').val() === '1' ? (constraints.AGC = true) : (constraints.AGC = false);
@@ -437,6 +439,23 @@ $(async () => {
             })
             .catch(err => console.error(err));
     });
+    
+    $('#replaceMic').click(async function () {
+        if (!previewVideo.srcObject) {
+            alert('先创建流');
+            return;
+        }
+
+        // 设置美颜之前保存摄像头视轨
+        !micAudioTrack && previewVideo.srcObject && (micAudioTrack = previewVideo.srcObject.getAudioTracks()[0]);
+
+        zg.replaceTrack(previewVideo.srcObject, micAudioTrack)
+            .then(res => {
+                console.warn('replaceTrack success');
+                videoType = 'mic';
+            })
+            .catch(err => console.error(err));
+    });
     $('#replaceScreenVideo').click(async function () {
         if (!previewVideo.srcObject) {
             alert('流不存在');
@@ -468,51 +487,96 @@ $(async () => {
     $('#publishRetry').click(async function () {
         const publish1 = Object.keys(zg.zegoWebRTC.streamCenter.publisherList)[0];
         if (publish1) {
-            zg.zegoWebRTC.streamCenter.publisherList[publish1].publisher.onRecvCloseSession(1,1,{"reason":11,"err_info":"{\"action\":5,\"err\":3008}"})
+            zg.zegoWebRTC.streamCenter.publisherList[publish1].publisher.onRecvCloseSession(1, 1, { "reason": 11, "err_info": "{\"action\":5,\"err\":3008}" })
         }
     });
     $('#playRetry').click(async function () {
         const play1 = Object.keys(zg.zegoWebRTC.streamCenter.playerList)[0];
         if (play1) {
-            zg.zegoWebRTC.streamCenter.playerList[play1].player.onRecvCloseSession(1,1,{"reason":11,"err_info":"{\"action\":5,\"err\":3008}"})
+            zg.zegoWebRTC.streamCenter.playerList[play1].player.onRecvCloseSession(1, 1, { "reason": 11, "err_info": "{\"action\":5,\"err\":3008}" })
         }
     });
     $('#roomRetry').click(async function () {
         const room = zg.zegoWebRTM.stateCenter.roomModulesList[0]
         if (room) {
-            zg.zegoWebRTM.stateCenter.roomModulesList[0].roomHandler.closeHandler({code:1006})
+            zg.zegoWebRTM.stateCenter.roomModulesList[0].roomHandler.closeHandler({ code: 1006 })
         }
     });
-    
+
     // --------------test tracer
 
-    (document.querySelector("#addTrack")).addEventListener(
+    (document.querySelector("#addVideoTrack")).addEventListener(
         "click",
         async e => {
-            const stream = await zg.createStream();
-            if (cameraStreamVideoTrack) cameraStreamVideoTrack.stop()
-            cameraStreamVideoTrack = stream.getVideoTracks()[0]
+            
+            if (!cameraStreamVideoTrack) {
+                const stream = await zg.createStream({ camera: { 
+                    audioInput: $('#audioList').val(),
+                    videoInput: $('#videoList').val(),video: true, audio: false } });
+                cameraStreamVideoTrack = stream.getVideoTracks()[0]
+            }
             //@ts-ignore
-            const result = await zg.zegoWebRTC.addTrack(
+            const result = await zg.addTrack(
                 previewVideo.srcObject,
                 cameraStreamVideoTrack
             );
-
-            console.error(result);
+            console.error("addVideoTrack", result);
         }
     );
 
     (document.querySelector(
-        "#removeTrack"
+        "#removeVideoTrack"
     )).addEventListener("click", async e => {
-        //@ts-ignore
-        const result = await zg.zegoWebRTC.removeTrack(
-            //@ts-ignore
+        const track = previewVideo.srcObject.getVideoTracks()[0]
+        const result = await zg.removeTrack(
             previewVideo.srcObject,
-            //@ts-ignore
-            previewVideo.srcObject.getVideoTracks()[0]
+            track
         );
-        console.error(result);
+        if (cameraStreamVideoTrack) {
+            if(!result.errorCode&&result.codecameraStreamVideoTrack!==track) {
+                track.stop();
+            }
+            cameraStreamVideoTrack.stop();
+            cameraStreamVideoTrack = null
+        }
+        console.error("removeVideoTrack", result);
+    });
+
+    (document.querySelector("#addAudioTrack")).addEventListener(
+        "click",
+        async e => {
+            if (!micAudioTrack) {
+                const stream = await zg.createStream({ camera: {
+                    audioInput: $('#audioList').val(),
+                    videoInput: $('#videoList').val(), video: false, audio: true } });
+                micAudioTrack = stream.getAudioTracks()[0]
+            }
+            //@ts-ignore
+            const result = await zg.addTrack(
+                previewVideo.srcObject,
+                micAudioTrack
+            );
+            console.error("addAudioTrack", result);
+        }
+    );
+
+    (document.querySelector(
+        "#removeAudioTrack"
+    )).addEventListener("click", async e => {
+        const track = previewVideo.srcObject.getAudioTracks()[0]
+        const result = await zg.removeTrack(
+            previewVideo.srcObject,
+            track
+        );
+        if (micAudioTrack) {
+            if(!result.errorCode&&micAudioTrack!==track) {
+                track.stop();
+            }
+            micAudioTrack.stop();
+            micAudioTrack = null
+        }
+        // track.stop();
+        console.error("removeAudioTrack", result);
     });
 
     function setExtendModelData(inputElement) {
@@ -575,11 +639,35 @@ $(async () => {
                     videoOptimizationMode: $('#videoOptimizationMode').val() ? $('#videoOptimizationMode').val() : "default"
                 }
             });
-            externalStreamVideoTrack = externalStream.getVideoTracks()[0];
-            console.log('externalStreamVideoTrack', externalStreamVideoTrack);
         }
 
+        externalStreamVideoTrack = externalStream.getVideoTracks()[0];
+        console.log('externalStreamVideoTrack', externalStreamVideoTrack);
         zg.replaceTrack(previewVideo.srcObject, externalStreamVideoTrack)
+            .then(res => {
+                console.warn('replace custom track success');
+                // videoType = 'external';
+            })
+            .catch(err => console.error(err));
+    });
+    $('#replaceExternalAudio').click(async function () {
+        if (!previewVideo.srcObject) {
+            alert('流不存在');
+            return;
+        }
+        // 优先保存麦克风音轨
+        !micAudioTrack && previewVideo.srcObject && (micAudioTrack = previewVideo.srcObject.getAudioTracks()[0] && previewVideo.srcObject.getAudioTracks()[0]);
+        if (!externalStream) {
+            externalStream = await zg.createStream({
+                custom: {
+                    source: $('#customVideo')[0],
+                    videoOptimizationMode: $('#videoOptimizationMode').val() ? $('#videoOptimizationMode').val() : "default"
+                }
+            });
+        }
+        externalStreamAudioTrack = externalStream.getAudioTracks()[0];
+        console.log('externalStreamAudioTrack', externalStreamAudioTrack);
+        zg.replaceTrack(previewVideo.srcObject, externalStreamAudioTrack)
             .then(res => {
                 console.warn('replace custom track success');
                 // videoType = 'external';
@@ -690,35 +778,35 @@ $(async () => {
         } else if (updateType == 'DELETE') {
             console.warn('useLocalStreamList', useLocalStreamList)
             // for (let k = 0; k < useLocalStreamList.length; k++) {
-                for (let j = 0; j < streamList.length; j++) {
-                    // if (useLocalStreamList[k].streamID === streamList[j].streamID) {
-                        const k = useLocalStreamList.findIndex(item => item.streamID === streamList[j].streamID);
-                        try {
-                            zg.stopPlayingStream(streamList[j].streamID);
-                        } catch (error) {
-                            console.error(error);
-                        }
-
-                        playstreamlist = playstreamlist && playstreamlist.filter(item => item !== streamList[j].streamID);
-                        console.warn('playstreamlist', playstreamlist, k)
-                        if (k >= 0) {
-                            console.info(useLocalStreamList[k].streamID + 'was devared');
-
-                            if (zg.getVersion() >= "2.17.0") {
-                                const a = document.querySelector(`#wrap${useLocalStreamList[k].streamID}`)
-                                $(`#wrap${useLocalStreamList[k].streamID}`).remove();
-                            } else {
-                                $('.remoteVideo video:eq(' + k + ')').remove();
-                            }
-                            useLocalStreamList.splice(k, 1);
-                            // useLocalStreamList = useLocalStreamList.filter(item => item.streamID !== streamList[j].streamID)
-                            console.warn('useLocalStreamList after', useLocalStreamList)
-
-                        }
-                        
-                        // break;
-                    // }
+            for (let j = 0; j < streamList.length; j++) {
+                // if (useLocalStreamList[k].streamID === streamList[j].streamID) {
+                const k = useLocalStreamList.findIndex(item => item.streamID === streamList[j].streamID);
+                try {
+                    zg.stopPlayingStream(streamList[j].streamID);
+                } catch (error) {
+                    console.error(error);
                 }
+
+                playstreamlist = playstreamlist && playstreamlist.filter(item => item !== streamList[j].streamID);
+                console.warn('playstreamlist', playstreamlist, k)
+                if (k >= 0) {
+                    console.info(useLocalStreamList[k].streamID + 'was devared');
+
+                    if (zg.getVersion() >= "2.17.0") {
+                        const a = document.querySelector(`#wrap${useLocalStreamList[k].streamID}`)
+                        $(`#wrap${useLocalStreamList[k].streamID}`).remove();
+                    } else {
+                        $('.remoteVideo video:eq(' + k + ')').remove();
+                    }
+                    useLocalStreamList.splice(k, 1);
+                    // useLocalStreamList = useLocalStreamList.filter(item => item.streamID !== streamList[j].streamID)
+                    console.warn('useLocalStreamList after', useLocalStreamList)
+
+                }
+
+                // break;
+                // }
+            }
             // }
         }
     });
@@ -787,6 +875,14 @@ $(async () => {
             audioCumulativeBreakRate: audio.audioCumulativeBreakRate,
             audioCumulativeBlankTime: audio.audioCumulativeBlankTime
         });
+    })
+    zg.on("roomStateUpdate", (id, state) => {
+        if (state === "DISCONNECTED") {
+            cameraStreamVideoTrack && cameraStreamVideoTrack.stop()
+            cameraStreamVideoTrack = null
+            micAudioTrack && micAudioTrack.stop()
+            micAudioTrack = null
+        }
     })
 });
 

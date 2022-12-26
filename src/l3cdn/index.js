@@ -476,7 +476,7 @@ $(async () => {
     //     "#removeTrack"
     // )).addEventListener("click", async e => {
     //     //@ts-ignore
-    //     const result = await zg.zegoWebRTC.removeTrack(
+    //     const result = await zg.removeTrack(
     //         //@ts-ignore
     //         previewVideo.srcObject,
     //         //@ts-ignore
