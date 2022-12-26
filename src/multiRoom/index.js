@@ -441,6 +441,7 @@ $(async () => {
         try {
             //  console.error(userID, roomId)
              room1Token = await getToken(userID, roomId, expireTime);
+             $("#room1Token").val(room1Token)
 
         } catch (error) {
             console.error(error)
@@ -454,10 +455,12 @@ $(async () => {
             return false;
         }
         loginTimes[roomId] = new Date().getTime();
+        room1Token = $('#room1Token').val().trim()
         try {
             if (room1Token) {
                 await login2(room1Token, roomId, { maxMemberCount: roomMaxUser[roomId] || 0, userUpdate: true });
                 room1Token = '';
+                $("#room1Token").val('')
             } else {
                 await login(roomId, { maxMemberCount: roomMaxUser[roomId] || 0, userUpdate: true});
             }
@@ -480,6 +483,8 @@ $(async () => {
         }
         const expireTime = parseInt(time);
         const token = await getToken(userID, roomId, expireTime)
+        room1Token = token
+        $("#room1Token").val(room1Token)
         zg.renewToken(token, roomId);
     });
 
@@ -697,7 +702,7 @@ $(async () => {
         try {
             //  console.error(userID, roomId)
              room2Token = await getToken(userID, roomId, expireTime);
-
+             $("#room2Token").val(room2Token)
         } catch (error) {
             console.error(error)
         }
@@ -710,10 +715,12 @@ $(async () => {
             return false;
         }
         loginTimes[roomId] = new Date().getTime();
+        room2Token = $('#room2Token').val().trim()
         try {
             if (room2Token) {
                 await login2(room2Token, roomId, { maxMemberCount: roomMaxUser[roomId] || 0, userUpdate: true });
                 room2Token = '';
+                $("#room2Token").val('')
             } else {
                 await login(roomId, { maxMemberCount: roomMaxUser[roomId] || 0, userUpdate: true});
             }
@@ -736,6 +743,8 @@ $(async () => {
         }
         const expireTime = parseInt(time);
         const token = await getToken(userID, roomId, expireTime)
+        room2Token = token;
+        $('#room2Token').val(room2Token)
         zg.renewToken(token, roomId);
     });
 
@@ -880,7 +889,7 @@ $(async () => {
         try {
             //  console.error(userID, roomId)
              room3Token = await getToken(userID, roomId, expireTime);
-
+             $("#room3Token").val(room3Token)
         } catch (error) {
             console.error(error)
         }
@@ -893,10 +902,12 @@ $(async () => {
             return false;
         }
         loginTimes[roomId] = new Date().getTime();
+        room3Token = $('#room3Token').val().trim();
         try {
             if (room3Token) {
                 await login2(room3Token, roomId, { maxMemberCount: roomMaxUser[roomId] || 0, userUpdate: true });
                 room3Token = '';
+                $('#room3Token').val('')
             } else {
                 await login(roomId, { maxMemberCount: roomMaxUser[roomId] || 0, userUpdate: true});
             }
@@ -919,6 +930,8 @@ $(async () => {
         }
         const expireTime = parseInt(time);
         const token = await getToken(userID, roomId, expireTime)
+        room3Token = token;
+        $('#room3Token').val(token)
         zg.renewToken(token, roomId);
     });
 

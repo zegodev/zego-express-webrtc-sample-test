@@ -11,7 +11,10 @@ import {
     enterRoom,
     publish,
     publishType,
-    loginRoom
+    getToken,
+    loginRoom,
+    previewVideo,
+    sei
 } from '../common';
 import { getBrowser } from '../assets/utils';
 import { utf8ByteDecode } from '../assets/utils';
@@ -30,6 +33,7 @@ let cdnFlvPlayTimer;
 let cdnPlayTime;
 let isLogin = false;
 let playType = 'all';
+let previewStream;
 
 console.warn('ua', ua);
 // @ts-ignore
@@ -501,6 +505,20 @@ $(async () => {
 
         logout();
         isLogin = false;
+    });
+    $("#renewToken").click(async () => {
+        const roomID = $("#roomId").val();
+        const _expireTime = document.querySelector("#expireTime").value;
+        const expireTime = parseInt(_expireTime);
+        const userID = $("#userID").val();
+        const token = await getToken(userID, roomID, expireTime);
+        $("#custom-token").val(token);
+        zg.renewToken(token, roomID);
+    });
+    $('#publish').click(() => {
+        const publishStreamID = publishStreamId || 'web-' + new Date().getTime();
+        const result = zg.startPublishingStream(publishStreamID,  previewVideo.srcObject, { roomID: $('#roomId').val(), isSEIStart: sei });
+        console.log('publish stream' + publishStreamID, result);
     });
 
     // $('#secret').change(() => {

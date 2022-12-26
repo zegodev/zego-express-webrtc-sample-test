@@ -1,5 +1,5 @@
 import '../common';
-import { checkAnRun, logout, publishStreamId, useLocalStreamList, zg } from '../common';
+import { checkAnRun, logout, publishStreamId, useLocalStreamList, zg, getToken, previewVideo, sei } from '../common';
 import { encodeString, getBrowser } from '../assets/utils';
 // import flvjs from 'flv.js';
 import flvjs from '../assets/flv.min.js';
@@ -353,4 +353,18 @@ $(async () => {
             }
         }
     })
+    $("#renewToken").click(async () => {
+        const roomID = $("#roomId").val();
+        const _expireTime = document.querySelector("#expireTime").value;
+        const expireTime = parseInt(_expireTime);
+        const userID = $("#userID").val();
+        const token = await getToken(userID, roomID, expireTime);
+        $("#custom-token").val(token);
+        zg.renewToken(token, roomID);
+    });
+    $('#publish').click(() => {
+        const publishStreamID = publishStreamId || 'web-' + new Date().getTime();
+        const result = zg.startPublishingStream(publishStreamID,  previewVideo.srcObject, { roomID: $('#roomId').val(), isSEIStart: sei });
+        console.log('publish stream' + publishStreamID, result);
+    });
 });

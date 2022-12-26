@@ -71,7 +71,9 @@ if (seiUUID.length === 16) {
 }
 
 $("#custom-userid").text(userID)
-
+if($("#userID")) {
+    $("#userID").val(userID)
+}
 if (cgiToken && tokenUrl == 'https://wsliveroom-alpha.zego.im:8282/token') {
     $.get(cgiToken, rsp => {
         cgiToken = rsp.data;
@@ -541,6 +543,7 @@ function initSDK() {
     });
 
     zg.on('publishQualityUpdate', async (streamID, streamQuality) => {
+        console.warn(streamQuality)
         console.log(
             `publish#${streamID} videoFPS: ${streamQuality.video.videoFPS} videoBitrate: ${streamQuality.video.videoBitrate} audioBitrate: ${streamQuality.audio.audioBitrate} audioFPS: ${streamQuality.audio.audioFPS}`,
         );
@@ -687,7 +690,7 @@ const login = async (roomId, config) => {
     // 获取token需要客户自己实现，token是对登录房间的唯一验证
     // Obtaining a token needs to be implemented by the customer. The token is the only verification for the login room.
 
-    let token = $("#custom-token").val() || "";
+    let token = ($("#custom-token").val() || "").trim();
     const expireTime = parseInt($("#custom-expiretime").val())
     //测试用，开发者请忽略
     //Test code, developers please ignore
@@ -745,6 +748,9 @@ const login = async (roomId, config) => {
         // })
         // token = res.data.token;
         token = await getToken(userID, roomId, expireTime);
+        if($("#custom-token")) {
+            $("#custom-token").val(token);
+        }
 
     }
     const _config = Object.assign({}, { userUpdate: true }, config);
