@@ -538,9 +538,9 @@ $(async () => {
             track
         );
         if (cameraStreamVideoTrack) {
-            if (!result.errorCode && result.codecameraStreamVideoTrack !== track) {
-                track.stop();
-            }
+            // if (!result.errorCode && result.codecameraStreamVideoTrack !== track) {
+            //     track.stop();
+            // }
             cameraStreamVideoTrack.stop();
             cameraStreamVideoTrack = null
         }
@@ -577,9 +577,9 @@ $(async () => {
             track
         );
         if (micAudioTrack) {
-            if (!result.errorCode && micAudioTrack !== track) {
-                track.stop();
-            }
+            // if (!result.errorCode && micAudioTrack !== track) {
+            //     track.stop();
+            // }
             micAudioTrack.stop();
             micAudioTrack = null
         }
