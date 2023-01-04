@@ -543,6 +543,8 @@ $(async () => {
             // }
             cameraStreamVideoTrack.stop();
             cameraStreamVideoTrack = null
+        } else {
+            track.stop();
         }
         console.error("removeVideoTrack", result);
     });
