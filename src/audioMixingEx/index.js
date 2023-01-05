@@ -284,11 +284,10 @@ $(async () => {
             track
         );
         if (cameraStreamVideoTrack) {
-            // if(!result.errorCode&&cameraStreamVideoTrack!==track) {
-            //     track.stop();
-            // }
             cameraStreamVideoTrack.stop();
             cameraStreamVideoTrack = null
+        } else {
+            track.stop();
         }
         console.error("removeVideoTrack", result);
     });
