@@ -575,76 +575,8 @@ $(async () => {
                     continue;
                 }
 
-                let remoteStream;
                 remoteStreamID = streamList[i].streamID
-                const handlePlaySuccess = (streamItem) => {
-                    if (streamItem) {
-                        let video;
-                        const bro = getBrowser();
-                        if (bro == 'Safari' && playOption.video === false) {
-                            if ([0, 2].includes(playOption.resourceMode)) {
-                                $('.remoteVideo').append($(`<audio id=${streamItem.streamID} autoplay muted playsinline controls></audio>`));
-                            }
-                            video = $('.remoteVideo audio:last')[0];
-                            console.warn('audio', video, remoteStream);
-                        } else {
-                            if ([0, 2].includes(playOption.resourceMode)) {
-                                $('.remoteVideo').append($(`<video id=${streamItem.streamID} autoplay muted playsinline controls></video>`));
-                            }
-                            video = $('.remoteVideo video:last')[0];
-                            console.warn('video', video, remoteStream);
-                        }
-                        video.srcObject = remoteStream;
-                        video.muted = false;
-                    }
-
-
-                };
-
-                playOption = {};
-                const _selectMode = $('#playMode option:selected').val();
-                console.warn('playMode', _selectMode, playOption);
-                if (_selectMode) {
-                    if (_selectMode == 'all') {
-                        playOption.video = true;
-                        playOption.audio = true;
-                    } else if (_selectMode == 'video') {
-                        playOption.audio = false;
-                    } else if (_selectMode == 'audio') {
-                        playOption.video = false;
-                    }
-                }
-
-                if ($("#videoCodec").val()) playOption.videoCodec = $("#videoCodec").val();
-
-                playOption.resourceMode = Number($('#resourceMode').val());
-                playOption.isSEIStart = sei;
-                playOption.streamType = $('#streamType').val() == "0" ? 0 : $('#streamType').val() == "1" ? 1 : 2;
-
-                if ([1, 3].includes(playOption.resourceMode)) {
-                    let video;
-                    $('.remoteVideo').append($(`<video id=${streamList[i].streamID} autoplay muted playsinline controls></video>`));
-                    video = $('.remoteVideo video:last')[0];
-                    video.muted = false;
-                    playOption.CDNVideo = video;
-                    playOption.CDNPlayer = new ZegoCDNPlayer()
-                }
-
-
-                zg.startPlayingStream(streamList[i].streamID, playOption).then(stream => {
-                    if (stream) {
-                        remoteStream = stream;
-                        handlePlaySuccess(streamList[i]);
-                    } else {
-                        handlePlaySuccess();
-                    }
-
-                    useLocalStreamList.push(streamList[i]);
-
-                }).catch(error => {
-                    console.error(error);
-
-                })
+                playingStream(remoteStreamID)
             }
         } else if (updateType == 'DELETE') {
             for (let k = 0; k < useLocalStreamList.length; k++) {
@@ -670,6 +602,77 @@ $(async () => {
             }
         }
     });
+    function playingStream(streamID) {
+        let remoteStream;
+        const handlePlaySuccess = (streamID) => {
+            if (streamID) {
+                let video;
+                const bro = getBrowser();
+                if (bro == 'Safari' && playOption.video === false) {
+                    if ([0, 2].includes(playOption.resourceMode)) {
+                        $('.remoteVideo').append($(`<audio id=${streamID} autoplay muted playsinline controls></audio>`));
+                    }
+                    video = $('.remoteVideo audio:last')[0];
+                    console.warn('audio', video, remoteStream);
+                } else {
+                    if ([0, 2].includes(playOption.resourceMode)) {
+                        $('.remoteVideo').append($(`<video id=${streamID} autoplay muted playsinline controls></video>`));
+                    }
+                    video = $('.remoteVideo video:last')[0];
+                    console.warn('video', video, remoteStream);
+                }
+                video.srcObject = remoteStream;
+                video.muted = false;
+            }
+
+
+        };
+
+        playOption = {};
+        const _selectMode = $('#playMode option:selected').val();
+        console.warn('playMode', _selectMode, playOption);
+        if (_selectMode) {
+            if (_selectMode == 'all') {
+                playOption.video = true;
+                playOption.audio = true;
+            } else if (_selectMode == 'video') {
+                playOption.audio = false;
+            } else if (_selectMode == 'audio') {
+                playOption.video = false;
+            }
+        }
+
+        if ($("#videoCodec").val()) playOption.videoCodec = $("#videoCodec").val();
+
+        playOption.resourceMode = Number($('#resourceMode').val());
+        playOption.isSEIStart = sei;
+        playOption.streamType = $('#streamType').val() == "0" ? 0 : $('#streamType').val() == "1" ? 1 : 2;
+
+        if ([1, 3].includes(playOption.resourceMode)) {
+            let video;
+            $('.remoteVideo').append($(`<video id=${streamID} autoplay muted playsinline controls></video>`));
+            video = $('.remoteVideo video:last')[0];
+            video.muted = false;
+            playOption.CDNVideo = video;
+            playOption.CDNPlayer = new ZegoCDNPlayer()
+        }
+
+
+        zg.startPlayingStream(streamID, playOption).then(stream => {
+            if (stream) {
+                remoteStream = stream;
+                handlePlaySuccess(streamID);
+            } else {
+                handlePlaySuccess();
+            }
+
+            useLocalStreamList.push({ streamID });
+
+        }).catch(error => {
+            console.error(error);
+
+        })
+    }
     zg.on("roomStateUpdate", (roomID, state) => {
         if (state === "DISCONNECTED") {
             if (cameraStreamVideoTrack) {
@@ -723,6 +726,11 @@ $(async () => {
     zg.on('playerStateUpdate', result => {
         console.warn('playerStateUpdate: ', result.streamID, result.state, result);
 
+    })
+
+    $('#pullStream').click(function(){
+        const streamID = $("#streamID").val();
+        playingStream(streamID)
     })
 
 });
