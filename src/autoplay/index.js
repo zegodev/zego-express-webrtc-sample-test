@@ -52,7 +52,7 @@ $(async () => {
                         })
                         bindViewCtrl(viewer, id);
                         console.warn('enable-dialog', $("#enable-dialog").val() != "0");
-                        viewer.play(id, { enableAutoplayDialog: $("#enable-dialog").val() == "1" });
+                        viewer.play(id, { enableAutoplayDialog: true, muted: true});
 
                         // let videoTemp = $(`<video width="100%" height="100%" controls id=${streamList[i].streamID} x-webkit-airplay="allow" webkit-playsinline="" playsinline="" x5-video-player-type="h5-page" x5-video-orientation="portrait" preload="metadata" controlslist="nofullscreen nodownload noremote footbar" oncontextmenu="return false;" autoplay=""></video>`)
                         // //queue.push(videoTemp)
@@ -118,7 +118,7 @@ $(async () => {
             }
         }
     });
-    $("#roomId").val(322)
+    $("#roomId").val(8989)
     enterRoom()
 
     const video = document.getElementById("externerVideo")
