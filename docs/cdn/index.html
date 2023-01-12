@@ -1,76 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <!-- Required meta tags -->
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <style>
-            .bg-f2 {
-                background-color: #f8f9fa;
-            }
-            video {
-                width: 320px;
-                height: auto;
-            }
-            .videoRow {
-                margin-top: 30px;
-            }
-            #previewLabel {
-                display: block;
-                position: absolute;
-            }
-        </style>
-        <title>CDN</title>
-    <link href="../index.733ddcec.css" rel="stylesheet"></head>
 
-    <body class="bg-f2">
-        <div class="container">
-            <div class="my-3 p-3 bg-white rounded box-shadow small">
-                <h6 class="border-bottom border-gray pb-2 mb-0">CDN</h6>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <style>
+        .bg-f2 {
+            background-color: #f8f9fa;
+        }
 
-                <div class="row" style="margin-top:1%">
-                    <div class="col-sm">
-                        <div class="input-group input-group-sm mb-3">
-                            <div class="input-group-prepend">
-                                <label class="input-group-text" for="audioList"
-                                    ><strong class="text-gray-dark audioDevices">音频设备</strong></label
-                                >
-                            </div>
-                            <select class="custom-select" id="audioList" style="width: 50%"> </select>
+        video {
+            width: 320px;
+            height: auto;
+        }
+
+        .videoRow {
+            margin-top: 30px;
+        }
+
+        #previewLabel {
+            display: block;
+            position: absolute;
+        }
+    </style>
+    <title>CDN</title>
+<link href="../index.733ddcec.css" rel="stylesheet"></head>
+
+<body class="bg-f2">
+    <div class="container">
+        <div class="my-3 p-3 bg-white rounded box-shadow small">
+            <h6 class="border-bottom border-gray pb-2 mb-0">CDN</h6>
+
+            <div class="row" style="margin-top:1%">
+                <div class="col-sm">
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="audioList"><strong
+                                    class="text-gray-dark audioDevices">音频设备</strong></label>
                         </div>
-                    </div>
-
-                    <div class="col-sm">
-                        <div class="input-group input-group-sm mb-3">
-                            <div class="input-group-prepend">
-                                <label class="input-group-text" for="videoList"
-                                    ><strong class="text-gray-dark videoDevices">视频设备</strong></label
-                                >
-                            </div>
-                            <select class="custom-select" id="videoList" style="width: 60%"> </select>
-                        </div>
-                    </div>
-
-                    <div class="col-sm">
-                        <div class="input-group input-group-sm mb-3">
-                            <div class="input-group-prepend">
-                                <label class="input-group-text" for="roomId"
-                                    ><strong class="text-gray-dark roomid">房间号</strong></label
-                                >
-                            </div>
-                            <input
-                                type="email"
-                                class="form-control d-inline"
-                                id="roomId"
-                                style="width: 60%"
-                                aria-describedby="emailHelp"
-                                placeholder="please enter room ID"
-                            />
-                        </div>
+                        <select class="custom-select" id="audioList" style="width: 50%"> </select>
                     </div>
                 </div>
-                <div class="row">
-                  <!-- <div class="col-sm">
+
+                <div class="col-sm">
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="videoList"><strong
+                                    class="text-gray-dark videoDevices">视频设备</strong></label>
+                        </div>
+                        <select class="custom-select" id="videoList" style="width: 60%"> </select>
+                    </div>
+                </div>
+
+                <div class="col-sm">
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="roomId"><strong
+                                    class="text-gray-dark roomid">房间号</strong></label>
+                        </div>
+                        <input type="email" class="form-control d-inline" id="roomId" style="width: 60%"
+                            aria-describedby="emailHelp" placeholder="please enter room ID" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <!-- <div class="col-sm">
                     <div class="input-group input-group-sm mb-3">
                         <div class="input-group-prepend">
                             <label class="input-group-text" for="secret"
@@ -87,55 +82,97 @@
                         />
                     </div>
                   </div> -->
-                  <div class="col-sm">
+                <div class="col-sm">
                     <div class="input-group input-group-sm mb-3">
-                      <div class="input-group-prepend">
-                        <label class="input-group-text" for="channelCount"><strong class="text-gray-dark channelCount">声道</strong></label>
-                      </div>
-                      <select class="custom-select" id="channelCount" style="width: 50%">
-                        <option value="1" class="channel1">默认</option>
-                        <option value="2" class="channel2">双声道</option>
-                      </select>
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="channelCount"><strong
+                                    class="text-gray-dark channelCount">声道</strong></label>
+                        </div>
+                        <select class="custom-select" id="channelCount" style="width: 50%">
+                            <option value="1" class="channel1">默认</option>
+                            <option value="2" class="channel2">双声道</option>
+                        </select>
                     </div>
-                  </div>
+                </div>
+                <div class="col-sm">
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="userID"><strong
+                                    class="text-gray-dark userID">用户ID</strong></label>
+                        </div>
+                        <input type="email" class="form-control d-inline" id="userID" value="choui"
+                            style="width: 75%; max-width: 200px" aria-describedby="emailHelp"
+                            placeholder="please enter userID">
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="expireTime"><strong
+                                    class="text-gray-dark userID">过期时间</strong></label>
+                        </div>
+                        <input type="email" class="form-control d-inline" id="expireTime" value="300"
+                            style="width: 75%; max-width: 200px" aria-describedby="emailHelp"
+                            placeholder="please enter expireTime">
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="custom-token"><strong
+                                    class="text-gray-dark custom-token">token</strong></label>
+                        </div>
+                        <textarea type="email" class="form-control d-inline" id="custom-token"
+                            style="width: 75%; max-width: 200px" aria-describedby="emailHelp"
+                            placeholder="please enter custom-token">
+                        </textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm">
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="seiInfo"><strong
+                                    class="text-gray-dark ">媒体次要信息</strong></label>
+                        </div>
+                        <input type="text" class="form-control d-inline" id="seiInfo" style="width: 75%;"
+                            placeholder="seiInfo" value="Hello, the world">
+                    </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm">
-                      <div class="input-group input-group-sm mb-3">
-                        <div class="input-group-prepend">
-                          <label class="input-group-text" for="seiInfo"><strong class="text-gray-dark ">媒体次要信息</strong></label>
-                        </div>
-                        <!-- <input type="label" class="form-control d-inline" style="width: 180px"
-                          placeholder="userid"> -->
-                          <input type="text" class="form-control d-inline" id="seiInfo" style="width: 75%;" placeholder="seiInfo" value="Hello, the world">
-                        </div>
-                    </div>
-                  </div>
-                  <div class="row">
                     <span>sei字节长度: </span>
                     <span id="seibytelen"></span>
-                  </div>
+                </div>
+
                 <div class="row">
                     <div class="col-sm">
-                        <button type="button" id="createRoom" class="btn btn-primary btn-sm enterRoomPush">进入房间（推流）</button>
-                        <button type="button" id="openRoom" class="btn btn-primary btn-sm enterRoomPlay">进入房间（不推流）</button>
+                        <button type="button" id="createRoom"
+                            class="btn btn-primary btn-sm enterRoomPush">进入房间（推流）</button>
+                        <button type="button" id="enterRoom" class="btn btn-primary btn-sm">进房预览</button>
+                        <button type="button" id="publish" class="btn btn-primary btn-sm">推流</button>
+                        <button type="button" id="openRoom"
+                            class="btn btn-primary btn-sm enterRoomPlay">进入房间（不推流）</button>
                         <button type="button" id="leaveRoom" class="btn btn-secondary btn-sm leaveRoom">退出</button>
                         <button type="button" id="playCDN" class="btn btn-secondary btn-sm clickPlay">点击播放</button>
                         <button type="button" id="cdnAddPush" class="btn btn-primary btn-sm addCdn">增加转推cdn</button>
-                        <button type="button" id="cdnDelPush" class="btn btn-primary btn-sm removeCdn" disabled>删除转推cdn</button>
+                        <button type="button" id="cdnDelPush" class="btn btn-primary btn-sm removeCdn"
+                            disabled>删除转推cdn</button>
                         <button type="button" id="sendSEI" class="btn btn-primary btn-sm">发送SEI</button>
-                        <button type="button" id="cdnPlay" class="btn btn-primary btn-sm cdnPlay" disabled>播放cdn</button>
+                        <button type="button" id="cdnPlay" class="btn btn-primary btn-sm cdnPlay"
+                            disabled>播放cdn</button>
+                        <button type="button" id="renewToken" class="btn btn-primary btn-sm">更新token</button>
                     </div>
                 </div>
 
                 <div class="row videoRow">
                     <div class="col-sm">
-                      <label id="previewLabel" class="text-white"></label>
-                      <video id="previewVideo" autoplay muted playsinline></video>
+                        <label id="previewLabel" class="text-white"></label>
+                        <video id="previewVideo" autoplay muted playsinline></video>
                     </div>
                     <div class="col-sm remoteCDNVideo">
-                      <label class="text-white" style="display: block; position: absolute; z-index: 999;">test</label>
-                      <div id="video-container"></div>
+                        <label class="text-white" style="display: block; position: absolute; z-index: 999;">test</label>
+                        <div id="video-container"></div>
                     </div>
                     <div class="col-sm remoteCDNVideo">
                         <label class="text-white" style="display: block; position: absolute; z-index: 999;">test</label>
@@ -148,8 +185,9 @@
                         webkit-playsinline="true"
                         playsinline></video>
                       </div> -->
-                  </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    <script type="text/javascript" src="../cdn/cdn.bundle.js"></script></body>
+<script type="text/javascript" src="../cdn/cdn.bundle.js"></script></body>
+
 </html>
