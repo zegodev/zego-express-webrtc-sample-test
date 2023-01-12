@@ -123,5 +123,8 @@ $(async () => {
 
     const video = document.getElementById("externerVideo")
     video && video.play()
-
 });
+
+document.addEventListener('WeixinJSBridgeReady', function () {
+    console.warn('WeixinJSBridgeReady global')
+}, false);
