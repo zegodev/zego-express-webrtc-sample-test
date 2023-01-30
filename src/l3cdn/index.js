@@ -645,6 +645,7 @@ $(async () => {
         if ($("#videoCodec").val()) playOption.videoCodec = $("#videoCodec").val();
 
         playOption.resourceMode = Number($('#resourceMode').val());
+        playOption.CDNType = $('#cdnType').val()
         playOption.isSEIStart = sei;
         playOption.streamType = $('#streamType').val() == "0" ? 0 : $('#streamType').val() == "1" ? 1 : 2;
 
