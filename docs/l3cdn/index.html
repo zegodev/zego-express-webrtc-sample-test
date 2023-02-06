@@ -168,6 +168,20 @@
         <div class="col-sm">
           <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
+              <label class="input-group-text" for="cdnType"><strong
+                  class="text-gray-dark resourceMode">CDN资源类型</strong></label>
+            </div>
+            <select class="custom-select" id="cdnType" style="width: 50%">
+              <option value="" selected>默认</option>
+              <option value="flv">FLV</option>
+              <option value="hls">HLS</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-sm">
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
               <label class="input-group-text" for="roomId"><strong class="text-gray-dark roomid">房间号</strong></label>
             </div>
             <input type="email" class="form-control d-inline" id="roomId" style="width: 75%; max-width: 200px"

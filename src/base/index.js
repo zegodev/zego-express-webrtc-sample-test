@@ -24,6 +24,10 @@ let videoType
 // let loginTime
 
 $(async () => {
+    
+
+
+   
     await checkAnRun();
 
     $("#resumeAutoplay").hide()

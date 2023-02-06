@@ -111,6 +111,30 @@ zg = new ZegoExpressEngine(appID, server, { accessDomains: accessDomain, customD
 
 
 console.error('isAccessd', isAccess)
+console.error('p', 'u', 'b', 'dd')
+ const p = localStorage.getItem('p')
+    const u = localStorage.getItem('u')
+    const b = localStorage.getItem('b')
+    const v = localStorage.getItem('v')
+    console.error('p', 'u', 'b', 'v', p, u, b, v)
+    window.addEventListener('pagehide', () => {
+        localStorage.setItem('p', 'pagehide')
+        console.error('pagehide')
+    });
+    window.addEventListener('unload', () => {
+        localStorage.setItem('u', 'unload')
+        console.error('unload')
+    });
+    window.addEventListener('beforeunload', () => {
+        localStorage.setItem('b', 'beforeunload')
+        console.error('beforeunload')
+    });
+    window.addEventListener('visibilitychange', () => {
+        const state = document.visibilityState;
+        localStorage.setItem('v', 'visibilitychange' + state);
+        console.error('visibilitychange ' + state)
+    });
+    
 if (isAccess === false) {
     zg.zegoWebRTM.stateCenter.useNetAgent = false;
     zg.zegoWebRTC.stateCenter.useNetAgent = false;
